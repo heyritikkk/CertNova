@@ -3,6 +3,33 @@
 :root {
   --bg-main: radial-gradient(circle at 50% 50%, #ffffff 0%, #fff5f0 100%);
   --text-main: #1a202c;
+  --brand-accent: #f48b60;
+  --brand-accent-hover: #e96b45;
+  --brand-accent-deep: #c45a2f;
+  --brand-accent-soft: #fff4ee;
+  --brand-accent-muted: #ffe8dc;
+  --brand-accent-border: #ffd4c2;
+  --brand-accent-ring: rgba(244, 139, 96, 0.22);
+  --brand-gradient: radial-gradient(circle at 50% 50%, #ff9e7a 0%, #f48b60 100%);
+  --brand-gradient-hover: radial-gradient(circle at 50% 50%, #f48b60 0%, #e07a50 100%);
+  --brand-hero-bg: linear-gradient(135deg, #fff8f5 0%, #ffe8dc 50%, #ffd4c2 100%);
+  --site-max-width: 1200px;
+  --site-gutter: 2rem;
+}
+
+/* Align page content with navbar-container (1200px + 2rem page gutter) */
+.site-container {
+  width: 100%;
+  padding-left: var(--site-gutter);
+  padding-right: var(--site-gutter);
+  box-sizing: border-box;
+}
+
+.site-container-inner {
+  width: 100%;
+  max-width: var(--site-max-width);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 [data-theme='dark'] {
@@ -28,7 +55,6 @@ body {
   background: linear-gradient(135deg, #0b1220 0%, #121b2e 45%, #1b2234 100%);
 }
 
-[data-theme='dark'] .course-card,
 [data-theme='dark'] .pricing-card,
 [data-theme='dark'] .highlight-card,
 [data-theme='dark'] .testimonial-card,
@@ -75,7 +101,7 @@ body {
 
 [data-theme='dark'] .course-cta,
 [data-theme='dark'] .back-link {
-  color: #93c5fd !important;
+  color: #ffb18f !important;
 }
 
 [data-theme='dark'] .front-card,

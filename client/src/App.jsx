@@ -5,6 +5,8 @@ import Footer from './components/Footer';
 import About from './pages/About';
 import Blog from './pages/Blog';
 import Courses from './pages/Courses';
+import CourseDetail from './pages/CourseDetail';
+import CourseLearn from './pages/CourseLearn';
 import Home from './pages/Home';
 import Customers from './pages/Customers';
 import Partners from './pages/Partners';
@@ -58,6 +60,8 @@ function App() {
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
             <Route path="courses" element={<Courses />} />
+            <Route path="courses/:slug" element={<CourseDetail />} />
+            <Route path="courses/:slug/learn" element={<CourseLearn />} />
             <Route path="pricing" element={<Pricing />} />
             <Route path="blog" element={<Blog />} />
             <Route path="customers" element={<Customers />} />

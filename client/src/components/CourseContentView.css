@@ -1,0 +1,26 @@
+.course-content-view {
+  margin-bottom: 3rem;
+}
+
+.course-content-view h2 {
+  margin-bottom: 1.25rem;
+  color: #111827;
+}
+
+.course-content-markdown {
+  margin-bottom: 2rem;
+}
+
+.course-content-quiz-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.course-content-quiz-card legend {
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.75rem;
+  padding: 0 0.25rem;
+}

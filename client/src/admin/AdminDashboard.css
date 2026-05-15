@@ -1,77 +1,463 @@
 .admin-container {
+  --cn-accent: #f48b60;
+  --cn-accent-hover: #e96b45;
+  --cn-accent-deep: #c45a2f;
+  --cn-accent-soft: #fff4ee;
+  --cn-accent-muted: #ffe8dc;
+  --cn-accent-border: #ffd4c2;
+  --cn-accent-ring: rgba(244, 139, 96, 0.22);
+  --cn-gradient: radial-gradient(circle at 50% 50%, #ff9e7a 0%, #f48b60 100%);
+
   height: 100vh;
   display: flex;
   background: linear-gradient(180deg, #eef4ff 0%, #f9f6fb 48%, #fdf9f5 100%);
   overflow: hidden;
 }
 
-.admin-sidebar {
-  width: 280px;
-  background: rgba(255, 255, 255, 0.96);
-  border-right: 1px solid rgba(226, 232, 240, 0.9);
-  padding: 2rem 1rem;
+/* —— Course editor (outline + content split) —— */
+.admin-container--course-editor {
+  background: linear-gradient(180deg, #eef4ff 0%, #f9f6fb 48%, #fdf9f5 100%);
+}
+
+.admin-container--course-editor .admin-main {
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.admin-container--course-editor .admin-card--editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: #fff;
+}
+
+.admin-editor-shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.admin-editor-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.admin-editor-topbar-text h2 {
+  font-family: inherit;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+  margin: 0 0 0.35rem;
+}
+
+.admin-editor-topbar-text p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.5;
+  max-width: 42rem;
+}
+
+.admin-submit-btn--compact {
+  flex-shrink: 0;
+  padding: 0.65rem 1.15rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.admin-tabs--editor {
+  margin: 0;
+  padding: 0 1.5rem;
+  gap: 0;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.admin-tabs--editor .admin-tab {
+  border: none;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 0.85rem 1rem;
+  background: transparent;
+  font-size: 0.9rem;
+}
+
+.admin-tabs--editor .admin-tab:hover {
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+.admin-tabs--editor .admin-tab.active {
+  background: transparent;
+  color: var(--cn-accent-deep);
+  border-color: var(--cn-accent);
+  border-bottom-color: var(--cn-accent);
+}
+
+.admin-editor-form {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.admin-editor-form--content {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-editor-form-inner {
+  padding: 1.5rem;
+}
+
+.admin-container--course-editor .admin-section--content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.admin-container--course-editor .admin-section--content h3 {
+  display: none;
+}
+
+.admin-container--course-editor .admin-message {
+  margin: 1rem 1.5rem 0;
+  border-radius: 10px;
+}
+
+/* —— Course list (manager) —— */
+.admin-container--list {
+  background: linear-gradient(180deg, #eef4ff 0%, #f9f6fb 48%, #fdf9f5 100%);
+}
+
+.admin-container--list .admin-main {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.admin-container--list .admin-card--list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: #fff;
+}
+
+.admin-container--list .admin-message {
+  margin: 1rem 1.5rem 0;
+  border-radius: 10px;
+}
+
+.admin-list-shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.admin-list-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.admin-list-topbar-text h2 {
+  font-family: inherit;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+  margin: 0 0 0.35rem;
+}
+
+.admin-list-topbar-text p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.admin-list-stat-sep {
+  margin: 0 0.15rem;
+  color: #cbd5e1;
+}
+
+.admin-list-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(180deg, #faf6f2 0%, #fdf9f5 100%);
+}
+
+.admin-list-footer {
+  flex-shrink: 0;
+  padding: 0.85rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  background: #fff;
+  text-align: center;
+}
+
+.admin-list-site-link {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+}
+
+.admin-list-site-link:hover {
+  color: var(--cn-accent-deep);
+}
+
+.admin-course-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.admin-course-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-course-row:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.admin-course-row-main {
+  min-width: 0;
+}
+
+.admin-course-row-main strong {
+  display: block;
+  margin: 0.35rem 0 0.2rem;
+  font-size: 1rem;
+  color: #0f172a;
+  word-break: break-word;
+}
+
+.admin-course-row-main p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: #64748b;
+}
+
+.admin-course-row-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.5rem;
+}
+
+.admin-btn {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.admin-btn--primary {
+  background: var(--cn-gradient);
+  color: #fff;
+  border-color: var(--cn-accent);
+}
+
+.admin-btn--primary:hover {
+  background: radial-gradient(circle at 50% 50%, #f48b60 0%, #e07a50 100%);
+  border-color: var(--cn-accent-hover);
+}
+
+.admin-btn--danger {
+  background: #fff;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.admin-btn--danger:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.admin-course-empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: #fff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+}
+
+.admin-course-empty strong {
+  display: block;
+  font-size: 1.05rem;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.admin-course-empty p {
+  margin: 0 0 1.25rem;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* —— Admin sidebar (list + shared) —— */
+.admin-sidebar {
+  width: 272px;
+  flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   position: sticky;
   top: 0;
-  height: 100vh;
-  overflow-y: auto;
+  overflow: hidden;
+}
+
+.admin-sidebar-head {
+  padding: 1.15rem 1.1rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-sidebar-head h3 {
+  margin: 0 0 0.65rem;
+  padding-bottom: 0.65rem;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  border-bottom: 2px solid var(--cn-accent);
+}
+
+.admin-sidebar-head p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  line-height: 1.45;
 }
 
 .admin-sidebar-header h3 {
   margin: 0;
-  font-size: 1.3rem;
-  color: #111827;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #f48b60;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .admin-nav {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.35rem;
   flex: 1;
+  padding: 0.75rem 0.65rem;
+  overflow-y: auto;
 }
 
 .admin-nav-item {
+  width: 100%;
   background: transparent;
   border: none;
-  padding: 0.95rem 1rem;
-  border-radius: 14px;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #4b5563;
-  transition: all 0.2s ease;
+  color: #475569;
+  transition: background 0.15s ease, color 0.15s ease;
   text-align: left;
 }
 
 .admin-nav-item:hover {
-  background: #f0f4ff;
-  color: #111827;
+  background: var(--cn-accent-soft);
+  color: #0f172a;
 }
 
 .admin-nav-item.active {
-  background: #f48b60;
-  color: white;
+  background: var(--cn-accent);
+  color: #fff;
+  border-radius: 10px;
+}
+
+.admin-nav-item--secondary {
+  color: var(--cn-accent-deep);
+}
+
+.admin-nav-item--secondary:hover {
+  background: var(--cn-accent-soft);
+  color: var(--cn-accent-hover);
+}
+
+.admin-sidebar-footer {
+  padding: 0.85rem 1rem 1rem;
+  border-top: 1px solid #e2e8f0;
+  background: #fafbfc;
 }
 
 .admin-sidebar-logout {
-  background: #f48b60;
-  color: white;
+  width: 100%;
+  background: var(--cn-gradient);
+  color: #fff;
   border: none;
-  border-radius: 14px;
-  padding: 0.95rem 1rem;
-  font-size: 1rem;
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: auto;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
 .admin-sidebar-logout:hover {
-  background: #e96b45;
+  background: radial-gradient(circle at 50% 50%, #f48b60 0%, #e07a50 100%);
   transform: translateY(-1px);
 }
 
@@ -83,13 +469,13 @@
 }
 
 .admin-card {
-  background: rgba(255, 255, 255, 0.96);
+  background: #fff;
   width: 100%;
   max-width: none;
-  border-radius: 32px;
-  box-shadow: 0 32px 90px rgba(15, 23, 42, 0.12);
-  padding: 2.5rem 2.75rem;
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  padding: 2rem 2.25rem;
+  border: 1px solid #e2e8f0;
 }
 
 .admin-header {
@@ -99,9 +485,11 @@
 }
 
 .admin-header h2 {
-  font-size: 2.4rem;
-  color: #111827;
-  margin-bottom: 0.6rem;
+  font-family: inherit;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
 }
 
 .admin-header p {
@@ -185,6 +573,10 @@
   font-size: 1.35rem;
 }
 
+.admin-section--content {
+  padding-top: 1rem;
+}
+
 .admin-grid {
   display: grid;
   grid-template-columns: minmax(460px, 1.2fr) minmax(360px, 1fr);
@@ -237,18 +629,18 @@
 }
 
 .small-btn {
-  background: #3182ce;
+  background: var(--cn-gradient);
   border: none;
   color: white;
   border-radius: 10px;
   padding: 0.55rem 0.9rem;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .small-btn:hover {
-  background: #2563eb;
+  background: radial-gradient(circle at 50% 50%, #f48b60 0%, #e07a50 100%);
   transform: translateY(-1px);
 }
 
@@ -311,19 +703,19 @@
 }
 
 .admin-submit-btn {
-  background-color: #2563eb;
+  background: var(--cn-gradient);
   color: white;
   border: none;
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 1rem;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .admin-submit-btn:hover:not(:disabled) {
-  background-color: #2748d4;
+  background: radial-gradient(circle at 50% 50%, #f48b60 0%, #e07a50 100%);
   transform: translateY(-1px);
 }
 
@@ -372,6 +764,16 @@
     height: auto;
     min-height: 100vh;
     overflow: visible;
+  }
+
+  .admin-container--list .admin-sidebar,
+  .admin-container--course-editor .course-outline-sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 320px;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.9);
   }
 
   .admin-sidebar {
@@ -425,5 +827,170 @@
   .form-group textarea,
   .form-group select {
     padding: 0.75rem;
+  }
+}
+
+.admin-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.admin-header--editor {
+  align-items: center;
+}
+
+.admin-back-btn {
+  display: block;
+  margin-bottom: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--cn-accent-deep);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-tab {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+}
+
+.admin-tab.active {
+  background: #f48b60;
+  border-color: #f48b60;
+  color: #fff;
+}
+
+.admin-editor-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.admin-editor-preview {
+  position: sticky;
+  top: 1rem;
+  padding: 1.25rem;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-editor-preview h3 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  color: #64748b;
+}
+
+.preview-placeholder {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #94a3b8;
+  border: 2px dashed #e2e8f0;
+  border-radius: 16px;
+  font-size: 0.95rem;
+}
+
+.admin-course-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-course-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.admin-course-row strong {
+  display: block;
+  margin: 0.35rem 0;
+  color: #111827;
+}
+
+.admin-course-row p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status-pill.published {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-pill.draft {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.section-hint {
+  color: #64748b;
+  margin: -0.5rem 0 1rem;
+  font-size: 0.95rem;
+}
+
+.publish-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.form-group small {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 1024px) {
+  .admin-editor-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-editor-preview {
+    position: static;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
   }
 }

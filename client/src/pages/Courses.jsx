@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, Clock3 } from 'lucide-react';
+import CourseCard from '../components/CourseCard';
+import { api } from '../lib/api';
 import './Courses.css';
 
 const Courses = () => {
@@ -8,19 +9,12 @@ const Courses = () => {
 
   useEffect(() => {
     const loadCourses = (isInitial = false) => {
-      fetch('http://localhost:5000/api/courses')
-        .then((res) => res.json())
-        .then((data) => {
-          setCourses(data || []);
-          if (isInitial) {
-            setLoading(false);
-          }
-        })
-        .catch((err) => {
-          console.error('Failed to load courses:', err);
-          if (isInitial) {
-            setLoading(false);
-          }
+      api
+        .getPublishedCourses()
+        .then((data) => setCourses(data || []))
+        .catch((err) => console.error('Failed to load courses:', err))
+        .finally(() => {
+          if (isInitial) setLoading(false);
         });
     };
 
@@ -31,50 +25,24 @@ const Courses = () => {
 
   return (
     <div className="courses-page">
-      <div className="courses-header">
-        <div className="courses-intro">
+      <div className="courses-inner">
+        <header className="courses-header">
           <h1>Courses</h1>
-          <p>Choose from our core Security+ tracks to build practical skills and hands-on confidence.</p>
-        </div>
+          <p>Choose from our Security+ tracks — updated live when your team publishes new content.</p>
+        </header>
+
+        {loading ? (
+          <p className="courses-loading">Loading courses…</p>
+        ) : courses.length === 0 ? (
+          <p className="courses-loading">No published courses yet. Check back soon.</p>
+        ) : (
+          <div className="courses-grid">
+            {courses.map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+          </div>
+        )}
       </div>
-
-      {loading ? (
-        <p className="courses-loading">Loading courses…</p>
-      ) : courses.length === 0 ? (
-        <p className="courses-loading">No courses available yet.</p>
-      ) : (
-        <div className="courses-grid">
-          {courses.map((course) => (
-            <article key={course.id} className="course-card">
-              <div className="course-card-cover">
-                <div className="course-card-cover-overlay">
-                  <div className="course-card-cover-text">
-                    <h3>{course.cover_title || course.title}</h3>
-                    <p>{course.cover_subtitle || course.description}</p>
-                  </div>
-                  {course.image_url ? (
-                    <img src={course.image_url} alt={course.cover_title || course.title} className="course-card-cover-image" />
-                  ) : (
-                    <div className="course-card-cover-fallback" aria-hidden="true">
-                      🤖
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="course-card-body">
-                <div className="course-meta">
-                  <span className="course-level">{course.level || 'Advanced'}</span>
-                  <span className="course-duration"><Clock3 size={18} />{course.duration || '10h'}</span>
-                </div>
-                <h2>{course.title}</h2>
-                <p>{course.description}</p>
-                <button className="course-cta">{course.cta_text || 'View Course'} <ArrowRight size={24} /></button>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
