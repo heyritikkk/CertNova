@@ -1,0 +1,211 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+:root {
+  --bg-main: radial-gradient(circle at 50% 50%, #ffffff 0%, #fff5f0 100%);
+  --text-main: #1a202c;
+}
+
+[data-theme='dark'] {
+  --bg-main: radial-gradient(circle at 50% 50%, #0f172a 0%, #1e293b 100%);
+  --text-main: #e2e8f0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+[data-theme='dark'] .app-container {
+  background: linear-gradient(135deg, #0b1220 0%, #121b2e 45%, #1b2234 100%);
+}
+
+[data-theme='dark'] .course-card,
+[data-theme='dark'] .pricing-card,
+[data-theme='dark'] .highlight-card,
+[data-theme='dark'] .testimonial-card,
+[data-theme='dark'] .review-card,
+[data-theme='dark'] .how-code-card,
+[data-theme='dark'] .how-card,
+[data-theme='dark'] .admin-card,
+[data-theme='dark'] .admin-section,
+[data-theme='dark'] .admin-panel,
+[data-theme='dark'] .list-item,
+[data-theme='dark'] .list-empty,
+[data-theme='dark'] .login-card,
+[data-theme='dark'] .page-content,
+[data-theme='dark'] .footer-container,
+[data-theme='dark'] .faq-answer {
+  background: rgba(15, 23, 42, 0.72) !important;
+  border-color: rgba(148, 163, 184, 0.25) !important;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] h1,
+[data-theme='dark'] h2,
+[data-theme='dark'] h3,
+[data-theme='dark'] h4,
+[data-theme='dark'] h5,
+[data-theme='dark'] h6,
+[data-theme='dark'] p,
+[data-theme='dark'] span,
+[data-theme='dark'] label,
+[data-theme='dark'] li,
+[data-theme='dark'] a,
+[data-theme='dark'] strong,
+[data-theme='dark'] small {
+  color: #e2e8f0 !important;
+}
+
+[data-theme='dark'] input,
+[data-theme='dark'] textarea,
+[data-theme='dark'] select {
+  background: rgba(15, 23, 42, 0.86) !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+  color: #f8fafc !important;
+}
+
+[data-theme='dark'] .course-cta,
+[data-theme='dark'] .back-link {
+  color: #93c5fd !important;
+}
+
+[data-theme='dark'] .front-card,
+[data-theme='dark'] .back-left-card,
+[data-theme='dark'] .back-right-card {
+  background: rgba(15, 23, 42, 0.9) !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+}
+
+[data-theme='dark'] .course-title,
+[data-theme='dark'] .course-subtitle,
+[data-theme='dark'] .card-title,
+[data-theme='dark'] .card-desc,
+[data-theme='dark'] .tag,
+[data-theme='dark'] .card-btn {
+  color: #e2e8f0 !important;
+}
+
+[data-theme='dark'] .card-icon-wrapper {
+  background: rgba(30, 41, 59, 0.9) !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+}
+
+[data-theme='dark'] .highlight-card,
+[data-theme='dark'] .highlight-visual,
+[data-theme='dark'] .highlight-content {
+  background: rgba(15, 23, 42, 0.82) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+[data-theme='dark'] .highlight-content h3,
+[data-theme='dark'] .highlight-content p {
+  color: #e2e8f0 !important;
+}
+
+[data-theme='dark'] .highlight-badge,
+[data-theme='dark'] .testimonials-chip {
+  background: rgba(244, 139, 96, 0.25) !important;
+  color: #ffd7c3 !important;
+  border-color: transparent !important;
+}
+
+[data-theme='dark'] .how-profile,
+[data-theme='dark'] .how-panel,
+[data-theme='dark'] .how-code-card,
+[data-theme='dark'] .how-code-top {
+  background: rgba(15, 23, 42, 0.9) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+[data-theme='dark'] .how-profile h4,
+[data-theme='dark'] .how-profile p,
+[data-theme='dark'] .how-panel h5,
+[data-theme='dark'] .how-item strong,
+[data-theme='dark'] .how-item span,
+[data-theme='dark'] .how-code-card pre {
+  color: #e2e8f0 !important;
+}
+
+[data-theme='dark'] .how-item {
+  border-top-color: rgba(148, 163, 184, 0.25) !important;
+}
+
+[data-theme='dark'] .testimonial-left,
+[data-theme='dark'] .testimonial-right {
+  background: rgba(15, 23, 42, 0.9) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+[data-theme='dark'] .testimonial-text,
+[data-theme='dark'] .testimonial-author,
+[data-theme='dark'] .testimonial-right h4,
+[data-theme='dark'] .testimonial-right p {
+  color: #e2e8f0 !important;
+}
+
+[data-theme='dark'] h1,
+[data-theme='dark'] h2,
+[data-theme='dark'] h3,
+[data-theme='dark'] h4,
+[data-theme='dark'] h5,
+[data-theme='dark'] h6,
+[data-theme='dark'] p,
+[data-theme='dark'] span,
+[data-theme='dark'] a,
+[data-theme='dark'] li,
+[data-theme='dark'] label,
+[data-theme='dark'] strong,
+[data-theme='dark'] small,
+[data-theme='dark'] em {
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] .feature,
+[data-theme='dark'] .pricing-features .feature,
+[data-theme='dark'] .faq-question,
+[data-theme='dark'] .faq-answer,
+[data-theme='dark'] .faq-left p,
+[data-theme='dark'] .faq-kicker {
+  color: #ffffff !important;
+}
+
+h1, h2, h3, h4, h5, h6, .serif-text {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Keep key social-proof sections readable on theme toggle */
+[data-theme='dark'] .testimonial-card,
+[data-theme='dark'] .testimonial-left,
+[data-theme='dark'] .testimonial-right,
+[data-theme='dark'] .review-card,
+[data-theme='dark'] .highlight-card,
+[data-theme='dark'] .highlight-visual,
+[data-theme='dark'] .highlight-content {
+  background: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+}
+
+[data-theme='dark'] .testimonial-text,
+[data-theme='dark'] .testimonial-author,
+[data-theme='dark'] .testimonial-right h4,
+[data-theme='dark'] .testimonial-right p,
+[data-theme='dark'] .review-text,
+[data-theme='dark'] .review-author h4,
+[data-theme='dark'] .review-author p,
+[data-theme='dark'] .highlight-content h3,
+[data-theme='dark'] .highlight-content p {
+  color: #111827 !important;
+}

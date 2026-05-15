@@ -1,0 +1,198 @@
+.layered-cards-container {
+  position: relative;
+  width: 500px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.front-card {
+  width: 290px;
+  height: 370px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,244,255,0.85) 100%);
+  box-shadow: 0 20px 40px rgba(43, 59, 90, 0.15), inset 0 2px 5px rgba(255, 255, 255, 1);
+  transform: translateY(0) scale(1);
+}
+
+.front-card-inner {
+  width: 130px;
+  height: 130px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(226, 232, 240, 0.5) 0%, rgba(203, 213, 225, 0.2) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.shield-icon {
+  color: #F48B60;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.back-left-card {
+  width: 240px;
+  height: 320px;
+  z-index: 2;
+  transform: translateX(-140px) rotate(-6deg) translateY(10px);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.back-right-card {
+  width: 240px;
+  height: 320px;
+  z-index: 1;
+  transform: translateX(140px) rotate(6deg) translateY(10px);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.layered-cards-container:hover .front-card {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 30px 60px rgba(244, 139, 96, 0.2), inset 0 2px 5px rgba(255, 255, 255, 1);
+}
+
+.layered-cards-container:hover .back-left-card {
+  transform: translateX(-160px) rotate(-10deg) translateY(5px);
+}
+
+.layered-cards-container:hover .back-right-card {
+  transform: translateX(160px) rotate(10deg) translateY(5px);
+}
+
+/* Skeleton Styles for background cards */
+.card-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.blue-bg {
+  background: rgba(244, 139, 96, 0.1);
+  border: 1px solid rgba(244, 139, 96, 0.2);
+}
+
+.purple-bg {
+  background: rgba(244, 139, 96, 0.1);
+  border: 1px solid rgba(244, 139, 96, 0.2);
+}
+
+/* Course Card Styles */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.card-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+}
+
+.card-desc {
+  font-size: 0.85rem;
+  color: #718096;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.card-btn {
+  margin-top: auto;
+  padding: 0.6rem;
+  width: 100%;
+  border-radius: 6px;
+  background: rgba(244, 139, 96, 0.1);
+  color: #F48B60;
+  border: 1px solid rgba(244, 139, 96, 0.2);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card-btn:hover {
+  background: #F48B60;
+  color: white;
+}
+
+/* Front Card Content */
+.front-card {
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 2rem 1.5rem;
+  gap: 1.5rem;
+}
+
+.front-card-inner {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  margin: 0 auto;
+}
+
+.front-card-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.course-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 0.2rem 0;
+}
+
+.course-subtitle {
+  font-size: 0.9rem;
+  color: #718096;
+  margin-bottom: 1.2rem;
+}
+
+.course-tags {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4a5568;
+  background: rgba(226, 232, 240, 0.8);
+  padding: 4px 8px;
+  border-radius: 20px;
+}

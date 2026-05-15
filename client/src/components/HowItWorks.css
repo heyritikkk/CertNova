@@ -1,0 +1,365 @@
+.how-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem 2.5rem;
+}
+
+.how-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.how-chip {
+  display: inline-block;
+  padding: 0.35rem 0.92rem;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.34);
+  color: #f48b60;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.how-header h2 {
+  margin: 0.95rem 0 0.55rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 3.3rem;
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  color: #1a202c;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.how-header p {
+  color: #64748b;
+  font-size: 1.05rem;
+}
+
+.how-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  margin-top: 0.8rem;
+  position: relative;
+}
+
+.how-steps {
+  position: relative;
+  margin-top: 1rem;
+}
+
+.how-steps::before {
+  content: '';
+  position: absolute;
+  top: 0.9rem;
+  bottom: 0.9rem;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 2px dashed rgba(148, 163, 184, 0.75);
+  pointer-events: none;
+}
+
+.how-left h3,
+.how-right-text h3 {
+  margin: 0 0 0.9rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 2.2rem;
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: #1a202c;
+  text-shadow: none;
+}
+
+.how-left p,
+.how-right-text p {
+  font-family: 'Inter', sans-serif;
+  color: #4a5568;
+  line-height: 1.65;
+  font-size: 1.12rem;
+  font-weight: 400;
+  margin-bottom: 1.2rem;
+}
+
+.how-subtitle {
+  margin-top: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  color: #334155;
+}
+
+.how-left ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.6rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.how-left li,
+.how-two-col-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 1.1rem;
+  color: #1a202c;
+}
+
+.how-left li svg {
+  color: #f48b60;
+}
+
+.how-body-step-two {
+  margin-top: 2.4rem;
+  padding-top: 1.5rem;
+  border-top: none;
+}
+
+.how-steps .how-body:nth-child(2) {
+  margin-top: 2.6rem;
+  padding-top: 1.6rem;
+}
+
+.how-steps .how-body:last-child {
+  margin-top: 2.8rem;
+  padding-top: 1.8rem;
+}
+
+.how-step-marker {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: radial-gradient(circle at 50% 50%, #ff9e7a 0%, #f48b60 100%);
+  box-shadow: 0 8px 20px rgba(244, 139, 96, 0.36);
+  border: 5px solid rgba(255, 223, 207, 0.95);
+  z-index: 3;
+}
+
+.how-code-card {
+  width: 100%;
+  max-width: 470px;
+  background: linear-gradient(145deg, #f7fbff 0%, #eef5ff 100%);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.how-code-top {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.84rem;
+  color: #64748b;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.how-code-card pre {
+  margin: 0;
+  padding: 1rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #334155;
+  white-space: pre-wrap;
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+}
+
+.how-right {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.how-right-text {
+  display: block;
+  padding-left: 3.2rem;
+  max-width: 560px;
+}
+
+.how-two-col-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem 1.5rem;
+}
+
+.how-two-col-list li svg {
+  color: #f48b60;
+}
+
+.how-card {
+  width: 100%;
+  max-width: 470px;
+  min-height: 300px;
+  background: linear-gradient(145deg, #fffaf6 0%, #fff5ee 100%);
+  border: 1px solid rgba(244, 139, 96, 0.2);
+  border-radius: 26px;
+  padding: 1.2rem;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+  margin-top: 0.35rem;
+}
+
+.how-body:first-child .how-card {
+  margin-top: 1.15rem;
+}
+
+.how-profile {
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 16px;
+  padding: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.72rem;
+  margin-bottom: 0.9rem;
+}
+
+.how-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  background: radial-gradient(circle at 50% 50%, #ff9e7a 0%, #f48b60 100%);
+}
+
+.how-profile h4 {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.how-profile p {
+  margin: 0.1rem 0 0;
+  font-size: 0.84rem;
+  color: #64748b;
+}
+
+.how-panel {
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 16px;
+  padding: 0.95rem;
+}
+
+.how-panel h5 {
+  margin: 0 0 0.7rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.09em;
+  color: #64748b;
+  font-family: 'Inter', sans-serif;
+}
+
+.how-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.72rem 0;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.how-item:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.how-item strong {
+  display: block;
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+
+.how-item span {
+  display: block;
+  color: #64748b;
+  font-size: 0.82rem;
+  margin-top: 0.12rem;
+}
+
+.how-item em {
+  font-style: normal;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+}
+
+.how-item .active {
+  color: #0f766e;
+  background: #ccfbf1;
+}
+
+.how-item .dev {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+@media (max-width: 968px) {
+  .how-section {
+    padding: 2.6rem 1.2rem 2rem;
+  }
+
+  .how-header h2 {
+    font-size: 2.5rem;
+  }
+
+  .how-body {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .how-steps::before {
+    display: none;
+  }
+
+  .how-step-marker {
+    display: none;
+  }
+
+  .how-two-col-list {
+    grid-template-columns: 1fr;
+  }
+
+  .how-body-step-two {
+    margin-top: 0.8rem;
+    padding-top: 0.6rem;
+  }
+
+  .how-left h3 {
+    font-size: 1.75rem;
+  }
+
+  .how-right-text h3 {
+    font-size: 1.75rem;
+  }
+
+  .how-right-text {
+    padding-left: 1.1rem;
+    max-width: 100%;
+  }
+}

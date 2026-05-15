@@ -1,0 +1,115 @@
+.highlights-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.2rem 2rem 1rem;
+}
+
+.highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.highlight-card {
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(203, 213, 225, 0.95);
+  border-radius: 28px;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.75);
+  overflow: hidden;
+  padding: 0.5rem;
+  min-height: 390px;
+  display: flex;
+  flex-direction: column;
+}
+
+.highlight-visual {
+  padding: 1.9rem 1.1rem 2.1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #fffaf6 0%, #fff4ec 100%);
+  border: 1px solid rgba(244, 139, 96, 0.16);
+  min-height: 170px;
+}
+
+.highlight-icon-wrap {
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: radial-gradient(circle at 50% 50%, #ff9e7a 0%, #f48b60 100%);
+  box-shadow: 0 12px 30px rgba(244, 139, 96, 0.3);
+}
+
+.highlight-icon-wrap::after {
+  content: '';
+  position: absolute;
+  width: 220px;
+  height: 110px;
+  left: 50%;
+  top: 62%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(244, 139, 96, 0.28) 0%, rgba(244, 139, 96, 0) 72%);
+  pointer-events: none;
+}
+
+.highlight-icon {
+  color: #ffffff;
+}
+
+.highlight-content {
+  margin-top: 0.45rem;
+  padding: 1.15rem 1.1rem 1.25rem;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff8f4 0%, #fff3eb 100%);
+  flex: 1;
+}
+
+.highlight-content h3 {
+  margin: 0 0 0.55rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.06rem;
+  font-weight: 700;
+  color: #1f2937;
+  text-shadow: none;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.highlight-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 50%, #ffb18f 0%, #f48b60 100%);
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(244, 139, 96, 0.35);
+}
+
+.highlight-content p {
+  margin: 0;
+  color: #5b6477;
+  line-height: 1.55;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 968px) {
+  .highlights-section {
+    padding: 1.8rem 1.2rem 0.6rem;
+  }
+
+  .highlights-grid {
+    grid-template-columns: 1fr;
+  }
+}

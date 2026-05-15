@@ -1,0 +1,72 @@
+import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import About from './pages/About';
+import Blog from './pages/Blog';
+import Courses from './pages/Courses';
+import Home from './pages/Home';
+import Customers from './pages/Customers';
+import Partners from './pages/Partners';
+import AdminDashboard from './admin/AdminDashboard';
+import Login from './pages/Login';
+import AdminLogin from './pages/AdminLogin';
+import Pricing from './components/Pricing';
+import './App.css';
+
+const Layout = ({ theme, onToggleTheme }) => {
+  return (
+    <>
+      <Navbar theme={theme} onToggleTheme={onToggleTheme} />
+      <main className="main-content">
+        <Outlet />
+      </main>
+      <Footer />
+    </>
+  );
+};
+
+const ProtectedRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('adminAuth') === 'true';
+  return isAuthenticated ? children : <Navigate to="/admin-login" replace />;
+};
+
+function App() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('themeMode') || 'light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('themeMode', theme);
+  }, [theme]);
+
+  const handleToggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  return (
+    <Router>
+      <div className="app-container">
+        <Routes>
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/login" element={<Login />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/" element={<Layout theme={theme} onToggleTheme={handleToggleTheme} />}>
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="courses" element={<Courses />} />
+            <Route path="pricing" element={<Pricing />} />
+            <Route path="blog" element={<Blog />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="partners" element={<Partners />} />
+          </Route>
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
