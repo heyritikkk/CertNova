@@ -1,6 +1,7 @@
 .cta-banner-section {
   width: 100%;
-  max-width: 1200px;
+  max-width: var(--site-max-width, 100%);
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 0 2rem 3.5rem;
 }
@@ -63,6 +64,7 @@
 
 .cta-main-btn {
   border: none;
+  text-decoration: none;
   border-radius: 14px;
   padding: 0.55rem 0.7rem 0.55rem 1.45rem;
   display: inline-flex;

@@ -411,6 +411,32 @@
   background: var(--brand-gradient-hover);
 }
 
+@media (max-width: 640px) {
+  .lesson-main {
+    padding: 1rem 1rem 1.5rem;
+  }
+
+  .lesson-header h1 {
+    font-size: 1.35rem;
+  }
+
+  .lesson-pager {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .lesson-pager-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .lesson-pager-count {
+    order: -1;
+    text-align: center;
+  }
+}
+
 @media (max-width: 900px) {
   .lesson-layout {
     grid-template-columns: 1fr;

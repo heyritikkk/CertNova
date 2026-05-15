@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import './Pricing.css';
 
@@ -19,7 +20,7 @@ const Pricing = () => {
               <span className="period">/mo</span>
             </div>
             <p className="pricing-desc">Perfect for solo builders testing ideas and shipping their first workflows.</p>
-            <button className="pricing-btn secondary">Get Started Free</button>
+            <Link to="/login" className="pricing-btn secondary">Get Started Free</Link>
           </div>
           <div className="pricing-features">
             <div className="feature"><Check size={18} className="check-icon" /> 3 active projects</div>
@@ -40,7 +41,7 @@ const Pricing = () => {
               <span className="period">/mo</span>
             </div>
             <p className="pricing-desc">Built for growing teams that need faster delivery, deeper control, and premium support.</p>
-            <button className="pricing-btn primary">Start 14-Day Trial</button>
+            <Link to="/login" className="pricing-btn primary">Start 14-Day Trial</Link>
           </div>
           <div className="pricing-features">
             <div className="feature"><Check size={18} className="check-icon" /> Unlimited projects and members</div>

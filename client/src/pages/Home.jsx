@@ -6,7 +6,6 @@ import Testimonials from '../components/Testimonials';
 import ReviewGrid from '../components/ReviewGrid';
 import Pricing from '../components/Pricing';
 import Faq from '../components/Faq';
-import CtaBanner from '../components/CtaBanner';
 
 const Home = () => {
   return (
@@ -18,7 +17,6 @@ const Home = () => {
       <ReviewGrid />
       <Pricing />
       <Faq />
-      <CtaBanner />
     </>
   );
 };

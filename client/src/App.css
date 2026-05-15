@@ -15,8 +15,14 @@
   padding-top: 5.25rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .main-content {
-    padding-top: 4.75rem;
+    padding-top: 4.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding-top: 4.25rem;
   }
 }

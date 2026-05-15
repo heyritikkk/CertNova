@@ -1,6 +1,7 @@
 .pricing-section {
   width: 100%;
-  max-width: 1200px;
+  max-width: var(--site-max-width, 100%);
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 4.2rem 2rem 2.2rem;
   display: flex;
@@ -120,11 +121,15 @@
 }
 
 .pricing-btn {
+  display: block;
+  box-sizing: border-box;
   width: 100%;
   padding: 1rem;
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
+  text-align: center;
+  text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
@@ -177,10 +182,25 @@
 }
 
 @media (max-width: 968px) {
+  .pricing-section {
+    padding: 2.5rem var(--site-gutter, 1rem) 2rem;
+  }
+
   .pricing-header h2 {
     font-size: 2.5rem;
   }
+
   .pricing-card {
     max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .pricing-header {
+    margin-bottom: 2rem;
+  }
+
+  .pricing-header h2 {
+    font-size: clamp(1.75rem, 8vw, 2.25rem);
   }
 }

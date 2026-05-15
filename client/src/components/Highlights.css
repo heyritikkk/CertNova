@@ -1,8 +1,9 @@
 .highlights-section {
   width: 100%;
-  max-width: 1200px;
+  max-width: var(--site-max-width, 100%);
   margin: 0 auto;
-  padding: 2.2rem 2rem 1rem;
+  padding: 2.2rem var(--site-gutter, 2rem) 1rem;
+  box-sizing: border-box;
 }
 
 .highlights-grid {

@@ -357,3 +357,52 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 640px) {
+  .course-detail-hero {
+    padding: 1.25rem 1rem 1.5rem;
+    margin-bottom: 1.25rem;
+    border-radius: 16px;
+  }
+
+  .course-detail-hero-main h1 {
+    font-size: 1.35rem;
+  }
+
+  .course-detail-hero-desc {
+    font-size: 0.88rem;
+  }
+
+  .course-detail-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .course-detail-btn--primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .course-detail-instructor-pill,
+  .course-detail-students {
+    text-align: center;
+  }
+
+  .course-detail-stars {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .course-detail-panel {
+    padding: 1.15rem 1rem;
+    border-radius: 14px;
+  }
+
+  .course-detail-purchase-card {
+    padding: 1.15rem 1rem;
+  }
+
+  .course-detail-price {
+    font-size: 1.45rem;
+  }
+}

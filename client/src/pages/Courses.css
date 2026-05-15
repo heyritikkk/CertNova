@@ -7,10 +7,10 @@
   box-sizing: border-box;
 }
 
-/* Match navbar-container: max-width 1200px, same horizontal inset */
+/* Same width as navbar (full width between gutters) */
 .courses-inner {
   width: 100%;
-  max-width: var(--site-max-width, 1200px);
+  max-width: var(--site-max-width, 100%);
   margin: 0 auto;
 }
 
@@ -55,12 +55,31 @@
   font-size: 1.1rem;
 }
 
+@media (max-width: 768px) {
+  .courses-header h1 {
+    font-size: clamp(2rem, 8vw, 2.75rem);
+  }
+
+  .courses-header h1::after {
+    margin-top: 0.5rem;
+  }
+
+  .courses-header p {
+    font-size: 0.95rem;
+  }
+}
+
 @media (max-width: 640px) {
   .courses-page {
-    padding: 2.5rem 1rem 3rem;
+    padding: 2rem var(--site-gutter, 1rem) 2.5rem;
+  }
+
+  .courses-header {
+    margin-bottom: 1.75rem;
   }
 
   .courses-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }

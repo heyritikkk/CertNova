@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import CtaBanner from './components/CtaBanner';
 import About from './pages/About';
 import Blog from './pages/Blog';
 import Courses from './pages/Courses';
@@ -23,6 +24,7 @@ const Layout = ({ theme, onToggleTheme }) => {
       <main className="main-content">
         <Outlet />
       </main>
+      <CtaBanner />
       <Footer />
     </>
   );
@@ -31,6 +33,14 @@ const Layout = ({ theme, onToggleTheme }) => {
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('adminAuth') === 'true';
   return isAuthenticated ? children : <Navigate to="/admin-login" replace />;
+};
+
+const UserProtectedRoute = ({ children }) => {
+  const location = useLocation();
+  const isAuthenticated = localStorage.getItem('userAuth') === 'true';
+  if (isAuthenticated) return children;
+  const redirect = encodeURIComponent(`${location.pathname}${location.search}`);
+  return <Navigate to={`/login?redirect=${redirect}`} replace />;
 };
 
 function App() {
@@ -61,7 +71,14 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="courses" element={<Courses />} />
             <Route path="courses/:slug" element={<CourseDetail />} />
-            <Route path="courses/:slug/learn" element={<CourseLearn />} />
+            <Route
+              path="courses/:slug/learn"
+              element={
+                <UserProtectedRoute>
+                  <CourseLearn />
+                </UserProtectedRoute>
+              }
+            />
             <Route path="pricing" element={<Pricing />} />
             <Route path="blog" element={<Blog />} />
             <Route path="customers" element={<Customers />} />

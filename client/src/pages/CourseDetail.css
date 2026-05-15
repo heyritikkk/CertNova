@@ -6,7 +6,7 @@
 
 .course-detail-inner {
   width: 100%;
-  max-width: var(--site-max-width, 1200px);
+  max-width: var(--site-max-width, 100%);
   margin: 0 auto;
 }
 
@@ -19,7 +19,7 @@
   text-align: center;
   padding: 4rem var(--site-gutter, 2rem);
   color: #475569;
-  max-width: var(--site-max-width, 1200px);
+  max-width: var(--site-max-width, 100%);
   margin: 0 auto;
 }
 
@@ -40,6 +40,10 @@
 
 @media (max-width: 640px) {
   .course-detail-page {
-    padding: 1rem 1rem 2rem;
+    padding: 1rem var(--site-gutter, 1rem) 2rem;
+  }
+
+  .course-detail-sidebar {
+    top: auto;
   }
 }

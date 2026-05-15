@@ -26,6 +26,7 @@ function StarRating({ value = 4.7 }) {
 const CourseDetailOverview = ({ course }) => {
   const slug = course.slug || course.id;
   const learnPath = `/courses/${slug}/learn`;
+  const loginHref = `/login?redirect=${encodeURIComponent(learnPath)}`;
   const priceLabel =
     Number(course.price) > 0 ? `$${Number(course.price).toFixed(2)}` : 'Free';
   const heroText = course.detail_description?.trim() || course.description;
@@ -43,7 +44,7 @@ const CourseDetailOverview = ({ course }) => {
           <h1>{course.title}</h1>
           <p className="course-detail-hero-desc">{heroText}</p>
           <div className="course-detail-hero-actions">
-            <Link to={learnPath} className="course-detail-btn course-detail-btn--primary">
+            <Link to={loginHref} className="course-detail-btn course-detail-btn--primary">
               Get started
             </Link>
             <StarRating value={course.rating ?? 4.7} />
@@ -124,7 +125,7 @@ const CourseDetailOverview = ({ course }) => {
         <aside className="course-detail-sidebar">
           <div className="course-detail-purchase-card">
             <p className="course-detail-price">{priceLabel}</p>
-            <Link to={learnPath} className="course-detail-btn course-detail-btn--buy">
+            <Link to={loginHref} className="course-detail-btn course-detail-btn--buy">
               {Number(course.price) > 0 ? 'Buy now' : 'Start for free'}
             </Link>
             <dl className="course-detail-facts">

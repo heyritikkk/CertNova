@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LoginCyberVisual from '../components/LoginCyberVisual';
 import './Login.css';
 
 const DEMO_EMAIL = 'learner@certnova.com';
 const DEMO_PASSWORD = 'password';
 
+function safeRedirect(path) {
+  if (!path || !path.startsWith('/') || path.startsWith('//')) return '/courses';
+  return path;
+}
+
 const Login = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = safeRedirect(searchParams.get('redirect'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (localStorage.getItem('userAuth') === 'true') {
-      navigate('/courses', { replace: true });
+      navigate(redirectTo, { replace: true });
     }
-  }, [navigate]);
+  }, [navigate, redirectTo]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -24,7 +31,7 @@ const Login = () => {
 
     if (normalized === DEMO_EMAIL.toLowerCase() && password === DEMO_PASSWORD) {
       localStorage.setItem('userAuth', 'true');
-      navigate('/courses');
+      navigate(redirectTo, { replace: true });
       return;
     }
 
@@ -35,7 +42,7 @@ const Login = () => {
     // Simulated OAuth login for the portfolio demo
     // In production, this would redirect to your OAuth backend endpoint
     localStorage.setItem('userAuth', 'true');
-    navigate('/courses');
+    navigate(redirectTo, { replace: true });
   };
 
   return (

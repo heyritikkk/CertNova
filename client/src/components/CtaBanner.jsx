@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, TerminalSquare } from 'lucide-react';
 import './CtaBanner.css';
 
@@ -21,12 +22,12 @@ const CtaBanner = () => {
         <p>
           Learn with structured lessons, practical labs, and mock exams designed to help you pass with confidence.
         </p>
-        <button className="cta-main-btn" type="button">
+        <Link to="/login" className="cta-main-btn">
           Start Learning Today
           <span className="cta-btn-icon">
             <ArrowRight size={18} />
           </span>
-        </button>
+        </Link>
       </div>
     </section>
   );

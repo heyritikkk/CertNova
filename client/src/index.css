@@ -17,7 +17,7 @@
   --site-gutter: 2rem;
 }
 
-/* Align page content with navbar-container (1200px + 2rem page gutter) */
+/* Navbar spans full width; page content stays a bit narrower and centered */
 .site-container {
   width: 100%;
   padding-left: var(--site-gutter);
@@ -234,4 +234,27 @@ h1, h2, h3, h4, h5, h6, .serif-text {
 [data-theme='dark'] .highlight-content h3,
 [data-theme='dark'] .highlight-content p {
   color: #111827 !important;
+}
+
+/* —— Mobile / small screens —— */
+@media (max-width: 768px) {
+  :root {
+    --site-gutter: 1rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .serif-text {
+    text-shadow: none;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --site-gutter: 0.85rem;
+  }
 }
