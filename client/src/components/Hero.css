@@ -1,10 +1,10 @@
 .hero-section {
   width: 100%;
-  min-height: calc(100vh - 80px); /* Subtract navbar height */
+  min-height: calc(100vh - var(--navbar-offset) - 2rem);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem var(--site-gutter, 2rem);
+  padding: 1rem var(--site-gutter, 2rem) 2rem;
   box-sizing: border-box;
 }
 
@@ -15,7 +15,7 @@
   width: 100%;
   max-width: var(--site-max-width, 100%);
   gap: 4rem;
-  margin-top: -2.25rem;
+  margin-top: 0;
 }
 
 .hero-content {

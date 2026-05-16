@@ -18,13 +18,16 @@ import Pricing from './components/Pricing';
 import './App.css';
 
 const Layout = ({ theme, onToggleTheme }) => {
+  const location = useLocation();
+  const hideCta = /\/learn\/?$/.test(location.pathname);
+
   return (
     <>
       <Navbar theme={theme} onToggleTheme={onToggleTheme} />
       <main className="main-content">
         <Outlet />
       </main>
-      <CtaBanner />
+      {!hideCta && <CtaBanner />}
       <Footer />
     </>
   );

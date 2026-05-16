@@ -93,8 +93,10 @@ const CourseLessonLayout = ({ course }) => {
       : getBlockNavLabel(activeBlock, activeIndex);
 
   return (
-    <div className="lesson-layout">
-      <aside className={`lesson-sidebar ${sidebarOpen ? 'open' : 'collapsed'}`}>
+    <div
+      className={`lesson-layout${sidebarOpen ? '' : ' lesson-layout--sidebar-collapsed'}`}
+    >
+      <div className="lesson-topbar">
         <div className="lesson-sidebar-head">
           <button
             type="button"
@@ -106,7 +108,15 @@ const CourseLessonLayout = ({ course }) => {
           </button>
           {sidebarOpen && <h2 className="lesson-sidebar-title">{course.title}</h2>}
         </div>
+        <div className="lesson-header-top">
+          <span className="lesson-course-tag">
+            {activeModule?.title || course.level}
+          </span>
+          <LessonHeaderActions isAdmin={isAdmin} courseId={course.id} />
+        </div>
+      </div>
 
+      <aside className={`lesson-sidebar ${sidebarOpen ? 'open' : 'collapsed'}`}>
         {sidebarOpen && (
           <nav className="lesson-nav lesson-nav--accordion">
             <CourseOutlineNav
@@ -131,12 +141,6 @@ const CourseLessonLayout = ({ course }) => {
 
       <main className="lesson-main">
         <header className="lesson-header">
-          <div className="lesson-header-top">
-            <span className="lesson-course-tag">
-              {activeModule?.title || course.level}
-            </span>
-            <LessonHeaderActions isAdmin={isAdmin} courseId={course.id} />
-          </div>
           <h1>{sectionTitle}</h1>
           <p className="lesson-updated">Last updated : {formatCourseDate(course.updated_at)}</p>
           {activeIndex === 0 && course.description ? (

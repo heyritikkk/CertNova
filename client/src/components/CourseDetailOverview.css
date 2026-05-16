@@ -5,11 +5,11 @@
 
 .course-detail-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(380px, 1.15fr);
-  gap: 1.5rem 2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 1.2fr);
+  gap: 1.75rem 2.5rem;
   align-items: stretch;
   width: 100%;
-  padding: 2rem 2.25rem 2.25rem;
+  padding: 2.25rem 2.5rem 2.5rem;
   margin-bottom: 2rem;
   box-sizing: border-box;
   border-radius: 20px;
@@ -19,7 +19,7 @@
 
 .course-detail-hero-main h1 {
   font-family: inherit;
-  font-size: clamp(1.5rem, 2.5vw, 2.15rem);
+  font-size: clamp(1.65rem, 2.8vw, 2.35rem);
   font-weight: 700;
   line-height: 1.25;
   color: #0f172a;
@@ -115,7 +115,7 @@
 
 .course-detail-hero-media {
   width: 100%;
-  min-height: 220px;
+  min-height: 260px;
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 12px 32px rgba(244, 139, 96, 0.18);
@@ -133,8 +133,8 @@
 
 .course-detail-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);
-  gap: 1.5rem 2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
+  gap: 1.75rem 2.5rem;
   align-items: start;
   width: 100%;
 }

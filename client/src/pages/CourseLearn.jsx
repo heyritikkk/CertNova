@@ -36,14 +36,9 @@ const CourseLearn = () => {
     );
   }
 
-  const detailPath = `/courses/${course.slug || course.id}`;
-
   return (
     <div className="course-detail-page course-detail-page--lesson">
       <div className="course-detail-inner">
-        <Link to={detailPath} className="course-detail-back">
-          <ArrowLeft size={18} /> Course overview
-        </Link>
         <CourseLessonLayout course={course} />
       </div>
     </div>

@@ -13,8 +13,13 @@
   --brand-gradient: radial-gradient(circle at 50% 50%, #ff9e7a 0%, #f48b60 100%);
   --brand-gradient-hover: radial-gradient(circle at 50% 50%, #f48b60 0%, #e07a50 100%);
   --brand-hero-bg: linear-gradient(135deg, #fff8f5 0%, #ffe8dc 50%, #ffd4c2 100%);
-  --site-max-width: 1200px;
+  --site-max-width: 1228px;
+  --site-content-max-width: 1228px;
   --site-gutter: 2rem;
+  /* Full-width navbar bar height (vertical padding + control row) */
+  --navbar-bar-height: calc(1.4rem + 2.5rem);
+  --navbar-top-gap: 1.5rem;
+  --navbar-offset: calc(var(--navbar-top-gap) + var(--navbar-bar-height));
 }
 
 /* Navbar spans full width; page content stays a bit narrower and centered */

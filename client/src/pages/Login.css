@@ -221,7 +221,7 @@
   min-height: 320px;
   border-radius: 24px;
   background: transparent;
-  border: 4px solid rgba(255, 255, 255, 0.97);
+  border: 2px solid rgba(255, 255, 255, 0.97);
   box-shadow:
     0 0 0 1px rgba(244, 139, 96, 0.12),
     0 0 0 2px rgba(255, 255, 255, 0.5);
@@ -423,7 +423,7 @@
 
 [data-theme='dark'] .visual-card {
   background: transparent;
-  border: 4px solid rgba(254, 243, 236, 0.94);
+  border: 2px solid rgba(254, 243, 236, 0.94);
   box-shadow:
     0 0 0 1px rgba(244, 139, 96, 0.28),
     0 0 0 2px rgba(15, 23, 42, 0.4);
