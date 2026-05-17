@@ -3,14 +3,18 @@ import { Link } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import './Pricing.css';
 
-const Pricing = () => {
+const Pricing = ({ hideHeader = false }) => {
   return (
-    <section className="pricing-section" id="pricing">
-      <div className="pricing-header">
-        <h2>Pick a plan that <span>scales with you</span></h2>
-        <p>Start small, move fast, and upgrade only when your workflow grows.</p>
-      </div>
-      
+    <section className={`pricing-section${hideHeader ? ' pricing-section--no-header' : ''}`} id="pricing">
+      {!hideHeader && (
+        <div className="pricing-header">
+          <h2>
+            Pick a plan that <span>scales with you</span>
+          </h2>
+          <p>Start small, move fast, and upgrade only when your workflow grows.</p>
+        </div>
+      )}
+
       <div className="pricing-cards">
         <div className="pricing-card">
           <div className="pricing-card-top">

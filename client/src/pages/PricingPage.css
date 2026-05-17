@@ -1,0 +1,135 @@
+.pricing-page {
+  width: 100%;
+  min-height: calc(100vh - var(--navbar-offset));
+  padding: 2.5rem var(--site-gutter, 2rem) 4rem;
+  box-sizing: border-box;
+  color: #0f172a;
+}
+
+.pricing-page-inner {
+  width: 100%;
+  max-width: var(--site-content-max-width, 1228px);
+  margin: 0 auto;
+}
+
+.pricing-eyebrow {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-accent-deep);
+  margin-bottom: 0.65rem;
+}
+
+.pricing-hero {
+  text-align: center;
+  max-width: min(100%, 52rem);
+  margin: 0 auto 2.25rem;
+}
+
+.pricing-hero h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.65rem, 2.6vw, 2.35rem);
+  line-height: 1.2;
+  margin: 0 0 1rem;
+  color: #0f172a;
+  text-wrap: pretty;
+}
+
+@media (min-width: 640px) {
+  .pricing-hero h1 {
+    white-space: nowrap;
+  }
+}
+
+.pricing-hero h1::after {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 3px;
+  margin: 0.75rem auto 0;
+  border-radius: 2px;
+  background: var(--brand-gradient);
+}
+
+.pricing-hero p {
+  margin: 1.25rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: #475569;
+}
+
+.pricing-page-inner .pricing-section {
+  max-width: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.pricing-section--no-header {
+  padding-top: 0;
+}
+
+.pricing-page-cta {
+  text-align: center;
+  margin-top: 2.5rem;
+  padding: 2rem 2rem;
+  border-radius: 20px;
+  background: var(--brand-hero-bg);
+  border: 1px solid var(--brand-accent-border);
+}
+
+.pricing-page-cta h2 {
+  font-size: 1.75rem;
+  margin: 0 0 0.5rem;
+  color: #0f172a;
+}
+
+.pricing-page-cta p {
+  font-size: 1.05rem;
+  margin: 0 0 1.25rem;
+  color: #475569;
+}
+
+.pricing-page-cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.35rem;
+  border-radius: 12px;
+  background: var(--brand-gradient);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.pricing-page-cta__btn:hover {
+  background: var(--brand-gradient-hover);
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] .pricing-page {
+  color: #e2e8f0;
+}
+
+[data-theme='dark'] .pricing-hero h1,
+[data-theme='dark'] .pricing-page-cta h2 {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .pricing-hero p,
+[data-theme='dark'] .pricing-page-cta p {
+  color: #94a3b8;
+}
+
+@media (max-width: 640px) {
+  .pricing-page {
+    padding: 2rem var(--site-gutter, 1rem) 3rem;
+  }
+
+  .pricing-hero h1 {
+    white-space: normal;
+  }
+}

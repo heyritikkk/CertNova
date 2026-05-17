@@ -9,6 +9,10 @@
   align-items: center;
 }
 
+.pricing-section--no-header {
+  padding: 0 0 1rem;
+}
+
 .pricing-header {
   text-align: center;
   margin-bottom: 4rem;

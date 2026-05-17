@@ -15,6 +15,7 @@ import AdminDashboard from './admin/AdminDashboard';
 import Login from './pages/Login';
 import AdminLogin from './pages/AdminLogin';
 import Pricing from './components/Pricing';
+import PricingPage from './pages/PricingPage';
 import './App.css';
 
 const Layout = ({ theme, onToggleTheme }) => {
@@ -82,7 +83,7 @@ function App() {
                 </UserProtectedRoute>
               }
             />
-            <Route path="pricing" element={<Pricing />} />
+            <Route path="pricing" element={<PricingPage />} />
             <Route path="blog" element={<Blog />} />
             <Route path="customers" element={<Customers />} />
             <Route path="partners" element={<Partners />} />

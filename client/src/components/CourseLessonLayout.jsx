@@ -1,19 +1,50 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ChevronDown, ChevronRight, Pencil, CheckCircle2, XCircle } from 'lucide-react';
+import {
+  ArrowLeft,
+  BookOpen,
+  CircleCheck,
+  Clock,
+  CheckCircle2,
+  XCircle,
+} from 'lucide-react';
 import {
   courseToContentBlocks,
   formatCourseDate,
   findModuleForBlock,
   findSectionForBlock,
   getBlockNavLabel,
+  getBlockOutlinePath,
   getVisibleBlocks,
   groupBlocksIntoModules,
 } from '../lib/contentBlocks';
 import { CourseOutlineNav } from './CourseOutlineNav';
 import './CourseLessonLayout.css';
+
+const progressStorageKey = (courseId) => `certnova-lesson-progress-${courseId}`;
+
+function loadCompletedIds(courseId) {
+  try {
+    const raw = localStorage.getItem(progressStorageKey(courseId));
+    return new Set(JSON.parse(raw || '[]'));
+  } catch {
+    return new Set();
+  }
+}
+
+function saveCompletedIds(courseId, ids) {
+  localStorage.setItem(progressStorageKey(courseId), JSON.stringify([...ids]));
+}
+
+function estimateReadMinutes(block) {
+  if (!block || block.type !== 'markdown') return null;
+  const text = block.content || '';
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  if (!words) return 1;
+  return Math.max(1, Math.ceil(words / 200));
+}
 
 const CourseLessonLayout = ({ course }) => {
   const allBlocks = useMemo(() => courseToContentBlocks(course), [course]);
@@ -25,9 +56,15 @@ const CourseLessonLayout = ({ course }) => {
   const [expandedSections, setExpandedSections] = useState(() => new Set());
   const [answers, setAnswers] = useState({});
   const [submittedQuizzes, setSubmittedQuizzes] = useState({});
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [completedIds, setCompletedIds] = useState(() =>
+    course?.id ? loadCompletedIds(course.id) : new Set()
+  );
 
-  const isAdmin = localStorage.getItem('adminAuth') === 'true';
+  useEffect(() => {
+    if (course?.id) {
+      setCompletedIds(loadCompletedIds(course.id));
+    }
+  }, [course?.id]);
 
   useEffect(() => {
     if (visibleBlocks.length && !visibleBlocks.some((b) => b.id === activeId)) {
@@ -55,6 +92,60 @@ const CourseLessonLayout = ({ course }) => {
   const activeBlock = visibleBlocks.find((b) => b.id === activeId) || visibleBlocks[0];
   const activeIndex = visibleBlocks.findIndex((b) => b.id === activeBlock?.id);
   const activeModule = findModuleForBlock(modules, activeBlock?.id);
+  const activeSection = findSectionForBlock(modules, activeBlock?.id);
+  const prevBlock = activeIndex > 0 ? visibleBlocks[activeIndex - 1] : null;
+  const nextBlock =
+    activeIndex >= 0 && activeIndex < visibleBlocks.length - 1
+      ? visibleBlocks[activeIndex + 1]
+      : null;
+
+  const progressPct =
+    visibleBlocks.length > 0
+      ? Math.round((completedIds.size / visibleBlocks.length) * 100)
+      : 0;
+
+  const isCurrentComplete = activeBlock && completedIds.has(activeBlock.id);
+  const readMinutes = estimateReadMinutes(activeBlock);
+
+  const lessonTitle =
+    activeBlock?.type === 'markdown'
+      ? activeBlock.navTitle?.trim() || getBlockNavLabel(activeBlock, activeIndex)
+      : getBlockNavLabel(activeBlock, activeIndex);
+
+  const outlinePath = activeBlock
+    ? getBlockOutlinePath(visibleBlocks, activeBlock.id)
+    : { parts: [] };
+
+  const toggleComplete = useCallback(() => {
+    if (!activeBlock?.id || !course?.id) return;
+    setCompletedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(activeBlock.id)) next.delete(activeBlock.id);
+      else next.add(activeBlock.id);
+      saveCompletedIds(course.id, next);
+      return next;
+    });
+  }, [activeBlock?.id, course?.id]);
+
+  const goToBlock = useCallback((blockId) => {
+    if (blockId) setActiveId(blockId);
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.target.closest('input, textarea, select, [contenteditable]')) return;
+      if (e.key === 'ArrowLeft' && prevBlock) {
+        e.preventDefault();
+        goToBlock(prevBlock.id);
+      }
+      if (e.key === 'ArrowRight' && nextBlock) {
+        e.preventDefault();
+        goToBlock(nextBlock.id);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [prevBlock, nextBlock, goToBlock]);
 
   if (!visibleBlocks.length) {
     return (
@@ -67,6 +158,13 @@ const CourseLessonLayout = ({ course }) => {
   const handleQuizSubmit = (blockId) => (e) => {
     e.preventDefault();
     setSubmittedQuizzes((prev) => ({ ...prev, [blockId]: true }));
+    if (course?.id) {
+      setCompletedIds((prev) => {
+        const next = new Set([...prev, blockId]);
+        saveCompletedIds(course.id, next);
+        return next;
+      });
+    }
   };
 
   const toggleModule = (modId) => {
@@ -87,38 +185,47 @@ const CourseLessonLayout = ({ course }) => {
     });
   };
 
-  const sectionTitle =
-    activeBlock?.type === 'markdown'
-      ? activeBlock.navTitle?.trim() || getBlockNavLabel(activeBlock, activeIndex)
-      : getBlockNavLabel(activeBlock, activeIndex);
+  const lessonTypeLabel =
+    activeBlock?.type === 'quiz'
+      ? 'Knowledge check'
+      : activeSection
+        ? 'Sub-lesson'
+        : 'Lesson';
 
   return (
-    <div
-      className={`lesson-layout${sidebarOpen ? '' : ' lesson-layout--sidebar-collapsed'}`}
-    >
-      <div className="lesson-topbar">
-        <div className="lesson-sidebar-head">
-          <button
-            type="button"
-            className="lesson-sidebar-toggle"
-            onClick={() => setSidebarOpen((o) => !o)}
-            aria-label="Toggle sidebar"
-          >
-            {sidebarOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-          </button>
-          {sidebarOpen && <h2 className="lesson-sidebar-title">{course.title}</h2>}
-        </div>
-        <div className="lesson-header-top">
-          <span className="lesson-course-tag">
-            {activeModule?.title || course.level}
-          </span>
-          <LessonHeaderActions isAdmin={isAdmin} courseId={course.id} />
-        </div>
-      </div>
+    <div className="lesson-layout">
+      <aside className="lesson-sidebar open">
+        <div className="lesson-sidebar-top">
+          <Link to={`/courses/${course.slug}`} className="lesson-back-link">
+            <ArrowLeft size={16} aria-hidden />
+            Course overview
+          </Link>
 
-      <aside className={`lesson-sidebar ${sidebarOpen ? 'open' : 'collapsed'}`}>
-        {sidebarOpen && (
-          <nav className="lesson-nav lesson-nav--accordion">
+          <div className="lesson-progress" aria-label="Course progress">
+            <div className="lesson-progress__labels">
+              <span>Your progress</span>
+              <strong>
+                {completedIds.size} / {visibleBlocks.length}
+              </strong>
+            </div>
+            <div
+              className="lesson-progress__track"
+              role="progressbar"
+              aria-valuenow={progressPct}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <span className="lesson-progress__bar" style={{ width: `${progressPct}%` }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="lesson-sidebar-head">
+          <p className="lesson-sidebar-label">Course content</p>
+          <h2 className="lesson-sidebar-title">{course.title}</h2>
+        </div>
+
+        <nav className="lesson-nav lesson-nav--accordion" aria-label="Lessons">
             <CourseOutlineNav
               modules={modules}
               blocksForIndex={visibleBlocks}
@@ -128,6 +235,7 @@ const CourseLessonLayout = ({ course }) => {
               onToggleModule={toggleModule}
               expandedSections={expandedSections}
               onToggleSection={toggleSection}
+              completedBlockIds={completedIds}
               navItemClassName="lesson-nav-item lesson-nav-item--child"
               moduleBtnClassName="lesson-module-btn"
               moduleItemsClassName="lesson-module-items"
@@ -135,57 +243,114 @@ const CourseLessonLayout = ({ course }) => {
               sectionItemsClassName="lesson-section-items"
               moduleClassName="lesson-module"
             />
-          </nav>
-        )}
+        </nav>
       </aside>
 
       <main className="lesson-main">
         <header className="lesson-header">
-          <h1>{sectionTitle}</h1>
-          <p className="lesson-updated">Last updated : {formatCourseDate(course.updated_at)}</p>
+          <div className="lesson-header__row">
+            <nav className="lesson-breadcrumb" aria-label="Breadcrumb">
+              <Link to={`/courses/${course.slug}`}>{course.title}</Link>
+              {outlinePath.parts.slice(0, -1).map((part) => (
+                <span key={part}>
+                  <span className="lesson-breadcrumb__sep" aria-hidden>
+                    /
+                  </span>
+                  <span>{part}</span>
+                </span>
+              ))}
+            </nav>
+          </div>
+
+          <p className="lesson-eyebrow">
+            {activeModule?.title || 'Course'}
+            <span className="lesson-eyebrow__dot" aria-hidden>
+              ·
+            </span>
+            {lessonTypeLabel} {activeIndex + 1} of {visibleBlocks.length}
+          </p>
+
+          <h1>{lessonTitle}</h1>
+
+          <div className="lesson-meta">
+            {readMinutes && activeBlock?.type === 'markdown' ? (
+              <span className="lesson-meta__item">
+                <Clock size={15} aria-hidden />
+                {readMinutes} min read
+              </span>
+            ) : null}
+            <span className="lesson-meta__item">
+              <BookOpen size={15} aria-hidden />
+              Updated {formatCourseDate(course.updated_at)}
+            </span>
+            <button
+              type="button"
+              className={`lesson-complete-btn${isCurrentComplete ? ' is-done' : ''}`}
+              onClick={toggleComplete}
+              aria-pressed={isCurrentComplete}
+            >
+              <CircleCheck size={16} aria-hidden />
+              {isCurrentComplete ? 'Completed' : 'Mark as complete'}
+            </button>
+          </div>
+
           {activeIndex === 0 && course.description ? (
             <p className="lesson-intro">{course.description}</p>
           ) : null}
         </header>
 
         <article className="lesson-article">
-          {activeBlock?.type === 'markdown' && (
-            <div className="lesson-prose prose">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{activeBlock.content}</ReactMarkdown>
-            </div>
-          )}
+          <div className="lesson-body">
+            {activeBlock?.type === 'markdown' && (
+              <div className="lesson-prose prose">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{activeBlock.content}</ReactMarkdown>
+              </div>
+            )}
 
-          {activeBlock?.type === 'quiz' && (
-            <QuizPanel
-              block={activeBlock}
-              picked={answers[activeBlock.id]}
-              submitted={submittedQuizzes[activeBlock.id]}
-              onAnswer={(optIndex) =>
-                setAnswers((prev) => ({ ...prev, [activeBlock.id]: optIndex }))
-              }
-              onSubmit={handleQuizSubmit(activeBlock.id)}
-            />
-          )}
+            {activeBlock?.type === 'quiz' && (
+              <QuizPanel
+                block={activeBlock}
+                picked={answers[activeBlock.id]}
+                submitted={submittedQuizzes[activeBlock.id]}
+                onAnswer={(optIndex) =>
+                  setAnswers((prev) => ({ ...prev, [activeBlock.id]: optIndex }))
+                }
+                onSubmit={handleQuizSubmit(activeBlock.id)}
+              />
+            )}
+          </div>
 
           <footer className="lesson-pager">
             <button
               type="button"
-              className="lesson-pager-btn"
-              disabled={activeIndex <= 0}
-              onClick={() => setActiveId(visibleBlocks[activeIndex - 1].id)}
+              className="lesson-pager-btn lesson-pager-btn--prev"
+              disabled={!prevBlock}
+              onClick={() => goToBlock(prevBlock?.id)}
             >
-              ← Previous
+              <span className="lesson-pager-btn__dir">← Previous</span>
+              {prevBlock ? (
+                <span className="lesson-pager-btn__title">
+                  {getBlockNavLabel(prevBlock, activeIndex - 1)}
+                </span>
+              ) : null}
             </button>
+
             <span className="lesson-pager-count">
               {activeIndex + 1} / {visibleBlocks.length}
             </span>
+
             <button
               type="button"
-              className="lesson-pager-btn"
-              disabled={activeIndex >= visibleBlocks.length - 1}
-              onClick={() => setActiveId(visibleBlocks[activeIndex + 1].id)}
+              className="lesson-pager-btn lesson-pager-btn--next"
+              disabled={!nextBlock}
+              onClick={() => goToBlock(nextBlock?.id)}
             >
-              Next →
+              <span className="lesson-pager-btn__dir">Next →</span>
+              {nextBlock ? (
+                <span className="lesson-pager-btn__title">
+                  {getBlockNavLabel(nextBlock, activeIndex + 1)}
+                </span>
+              ) : null}
             </button>
           </footer>
         </article>
@@ -193,25 +358,6 @@ const CourseLessonLayout = ({ course }) => {
     </div>
   );
 };
-
-function motionLessonEmpty({ children }) {
-  return <div className="lesson-empty">{children}</div>;
-}
-
-function motionAccordionModule({ mod, isExpanded, children }) {
-  return <div className={`lesson-module${isExpanded ? ' is-expanded' : ''}`}>{children}</div>;
-}
-
-function LessonHeaderActions({ isAdmin, courseId }) {
-  if (!isAdmin || !courseId) return <div className="lesson-header-actions" />;
-  return (
-    <div className="lesson-header-actions">
-      <Link to="/admin" className="lesson-action-btn" title="Edit in admin">
-        <Pencil size={18} />
-      </Link>
-    </div>
-  );
-}
 
 function QuizPanel({ block, picked, submitted, onAnswer, onSubmit }) {
   const isCorrect = submitted && picked === block.correctIndex;

@@ -7,6 +7,7 @@ import {
   Pencil,
   Plus,
   Trash2,
+  Check,
 } from 'lucide-react';
 import {
   getBlockNavLabel,
@@ -40,6 +41,7 @@ export function CourseOutlineNav({
   onDeleteBlock,
   onDeleteSection,
   onMoveBlock,
+  completedBlockIds,
 }) {
   return (
     <>
@@ -70,6 +72,7 @@ export function CourseOutlineNav({
                         activeBlockId={activeBlockId}
                         onSelectBlock={onSelectBlock}
                         navItemClassName={navItemClassName}
+                        completedBlockIds={completedBlockIds}
                         editable={editable}
                         showAddSubLesson
                         onAddSubLesson={() => onAddSubLessonUnderFlat?.(node.block.id)}
@@ -106,6 +109,7 @@ export function CourseOutlineNav({
                               activeBlockId={activeBlockId}
                               onSelectBlock={onSelectBlock}
                               navItemClassName={`${navItemClassName} is-sub-lesson`}
+                              completedBlockIds={completedBlockIds}
                               isNested
                               editable={editable}
                               onRename={(label) => onRenameBlock?.(block.id, label)}
@@ -240,11 +244,13 @@ function OutlineNavRow({
   onDelete,
   onMoveUp,
   onMoveDown,
+  completedBlockIds,
 }) {
   const idx = blocksForIndex.findIndex((b) => b.id === block.id);
   const label = getBlockNavLabel(block, idx);
   const isQuiz = block.type === 'quiz';
   const isActive = activeBlockId === block.id;
+  const isComplete = completedBlockIds?.has?.(block.id);
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(
@@ -290,11 +296,14 @@ function OutlineNavRow({
           type="button"
           className={`${navItemClassName}${isActive ? ' active' : ''}${isQuiz ? ' is-quiz' : ''}${
             isNested ? ' is-nested' : ''
-          }`}
+          }${isComplete ? ' is-complete' : ''}`}
           onClick={() => onSelectBlock(block.id)}
           onDoubleClick={() => editable && setEditing(true)}
         >
-          {label}
+          {isComplete && !editable ? (
+            <Check size={14} className="outline-nav-complete-icon" aria-hidden />
+          ) : null}
+          <span className="outline-nav-label">{label}</span>
         </button>
       )}
       {editable && !editing && (
