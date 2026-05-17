@@ -362,7 +362,7 @@ function QuizPanel({ block, picked, submitted, onAnswer, onSubmit }) {
           </label>
         ))}
         {submitted && isCorrect ? <p className="quiz-feedback correct">Correct!</p> : null}
-        {isWrong ? <p className="quiz-feedback wrong">Not quite — review the lesson.</p> : null}
+        {isWrong ? <p className="quiz-feedback wrong">Not quite. Review the lesson.</p> : null}
         {!submitted ? (
           <button type="submit" className="quiz-submit-btn">
             Check answer

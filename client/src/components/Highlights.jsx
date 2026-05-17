@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { Headphones, Workflow, Gauge } from 'lucide-react';
+import { Compass, Route, ClipboardCheck } from 'lucide-react';
 import './Highlights.css';
 
 const iconMap = {
-  Headphones,
-  Workflow,
-  Gauge,
+  Compass,
+  Route,
+  ClipboardCheck,
+  // Legacy DB values
+  Headphones: Compass,
+  Workflow: Route,
+  Gauge: ClipboardCheck,
 };
+
+function resolveHighlightIcon(card) {
+  if (card.title === 'Guided Support') return Compass;
+  if (card.title === 'Structured Learning') return Route;
+  if (card.title === 'Exam-Ready Progress') return ClipboardCheck;
+  return iconMap[card.icon_name] || Compass;
+}
 
 const Highlights = () => {
   const [cards, setCards] = useState([]);
@@ -33,7 +44,7 @@ const Highlights = () => {
     <section className="highlights-section">
       <div className="highlights-grid">
         {cards.map((card, index) => {
-          const Icon = iconMap[card.icon_name] || Headphones;
+          const Icon = resolveHighlightIcon(card);
           return (
             <article className="highlight-card" key={card.id}>
               <div className="highlight-visual">

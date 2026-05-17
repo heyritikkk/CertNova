@@ -93,17 +93,23 @@ const db = new sqlite3.Database(dbPath, (err) => {
           [
             'Guided Support',
             'Get step-by-step guidance and clear explanations so you always know what to study next.',
-            'Headphones',
+            'Compass',
             'Structured Learning',
             'Follow a clean Security+ roadmap with lessons, labs, and mock tests organized for faster progress.',
-            'Workflow',
+            'Route',
             'Exam-Ready Progress',
             'Track your growth with practical tasks and exam-focused practice that prepares you for test day.',
-            'Gauge',
+            'ClipboardCheck',
           ]
         );
       }
     });
+
+    db.run(`UPDATE highlights SET icon_name = 'Compass' WHERE title = 'Guided Support'`);
+    db.run(`UPDATE highlights SET icon_name = 'Route' WHERE title = 'Structured Learning'`);
+    db.run(
+      `UPDATE highlights SET icon_name = 'ClipboardCheck' WHERE title = 'Exam-Ready Progress'`
+    );
 
     migrateCourseColumns(() => {
       db.run(`UPDATE courses SET price = 0 WHERE price IS NULL`);

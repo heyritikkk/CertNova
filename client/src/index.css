@@ -241,7 +241,7 @@ h1, h2, h3, h4, h5, h6, .serif-text {
   color: #111827 !important;
 }
 
-/* —— Mobile / small screens —— */
+/* Mobile / small screens */
 @media (max-width: 768px) {
   :root {
     --site-gutter: 1rem;

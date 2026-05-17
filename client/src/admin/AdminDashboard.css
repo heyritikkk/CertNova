@@ -14,7 +14,7 @@
   overflow: hidden;
 }
 
-/* —— Course editor (outline + content split) —— */
+/* Course editor (outline + content split) */
 .admin-container--course-editor {
   background: linear-gradient(180deg, #eef4ff 0%, #f9f6fb 48%, #fdf9f5 100%);
 }
@@ -149,7 +149,7 @@
   border-radius: 10px;
 }
 
-/* —— Course list (manager) —— */
+/* Course list (manager) */
 .admin-container--list {
   background: linear-gradient(180deg, #eef4ff 0%, #f9f6fb 48%, #fdf9f5 100%);
 }
@@ -348,7 +348,7 @@
   margin-right: auto;
 }
 
-/* —— Admin sidebar (list + shared) —— */
+/* Admin sidebar (list + shared) */
 .admin-sidebar {
   width: 272px;
   flex-shrink: 0;

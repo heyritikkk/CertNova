@@ -52,7 +52,7 @@ const Courses = () => {
           <span className="courses-eyebrow">Course catalog</span>
           <h1>Security+ courses built for exam day</h1>
           <p>
-            Browse published courses with clear syllabi, lesson counts, and pricing—updated live when
+            Browse published courses with clear syllabi, lesson counts, and pricing, updated live when
             your team publishes from admin.
           </p>
         </header>

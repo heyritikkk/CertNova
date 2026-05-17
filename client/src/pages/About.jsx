@@ -27,7 +27,7 @@ const VALUES = [
   {
     icon: BookOpen,
     title: 'Learn by doing',
-    text: 'Short lessons, checkpoints, and labs keep concepts practical—not just theory on slides.',
+    text: 'Short lessons, checkpoints, and labs keep concepts practical, not just theory on slides.',
   },
   {
     icon: Users,
@@ -37,7 +37,7 @@ const VALUES = [
   {
     icon: Award,
     title: 'Quality over hype',
-    text: 'We ship content when it is ready—structured, reviewed, and useful for real exam prep.',
+    text: 'We ship content when it is ready, structured, reviewed, and useful for real exam prep.',
   },
 ];
 
@@ -79,7 +79,7 @@ const About = () => {
               <h2 id="about-mission-heading">Our mission</h2>
               <p>
                 Make professional cybersecurity certification accessible through clear, modern learning
-                experiences—without overwhelming dashboards or outdated materials.
+                experiences without overwhelming dashboards or outdated materials.
               </p>
             </article>
             <article className="about-card">
@@ -89,7 +89,7 @@ const About = () => {
               <h2>Our vision</h2>
               <p>
                 A platform where anyone can build real security skills, track readiness, and walk into the
-                exam with confidence—starting with Security+ and growing from there.
+                exam with confidence, starting with Security+ and growing from there.
               </p>
             </article>
           </div>
@@ -119,7 +119,7 @@ const About = () => {
             <h2 id="about-approach-heading">A simple path from signup to exam-ready</h2>
             <p>
               We design courses as living syllabi: modules, lessons, and outcomes your team can update in
-              admin—so learners always see the latest structure on the public site.
+              admin, so learners always see the latest structure on the public site.
             </p>
             <ul className="about-approach__list">
               {APPROACH.map((line) => (

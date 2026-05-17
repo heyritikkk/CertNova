@@ -131,11 +131,11 @@ const CourseDetailOverview = ({ course }) => {
             <dl className="course-detail-facts">
               <div>
                 <dt>Total duration</dt>
-                <dd>{course.duration || '—'}</dd>
+                <dd>{course.duration || '-'}</dd>
               </div>
               <div>
                 <dt>Lectures</dt>
-                <dd>{lectureCount || '—'}</dd>
+                <dd>{lectureCount || '-'}</dd>
               </div>
               <div>
                 <dt>Skill level</dt>
