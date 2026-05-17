@@ -10,15 +10,20 @@
   margin: 0 auto;
 }
 
-/* Lesson view: same horizontal span as the navbar pill (full width between gutters) */
+/* Lesson view: same horizontal span as .navbar-container */
 .course-detail-page--lesson {
-  padding: 0.75rem var(--site-gutter, 2rem) 2rem;
+  padding: 1.75rem 0 2rem;
 }
 
 .course-detail-page--lesson .course-detail-inner {
   display: block;
-  max-width: none;
   width: 100%;
+  max-width: min(
+    var(--site-content-max-width, 1228px),
+    calc(100% - 2 * var(--site-gutter, 2rem))
+  );
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .course-detail-status {
@@ -47,6 +52,13 @@
 @media (max-width: 640px) {
   .course-detail-page {
     padding: 2rem var(--site-gutter, 1rem) 2rem;
+  }
+
+  .course-detail-page--lesson .course-detail-inner {
+    max-width: min(
+      var(--site-content-max-width, 1228px),
+      calc(100% - 2 * var(--site-gutter, 1rem))
+    );
   }
 
   .course-detail-sidebar {

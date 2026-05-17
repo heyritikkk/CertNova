@@ -16,7 +16,6 @@ import {
   findModuleForBlock,
   findSectionForBlock,
   getBlockNavLabel,
-  getBlockOutlinePath,
   getVisibleBlocks,
   groupBlocksIntoModules,
 } from '../lib/contentBlocks';
@@ -111,10 +110,6 @@ const CourseLessonLayout = ({ course }) => {
     activeBlock?.type === 'markdown'
       ? activeBlock.navTitle?.trim() || getBlockNavLabel(activeBlock, activeIndex)
       : getBlockNavLabel(activeBlock, activeIndex);
-
-  const outlinePath = activeBlock
-    ? getBlockOutlinePath(visibleBlocks, activeBlock.id)
-    : { parts: [] };
 
   const toggleComplete = useCallback(() => {
     if (!activeBlock?.id || !course?.id) return;
@@ -248,20 +243,6 @@ const CourseLessonLayout = ({ course }) => {
 
       <main className="lesson-main">
         <header className="lesson-header">
-          <div className="lesson-header__row">
-            <nav className="lesson-breadcrumb" aria-label="Breadcrumb">
-              <Link to={`/courses/${course.slug}`}>{course.title}</Link>
-              {outlinePath.parts.slice(0, -1).map((part) => (
-                <span key={part}>
-                  <span className="lesson-breadcrumb__sep" aria-hidden>
-                    /
-                  </span>
-                  <span>{part}</span>
-                </span>
-              ))}
-            </nav>
-          </div>
-
           <p className="lesson-eyebrow">
             {activeModule?.title || 'Course'}
             <span className="lesson-eyebrow__dot" aria-hidden>
@@ -327,12 +308,7 @@ const CourseLessonLayout = ({ course }) => {
               disabled={!prevBlock}
               onClick={() => goToBlock(prevBlock?.id)}
             >
-              <span className="lesson-pager-btn__dir">← Previous</span>
-              {prevBlock ? (
-                <span className="lesson-pager-btn__title">
-                  {getBlockNavLabel(prevBlock, activeIndex - 1)}
-                </span>
-              ) : null}
+              <span className="lesson-pager-btn__label">← Previous</span>
             </button>
 
             <span className="lesson-pager-count">
@@ -341,16 +317,11 @@ const CourseLessonLayout = ({ course }) => {
 
             <button
               type="button"
-              className="lesson-pager-btn lesson-pager-btn--next"
+              className="lesson-pager-btn lesson-pager-btn--preview"
               disabled={!nextBlock}
               onClick={() => goToBlock(nextBlock?.id)}
             >
-              <span className="lesson-pager-btn__dir">Next →</span>
-              {nextBlock ? (
-                <span className="lesson-pager-btn__title">
-                  {getBlockNavLabel(nextBlock, activeIndex + 1)}
-                </span>
-              ) : null}
+              <span className="lesson-pager-btn__label">Preview →</span>
             </button>
           </footer>
         </article>

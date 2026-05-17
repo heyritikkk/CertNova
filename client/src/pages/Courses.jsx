@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Layers, RefreshCw, Shield, ArrowRight } from 'lucide-react';
+import { BookOpen, ArrowRight } from 'lucide-react';
 import CourseCard from '../components/CourseCard';
 import { api } from '../lib/api';
 import './Courses.css';
@@ -9,24 +9,6 @@ const FILTERS = [
   { id: 'all', label: 'All courses' },
   { id: 'free', label: 'Free' },
   { id: 'paid', label: 'Paid' },
-];
-
-const HIGHLIGHTS = [
-  {
-    icon: Layers,
-    title: 'Structured syllabi',
-    text: 'Modules and lessons mapped to Security+ domains—not random video lists.',
-  },
-  {
-    icon: RefreshCw,
-    title: 'Live catalog',
-    text: 'Published courses update automatically when your team ships content in admin.',
-  },
-  {
-    icon: Shield,
-    title: 'Exam-ready paths',
-    text: 'Outcomes, duration, and skill level on every course detail page.',
-  },
 ];
 
 const Courses = () => {
@@ -74,18 +56,6 @@ const Courses = () => {
             your team publishes from admin.
           </p>
         </header>
-
-        <ul className="courses-highlights" aria-label="Why learn on CertNova">
-          {HIGHLIGHTS.map(({ icon: Icon, title, text }) => (
-            <li key={title} className="courses-highlight">
-              <div className="courses-highlight__icon" aria-hidden>
-                <Icon size={20} />
-              </div>
-              <h2>{title}</h2>
-              <p>{text}</p>
-            </li>
-          ))}
-        </ul>
 
         <div className="courses-toolbar">
           <div className="courses-filters" role="tablist" aria-label="Filter courses">
