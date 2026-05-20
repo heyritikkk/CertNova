@@ -7,7 +7,7 @@
 [ INTEGRITY ] --- [ AVAILABILITY ]
 
 * **Confidentiality:** Ensuring that data is inaccessible to unauthorized individuals. This is enforced via symmetric/asymmetric encryption (e.g., AES-256), access control lists (ACLs), and multi-factor authentication (MFA).
-* **Integrity:** Guaranteeing that data has not been altered, tampered with, or corrupted during transit or storage. This is enforced using cryptographic hash functions (e.g., SHA-256) and digital signatures. Key concepts include **Non-repudiation**—the inability of a sender to deny having sent a message, achieved via public-key cryptography.
+* **Integrity:** Guaranteeing that data has not been altered, tampered with, or corrupted during transit or storage. This is enforced using cryptographic hash functions (e.g., SHA-256) and digital signatures. Key concepts include Non-repudiation - the inability of a sender to deny having sent a message, achieved via public-key cryptography.
 * **Availability:** Ensuring that authorized users have reliable, timely access to data and resources. This is enforced via hardware redundancy (RAID, clustering), load balancing, and Distributed Denial of Service (DDoS) mitigation solutions.
 
 ### 2. Real-World Analogy
@@ -21,7 +21,7 @@ Imagine you are sending a highly sensitive, legally binding contract across the 
 * **The Defense (Implementing TLS):** The engineer upgrades the web server from HTTP to HTTPS using TLS 1.3. The data stream is encrypted using AES-GCM. Now, when the attacker intercepts the packets, they see nothing but high-entropy, randomized hexadecimal strings that would take billions of years to decrypt.
 
 ### 4. Professor's Deep-Dive Notes
-> 💡 *Professor's Tip:* Students often think security means maximizing all three pillars of the CIA Triad. In reality, security is a balancing act. If you maximize Confidentiality (e.g., 4096-bit encryption with 5-factor authentication), you often degrade Availability and Usability. As a senior architect, your job is to balance this triad based on risk assessment. For a military base, Confidentiality is king. For an e-commerce website, Availability is king—if the site is down, they are losing millions per minute.
+> 💡 *Professor's Tip:* Students often think security means maximizing all three pillars of the CIA Triad. In reality, security is a balancing act. If you maximize Confidentiality (e.g., 4096-bit encryption with 5-factor authentication), you often degrade Availability and Usability. As a senior architect, your job is to balance this triad based on risk assessment. For a military base, Confidentiality is king. For an e-commerce website, Availability is king - if the site is down, they are losing millions per minute.
 
 ---
 
@@ -56,10 +56,10 @@ Threats are categorized by their behavior (**Passive vs. Active**) and their poi
 
 ### 3. Attack & Defense Lab Scenario
 * **The Attack (Insider Malice):** A disgruntled database administrator exports a company's entire customer table to a CSV file and attempts to exfiltrate it via an encrypted SFTP connection to an external personal server.
-* **The Defense (Data Loss Prevention & UEBA):** The security team implements a **Data Loss Prevention (DLP)** system integrated with **User and Entity Behavior Analytics (UEBA)**. The DLP system flags the massive database export as anomalous behavior for that specific hour, blocks the outbound SFTP connection based on policy rules, and immediately suspends the employee’s Active Directory account.
+* **The Defense (Data Loss Prevention & UEBA):** The security team implements a Data Loss Prevention (DLP) system integrated with User and Entity Behavior Analytics (UEBA). The DLP system flags the massive database export as anomalous behavior for that specific hour, blocks the outbound SFTP connection based on policy rules, and immediately suspends the employee’s Active Directory account.
 
 ### 4. Professor's Deep-Dive Notes
-> 💡 *Professor's Tip:* Never fall into the trap of focusing 100% of your budget on your external perimeter firewall. The perimeter is a eggshell—hard on the outside, soft on the inside. Once an outsider bypasses your firewall (via phishing or a zero-day exploit), or if an insider decides to turn rogue, they have free rein over your entire interior network if you haven't implemented internal segmentation and strict access monitoring!
+> 💡 *Professor's Tip:* Never fall into the trap of focusing 100% of your budget on your external perimeter firewall. The perimeter is a eggshell - hard on the outside, soft on the inside. Once an outsider bypasses your firewall (via phishing or a zero-day exploit), or if an insider decides to turn rogue, they have free rein over your entire interior network if you haven't implemented internal segmentation and strict access monitoring!
 
 ---
 
@@ -83,11 +83,11 @@ Think of sending a letter through the postal service.
 * **Physical Layer (L1):** The physical envelope and mail trucks. An attacker can cut open the mailbox or steal the truck.
 * **Data Link Layer (L2):** The sorting facility within your local neighborhood. An attacker can trick the sorter into putting your mail into a neighbor's box (ARP Poisoning).
 * **Network Layer (L3):** The global addressing system (ZIP codes and street addresses). An attacker can put a fake return address on the envelope (IP Spoofing).
-* **Transport Layer (L4):** The delivery option—Certified Mail requiring a signature confirmation (TCP 3-way handshake) vs. Standard Stamps thrown in a box (UDP). An attacker can flood the recipient's mailbox with fake certified mail slips until they cannot receive real mail (SYN Flood).
+* **Transport Layer (L4):** The delivery option - Certified Mail requiring a signature confirmation (TCP 3-way handshake) vs. Standard Stamps thrown in a box (UDP). An attacker can flood the recipient's mailbox with fake certified mail slips until they cannot receive real mail (SYN Flood).
 
 ### 3. Attack & Defense Lab Scenario
 * **The Attack (Layer 2 ARP Poisoning):** An attacker on a local LAN runs `arpspoof -i eth0 -t 192.168.1.5 192.168.1.1`. This sends forged ARP responses to the victim (192.168.1.5), claiming that the attacker's MAC address belongs to the default gateway (192.168.1.1). The victim’s traffic now routes directly through the attacker before reaching the internet.
-* **The Defense (Dynamic ARP Inspection):** The network engineer configures **DHCP Snooping** and **Dynamic ARP Inspection (DAI)** on the Cisco Catalyst switches. The switch builds a trusted binding database of IP-to-MAC mappings. When the attacker attempts to broadcast malicious, forged ARP packets, the switch detects the mismatch against its database and drops the rogue packets at the hardware port level.
+* **The Defense (Dynamic ARP Inspection):** The network engineer configures DHCP Snooping and Dynamic ARP Inspection (DAI) on the Cisco Catalyst switches. The switch builds a trusted binding database of IP-to-MAC mappings. When the attacker attempts to broadcast malicious, forged ARP packets, the switch detects the mismatch against its database and drops the rogue packets at the hardware port level.
 
 ### 4. Professor's Deep-Dive Notes
 > 💡 *Professor's Tip:* Memorize the layer-by-layer attacks for your professional certifications (CISSP, CompTIA Security+, CEH). If an interviewer asks you: "At what layer does a Next-Generation Firewall operate compared to a traditional packet-filtering firewall?" Your answer should be instantaneous: Traditional packet-filtering firewalls operate at Layers 3 and 4 (IPs and Ports). Next-Gen Firewalls inspect all the way up to Layer 7 (Application) to analyze the actual application payloads and behavior.
@@ -98,8 +98,8 @@ Think of sending a letter through the postal service.
 
 ### 1. Core Technical Breakdown
 Technical controls mean nothing without administrative frameworks to govern them. Organizations look to established global frameworks and strict compliance mandates to standardize security postures.
-* **ISO/IEC 27001:** An international standard detailing how to manage information security via an **Information Security Management System (ISMS)**. It focuses heavily on risk management, executive asset governance, and continuous iterative improvement.
-* **NIST Cybersecurity Framework (CSF):** A highly regarded blueprint structured into five core concurrent functions: **Identify, Protect, Detect, Respond, and Recover**.
+* **ISO/IEC 27001:** An international standard detailing how to manage information security via an Information Security Management System (ISMS). It focuses heavily on risk management, executive asset governance, and continuous iterative improvement.
+* **NIST Cybersecurity Framework (CSF):** A highly regarded blueprint structured into five core concurrent functions: Identify, Protect, Detect, Respond, and Recover.
 * **Regulatory Compliance Frameworks:**
     * **PCI-DSS:** Mandated security standards for any organization handling credit card transactions.
     * **HIPAA:** Regulatory mandates protecting protected health information (PHI) in the United States.
@@ -143,11 +143,11 @@ Plaintext ---> [ Encrypt with Key A ] ---> Ciphertext ---> [ Decrypt with Key A 
 ASYMMETRIC ENCRYPTION (Public/Private Key Pair)
 Plaintext ---> [ Encrypt with Bob's Public Key ] ---> Ciphertext ---> [ Decrypt with Bob's Private Key ] ---> Plaintext
 
-* **Symmetric Encryption:** Uses the **same mathematical key** for both encryption and decryption.
+* **Symmetric Encryption:** Uses the same mathematical key for both encryption and decryption.
     * *Characteristics:* Incredibly fast, highly efficient for processing massive bulk datasets.
     * *Core Algorithm:* **AES (Advanced Encryption Standard)**, operating as a block cipher with 128, 192, or 256-bit key lengths.
     * *The Achilles' Heel:* **Key Distribution Problem**. How do you securely transmit the secret key to a remote party over an insecure network without someone intercepting it?
-* **Asymmetric Encryption:** Uses a mathematically linked **Key Pair** consisting of a **Public Key** (distributed openly) and a **Private Key** (kept strictly secret).
+* **Asymmetric Encryption:** Uses a mathematically linked Key Pair consisting of a Public Key (distributed openly) and a Private Key (kept strictly secret).
     * *Mechanics:* Data encrypted with a Public Key can *only* be decrypted by its corresponding Private Key. Data encrypted with a Private Key can *only* be decrypted by its corresponding Public Key.
     * *Core Algorithms:* **RSA** (relies on the mathematical difficulty of factoring massive prime numbers) and **ECC (Elliptic Curve Cryptography)** (relies on algebraic structures of elliptic curves). ECC offers identical cryptographic strength to RSA but with significantly smaller keys (e.g., a 256-bit ECC key equals a 3072-bit RSA key), dramatically reducing computational overhead.
 
@@ -157,10 +157,10 @@ Plaintext ---> [ Encrypt with Bob's Public Key ] ---> Ciphertext ---> [ Decrypt 
 
 ### 3. Attack & Defense Lab Scenario
 * **The Attack (Brute-Forcing Weak Cryptography):** An attacker captures legacy backup files encrypted using 56-bit DES (Data Encryption Standard). Using a specialized cloud computing cluster, they execute a brute-force attack testing all possible keys, breaking the ciphertext in less than 24 hours.
-* **The Defense (Upgrading to AES-256):** The architect replaces DES with **AES-256**. The keyspace of AES-256 is $2^{256}$. To put this into perspective, if every star in the universe was a supercomputer testing a trillion keys per second since the dawn of time, they still wouldn't be close to cracking an AES-256 key.
+* **The Defense (Upgrading to AES-256):** The architect replaces DES with AES-256. The keyspace of AES-256 is $2^{256}$. To put this into perspective, if every star in the universe was a supercomputer testing a trillion keys per second since the dawn of time, they still wouldn't be close to cracking an AES-256 key.
 
 ### 4. Professor's Deep-Dive Notes
-> 💡 *Professor's Tip:* In real-world secure systems (like HTTPS/TLS), we do not choose between symmetric and asymmetric encryption—we use both in a **Hybrid Cryptosystem**. Asymmetric encryption is slow and heavy, so we use it just for the initial digital handshake to safely exchange a temporary symmetric "Session Key". Once that fast symmetric key is shared securely, the asymmetric keys step aside, and AES handles the rapid bulk encryption of the actual data stream.
+> 💡 *Professor's Tip:* In real-world secure systems (like HTTPS/TLS), we do not choose between symmetric and asymmetric encryption - we use both in a **Hybrid Cryptosystem**. Asymmetric encryption is slow and heavy, so we use it just for the initial digital handshake to safely exchange a temporary symmetric "Session Key". Once that fast symmetric key is shared securely, the asymmetric keys step aside, and AES handles the rapid bulk encryption of the actual data stream.
 
 ---
 
@@ -170,8 +170,8 @@ Plaintext ---> [ Encrypt with Bob's Public Key ] ---> Ciphertext ---> [ Decrypt 
 * **Cryptographic Hash Functions:** One-way mathematical algorithms that take an arbitrary length of input data and output a fixed-size, deterministic string of characters (the hash/digest).
     * *Properties:* Pre-image resistance (impossible to reverse-engineer input from the hash), second pre-image resistance (impossible to find a matching hash for a different input), and collision resistance (two different inputs must never generate the exact same hash).
     * *Standard Algorithms:* **SHA-256, SHA-3**. Legacy algorithms like MD5 and SHA-1 are deprecated due to discovered collision vulnerabilities.
-* **HMAC (Hash-based Message Authentication Code):** Combines a hash function with a secret cryptographic key, verifying both **data integrity** and **authenticity** simultaneously.
-* **Digital Signatures:** Provides data integrity, authenticity, and **non-repudiation**. It is generated by calculating the hash of a message and encrypting that specific hash with the sender's **Private Key**. Anyone can verify the signature using the sender's **Public Key**.
+* **HMAC (Hash-based Message Authentication Code):** Combines a hash function with a secret cryptographic key, verifying both data integrity and authenticity simultaneously.
+* **Digital Signatures:** Provides data integrity, authenticity, and non-repudiation. It is generated by calculating the hash of a message and encrypting that specific hash with the sender's Private Key. Anyone can verify the signature using the sender's Public Key.
 * **Digital Certificates (X.509):** A verifiable digital file that binds an identity (e.g., domain name, organization) to a public key. It is cryptographically signed by a trusted third party known as a Certificate Authority (CA).
 
 CREATING A DIGITAL SIGNATURE
@@ -183,7 +183,7 @@ CREATING A DIGITAL SIGNATURE
 
 ### 3. Attack & Defense Lab Scenario
 * **The Attack (The Executable Swapping Trick):** An attacker compromises an open-source software download mirror. They replace the official installation file `setup.exe` with a trojanized version. They don't change the download webpage, which lists the original SHA-256 hash.
-* **The Defense (Hash Verification & Digital Signing):** A security-conscious user downloads the executable. Before running it, they open their terminal and run `powershell Get-FileHash .\\setup.exe`. They compare the output hash against the vendor's official website. The hashes don't match, alerting the user to drop the file immediately. Furthermore, modern operating systems check the embedded **X.509 Digital Signature** of the executable; since the attacker cannot forge the vendor’s private key signature, the OS blocks execution with a massive red warning banner.
+* **The Defense (Hash Verification & Digital Signing):** A security-conscious user downloads the executable. Before running it, they open their terminal and run `powershell Get-FileHash .\\setup.exe`. They compare the output hash against the vendor's official website. The hashes don't match, alerting the user to drop the file immediately. Furthermore, modern operating systems check the embedded X.509 Digital Signature of the executable; since the attacker cannot forge the vendor’s private key signature, the OS blocks execution with a massive red warning banner.
 
 ### 4. Professor's Deep-Dive Notes
 > 💡 *Professor's Tip:* Pay close attention to the **Avalanche Effect** in hashing algorithms. A cryptographic hash must be highly chaotic. If you hash a 10,000-page document, and then change a single character from a lowercase "a" to an uppercase "A" on page 4,500, the resulting SHA-256 hash will completely change every single character in its output digest. There is no pattern or correlation between the old hash and the new hash.
@@ -205,7 +205,7 @@ CREATING A DIGITAL SIGNATURE
 [ End-Entity Cert ]  [ End-Entity Cert ]
 (e.g., google.com)   (e.g., amazon.com)
 
-* **CA Hierarchy:** PKI relies on a trust chain. At the top sits the **Root CA**, which signs its own certificate (self-signed). To maximize security, the Root CA is kept completely powered down and locked in an physical offline vault. It delegates signing authority to **Intermediate CAs**, which in turn sign certificates for the final end-entities (websites, users).
+* **CA Hierarchy:** PKI relies on a trust chain. At the top sits the Root CA, which signs its own certificate (self-signed). To maximize security, the Root CA is kept completely powered down and locked in an physical offline vault. It delegates signing authority to Intermediate CAs, which in turn sign certificates for the final end-entities (websites, users).
 * **Certificate Revocation Mechanisms:** If a private key is leaked or compromised before its expiration date, the certificate must be revoked immediately.
     * **CRL (Certificate Revocation List):** A periodically published list of revoked certificate serial numbers. Clients download this list to check validity. *Drawback:* Can grow massively large and introduces a time-lag delay in security updates.
     * **OCSP (Online Certificate Status Protocol):** A real-time HTTP query mechanism where the client asks the CA directly: "Is this specific serial number valid right now?"
@@ -220,7 +220,7 @@ Think of the global passport system:
 
 ### 3. Attack & Defense Lab Scenario
 * **The Attack (Private Key Compromise):** A rogue engineer steals an e-commerce company’s wildcard TLS private key from an unhardened staging server. The attacker sets up a spoofed phishing server mimicking the company site and begins decrypting captured customer traffic.
-* **The Defense (Immediate Revocation and HSM Deployment):** The Incident Response team discovers the leak. They immediately contact their issuing CA to add the certificate's serial number to the **CRL** and update the **OCSP** servers. Within minutes, modern web browsers globally reject connections to the compromised certificate. Moving forward, the infrastructure team mandates that all private keys must be generated and stored inside a hardware-hardened **FIPS 140-2 Level 3 Hardware Security Module (HSM)**, making key extraction physically impossible.
+* **The Defense (Immediate Revocation and HSM Deployment):** The Incident Response team discovers the leak. They immediately contact their issuing CA to add the certificate's serial number to the CRL and update the OCSP servers. Within minutes, modern web browsers globally reject connections to the compromised certificate. Moving forward, the infrastructure team mandates that all private keys must be generated and stored inside a hardware-hardened FIPS 140-2 Level 3 Hardware Security Module (HSM), making key extraction physically impossible.
 
 ### 4. Professor's Deep-Dive Notes
 > 💡 *Professor's Tip:* PKI is the absolute bedrock of trust for the entire modern internet. If an attacker manages to compromise a major Root CA’s private key, they can forge certificates for *any website on earth*, intercept global bank traffic, and push malicious software updates undetected. This is why Root CA private key generation events are handled with extreme ritualistic physical security, requiring multiple separate key-custodians using physical safes and cryptographic split-keys to activate.
@@ -250,12 +250,12 @@ CLIENT                                                               SERVER
 
 1.  **ClientHello:** The client transmits supported TLS versions, a random nonce, and a list of supported symmetric/asymmetric **Cipher Suites** along with its cryptographic key share.
 2.  **ServerHello:** The server selects the highest mutually supported protocol version and cipher suite, shares its asymmetric key share, and transmits its X.509 digital certificate.
-3.  **Key Exchange:** Both sides utilize an ephemeral key exchange protocol (**ECDHE - Elliptic Curve Diffie-Hellman Ephemeral**) to compute a shared master secret over an untrusted medium. This provides **Perfect Forward Secrecy (PFS)**—even if the server's long-term master private key is stolen in the future, past recorded traffic sessions cannot be decrypted because each session used an isolated, temporary, single-use key.
+3.  **Key Exchange:** Both sides utilize an ephemeral key exchange protocol (**ECDHE - Elliptic Curve Diffie-Hellman Ephemeral**) to compute a shared master secret over an untrusted medium. This provides **Perfect Forward Secrecy (PFS)** - even if the server's long-term master private key is stolen in the future, past recorded traffic sessions cannot be decrypted because each session used an isolated, temporary, single-use key.
 
 #### IPSec (Internet Protocol Security)
 Operates at Layer 3 (Network) to encrypt all traffic passing between two endpoints. It operates in two core modes:
 * **Transport Mode:** Encrypts *only* the IP payload (data). The original IP header remains completely visible. Used for host-to-host links.
-* **Tunnel Mode:** Encrypts the *entire* original IP packet (Header + Payload) and encapsulates it inside a brand new, routable outer IP header. This is the foundation of secure **Site-to-Site corporate VPNs**.
+* **Tunnel Mode:** Encrypts the *entire* original IP packet (Header + Payload) and encapsulates it inside a brand new, routable outer IP header. This is the foundation of secure Site-to-Site corporate VPNs.
 
 ### 2. Real-World Analogy
 * **TLS/HTTPS** is like walking up to a bank teller’s window. You talk in a completely normal voice, but the window is lined with soundproof ballistic glass, and you communicate via a secure internal intercom system that encrypts your voice before it leaves your mouth and decrypts it directly inside the teller's earpiece.
@@ -263,7 +263,7 @@ Operates at Layer 3 (Network) to encrypt all traffic passing between two endpoin
 
 ### 3. Attack & Defense Lab Scenario
 * **The Attack (The Legacy Cipher Suite Downgrade):** An attacker intercepts a TLS 1.0 connection handshake using an active MITM tool. They alter the negotiation parameters on the fly, forcing the client and server to fall back to an ancient, cryptographically broken cipher suite like export-grade RC4 or 3DES, which the attacker can crack in real-time.
-* **The Defense (Hardening Cipher Suites):** The server administrator modifies the web server configuration file (e.g., Nginx or Apache). They explicitly disable TLS 1.0 and 1.1, permitting **only TLS 1.2 and TLS 1.3**. They restrict allowed cipher suites strictly to high-strength choices: `TLS_AES_256_GCM_SHA384` and `TLS_CHACHA20_POLY1305_SHA256`. Downgrade attacks are now stopped at the initial handshake attempt.
+* **The Defense (Hardening Cipher Suites):** The server administrator modifies the web server configuration file (e.g., Nginx or Apache). They explicitly disable TLS 1.0 and 1.1, permitting only TLS 1.2 and TLS 1.3. They restrict allowed cipher suites strictly to high-strength choices: `TLS_AES_256_GCM_SHA384` and `TLS_CHACHA20_POLY1305_SHA256`. Downgrade attacks are now stopped at the initial handshake attempt.
 
 ### 4. Professor's Deep-Dive Notes
 > 💡 *Professor's Tip:* Pay careful attention to **SSH (Secure Shell)** for remote infrastructure administration. It functions completely independently of external CAs. Instead, it relies on a concept called **Trust on First Use (TOFU)**. The first time you connect to a Linux server via SSH, your client downloads and caches the server’s unique public key fingerprint. If that fingerprint ever changes unexpectedly in the future, your terminal will throw a massive text warning alert screaming that someone might be intercepting your connection!
@@ -274,7 +274,7 @@ Operates at Layer 3 (Network) to encrypt all traffic passing between two endpoin
 # Module 03: Network Defense Mechanisms
 *Firewalls, IDS/IPS, VPNs, and access control*
 
-## 3.1 Firewalls — Types, Rules & Architectures
+## 3.1 Firewalls - Types, Rules & Architectures
 
 ### 1. Core Technical Breakdown
 A firewall is a core checkpoint device designed to enforce access control policies by dropping or permitting network traffic based on specified rules.
@@ -292,7 +292,7 @@ A firewall is a core checkpoint device designed to enforce access control polici
 
 #### Firewall Generations & Types
 * **Packet Filtering (Stateless):** Inspects individual packets in total isolation based strictly on Source/Destination IP and Port numbers. It doesn't track connection states, making it highly susceptible to spoofing and evasion techniques.
-* **Stateful Inspection:** Tracks the state of active network connections using an internal **State Table**. It understands if an incoming packet is a legitimate response to an internal request (part of an established `ESTABLISHED/RELATED` session) or an unexpected probe, blocking unauthorized unsolicited inbound traffic automatically.
+* **Stateful Inspection:** Tracks the state of active network connections using an internal State Table. It understands if an incoming packet is a legitimate response to an internal request (part of an established `ESTABLISHED/RELATED` session) or an unexpected probe, blocking unauthorized unsolicited inbound traffic automatically.
 * **Next-Generation Firewall (NGFW):** Goes deep beyond basic ports and IPs, inspecting traffic payloads all the way up to Layer 7. Features integrated deep-packet inspection (DPI), protocol awareness, built-in intrusion prevention (IPS), TLS decryption capabilities, and active identity-aware user tracking.
 
 #### Architectural Design: The DMZ (Demilitarized Zone)
@@ -305,7 +305,7 @@ A specialized network segment isolated between an external internet-facing firew
 
 ### 3. Attack & Defense Lab Scenario
 * **The Attack (Port Evasion):** An attacker wants to exfiltrate corporate data past a legacy packet firewall that blocks port 21 (FTP) and port 22 (SSH). Knowing that port 443 (HTTPS) must be left wide open for corporate web browsing, the attacker configures an external listening server to accept connections on port 443, then tunnels outbound SSH traffic straight through that port.
-* **The Defense (NGFW Application Identification):** The security team replaces the legacy firewall with a Palo Alto Next-Generation Firewall. The NGFW uses **App-ID** engine technology. Even though the attacker’s traffic is targeted at port 443, the firewall performs deep-packet inspection, flags the actual protocol behavior as `ssh` rather than `ssl/web-browsing`, and drops the connection with an alert banner.
+* **The Defense (NGFW Application Identification):** The security team replaces the legacy firewall with a Palo Alto Next-Generation Firewall. The NGFW uses App-ID engine technology. Even though the attacker’s traffic is targeted at port 443, the firewall performs deep-packet inspection, flags the actual protocol behavior as `ssh` rather than `ssl/web-browsing`, and drops the connection with an alert banner.
 
 ### 4. Professor's Deep-Dive Notes
 > 💡 *Professor's Tip:* Remember the **Implicit Deny** rule. At the very bottom of every firewall access control list (ACL), there is an invisible, absolute rule that says: *Deny all traffic that hasn't explicitly matched a rule above*. When configuring firewalls, always order your rules from most specific (top) to most general (bottom) to prevent broad rules from accidentally overriding targeted restrictions.
@@ -316,7 +316,7 @@ A specialized network segment isolated between an external internet-facing firew
 
 ### 1. Core Technical Breakdown
 While firewalls act as security gates blocking traffic based on protocol structures, IDS/IPS systems act as security cameras and active guards analyzing traffic patterns for malicious actions.
-* **IDS vs. IPS:** An **IDS (Intrusion Detection System)** is a *passive* device that monitors a copy of network traffic via a SPAN port or network TAP; if it catches an attack, it logs an alert. An **IPS (Intrusion Prevention System)** is deployed *inline* directly in the physical traffic path; it inspects live packets and can drop malicious traffic in real-time before it reaches a destination.
+* **IDS vs. IPS:** An IDS (Intrusion Detection System) is a *passive* device that monitors a copy of network traffic via a SPAN port or network TAP; if it catches an attack, it logs an alert. An IPS (Intrusion Prevention System) is deployed *inline* directly in the physical traffic path; it inspects live packets and can drop malicious traffic in real-time before it reaches a destination.
 
 IDS (Passive Monitoring via TAP/SPAN)             IPS (Inline Security Enforcement)
 [Router] -----> [Switch] -----> [Servers]        [Router] -----> [ IPS Device ] -----> [Switch]
@@ -353,7 +353,7 @@ REMOTE ACCESS VPN (Host-to-Gateway)
 [Remote Laptop with Client] === ( Encrypted SSL/TLS Tunnel ) ===> [Corporate VPN Gateway] ---> [Internal Corporate LAN]
 
 #### VPN Architectural Models
-* **Site-to-Site VPN:** Connects entire networks together (e.g., a corporate headquarters to a remote branch office). This is handled transparently via dedicated network routers or security appliances using **IPSec** tunnels. Individual employees don't run any client software; their local packets route through the local gateway automatically.
+* **Site-to-Site VPN:** Connects entire networks together (e.g., a corporate headquarters to a remote branch office). This is handled transparently via dedicated network routers or security appliances using IPSec tunnels. Individual employees don't run any client software; their local packets route through the local gateway automatically.
 * **Remote Access VPN:** Connects individual roaming users securely to the corporate data center. Users launch a local software client application on their laptop to initialize the connection.
 
 #### Underlying Core Protocols
@@ -365,8 +365,8 @@ REMOTE ACCESS VPN (Host-to-Gateway)
 * **Remote Access VPN** is like giving an executive an armored personal limousine that picks them up directly at their home, locks the doors, tints the windows completely black, and drives them through public city highways directly into the secure executive parking garage inside headquarters.
 
 ### 3. Attack & Defense Lab Scenario
-* **The Attack (Split-Tunnel Hijacking):** A remote employee connects to their corporate network via a VPN configured with **Split Tunneling** enabled. Split tunneling sends corporate traffic through the secure VPN, but routes personal web browsing directly out to the user's home ISP. While working, the employee visits a compromised website that plants malware onto their laptop via a local browser exploit. The malware then turns around and scans the corporate network across the active VPN link.
-* **The Defense (Enforcing Full Tunneling):** The enterprise network administrator pushes a mandatory global configuration policy to all corporate VPN clients enforcing **Full Tunneling**. Now, 100% of the employee's internet traffic—even personal web searches—is forced through the encrypted VPN tunnel to headquarters first, where it passes through the corporate Next-Gen Firewall, web content filters, and threat inspection blocks before reaching the public web. The malicious site is blocked entirely.
+* **The Attack (Split-Tunnel Hijacking):** A remote employee connects to their corporate network via a VPN configured with Split Tunneling enabled. Split tunneling sends corporate traffic through the secure VPN, but routes personal web browsing directly out to the user's home ISP. While working, the employee visits a compromised website that plants malware onto their laptop via a local browser exploit. The malware then turns around and scans the corporate network across the active VPN link.
+* **The Defense (Enforcing Full Tunneling):** The enterprise network administrator pushes a mandatory global configuration policy to all corporate VPN clients enforcing Full Tunneling. Now, 100% of the employee's internet traffic - even personal web searches - is forced through the encrypted VPN tunnel to headquarters first, where it passes through the corporate Next-Gen Firewall, web content filters, and threat inspection blocks before reaching the public web. The malicious site is blocked entirely.
 
 ### 4. Professor's Deep-Dive Notes
 > 💡 *Professor's Tip:* Keep an eye on **WireGuard**. While legacy enterprise architectures have relied on IPSec and OpenVPN for decades, WireGuard has emerged as an incredibly lean, high-performance alternative operating directly inside the Linux kernel. It utilizes advanced modern cryptography (ChaCha20, Poly1305) and has a vastly smaller code footprint, making it significantly easier to audit for bugs and zero-day vulnerabilities.
@@ -402,7 +402,7 @@ Location, Time, Behavioral Risk      Reverse Proxy, IAM Engine)             re-v
 
 ### 3. Attack & Defense Lab Scenario
 * **The Attack (The Rogue Drop-Box):** An industrial spy sneaks into a corporate office building pretending to be a water delivery worker. They find an open, unused ethernet wall port in an empty conference room and plug in a rogue Raspberry Pi drop-box device designed to establish a persistent remote shell back to their command center.
-* **The Defense (802.1X Port Security Enforcement):** The infrastructure team has enforced strict **802.1X Network Access Control**. The moment the rogue Raspberry Pi connects, the Cisco switch detects that the device lacks a valid cryptographic certificate and has failed machine authentication. The switch port instantly shuts down completely and triggers an immediate silent SNMP alert to the Security Operations Center (SOC) containing the physical room location and port index.
+* **The Defense (802.1X Port Security Enforcement):** The infrastructure team has enforced strict 802.1X Network Access Control. The moment the rogue Raspberry Pi connects, the Cisco switch detects that the device lacks a valid cryptographic certificate and has failed machine authentication. The switch port instantly shuts down completely and triggers an immediate silent SNMP alert to the Security Operations Center (SOC) containing the physical room location and port index.
 
 ### 4. Professor's Deep-Dive Notes
 > 💡 *Professor's Tip:* Zero Trust is an architectural *strategy*, not a single piece of software or hardware you can buy off a shelf. If a sales vendor walks up to you and says, "Buy our firewall box to make your network 100% Zero Trust instantly," they are lying. Zero Trust requires integrating your identity access management (IAM), endpoint protection (EDR), network microsegmentation, and continuous logging into a single cohesive ecosystem.
@@ -435,7 +435,7 @@ Before an experienced attacker attempts to exploit a network, they spend massive
        [ Target Vulnerability Mapping ] (Exploit Selection)
 
 * **Footprinting:** Gathering baseline data regarding an organization's infrastructure without directly interacting with their active servers. This utilizes Open Source Intelligence (OSINT), harvesting public DNS records, MX mail records, and WHOIS registrations.
-* **Port Scanning:** Probing a target system's network ports to identify active, listening services. The industry standard tool is **Nmap**.
+* **Port Scanning:** Probing a target system's network ports to identify active, listening services. The industry standard tool is Nmap.
     * *SYN Stealth Scan (`nmap -sS`):* The attacker sends a TCP SYN packet. If the target responds with a SYN-ACK, the port is open. The attacker then instantly drops the link by sending a RST (Reset) packet instead of completing the final ACK of the 3-way handshake. This avoids traditional application logging mechanisms.
 * **OS/Banner Fingerprinting:** Inspecting the text responses returned by open services (banners). Attackers analyze subtle differences in TCP/IP stack implementations (TTL values, window sizes) to accurately deduce the exact operating system and software version running on the host.
 
@@ -473,8 +473,8 @@ ARP POISONING MECHANICS
 * **DNS Spoofing** is changing the city's physical highway signs. When drivers follow signs pointing toward the "City Hospital," the signs point them down a dark, isolated alleyway leading straight into a fake clinic set up by kidnappers.
 
 ### 3. Attack & Defense Lab Scenario
-* **The Attack (Intercepting Local Traffic):** An attacker on an open public coffee shop Wi-Fi network launches **Ettercap** or **Bettercap**. They execute an ARP poisoning sweep against a target laptop. The target attempts to log into a legacy internal intranet portal. Because the traffic flows through the attacker's interface, the attacker runs a background script that extracts plain-text active session tokens and passwords on the fly.
-* **The Defense (DAI & DNSSEC Deployment):** To prevent this on corporate networks, engineers implement **Dynamic ARP Inspection (DAI)** on switches to validate all ARP traffic. To safeguard DNS paths globally, they implement **DNSSEC (Domain Name System Security Extensions)**, which adds cryptographic digital signatures to DNS records, proving that the IP address returned by a query is authentic and untampered with.
+* **The Attack (Intercepting Local Traffic):** An attacker on an open public coffee shop Wi-Fi network launches Ettercap or Bettercap. They execute an ARP poisoning sweep against a target laptop. The target attempts to log into a legacy internal intranet portal. Because the traffic flows through the attacker's interface, the attacker runs a background script that extracts plain-text active session tokens and passwords on the fly.
+* **The Defense (DAI & DNSSEC Deployment):** To prevent this on corporate networks, engineers implement Dynamic ARP Inspection (DAI) on switches to validate all ARP traffic. To safeguard DNS paths globally, they implement DNSSEC (Domain Name System Security Extensions), which adds cryptographic digital signatures to DNS records, proving that the IP address returned by a query is authentic and untampered with.
 
 ### 4. Professor's Deep-Dive Notes
 > 💡 *Professor's Tip:* Never log into sensitive personal or professional accounts while connected to untrusted public Wi-Fi networks without an active, secure enterprise-grade VPN tunnel! On an unhardened public network, executing an ARP poisoning or rogue DHCP gateway attack takes less than three clicks of a button for a novice script kiddie running automated tools.
@@ -502,8 +502,8 @@ Denial of Service attacks target the **Availability** pillar of the CIA Triad, s
      (Connection Queue Fills - Server Crashes)
 
 #### Common Tactical Vectors
-* **TCP SYN Flood:** Exploits the standard TCP 3-Way Handshake. The attacker transmits thousands of TCP SYN packets using randomized, spoofed source IP addresses. The target server responds with a SYN-ACK to each request and opens a state entry in its internal **Connection Queue (Listen Queue)**, waiting for the final stabilizing ACK response. The attacker never sends the ACK. The server's connection queue fills up completely, causing it to reject all legitimate user connection requests.
-* **UDP Amplification Attacks:** A highly disruptive volumetric attack. The attacker sends small UDP requests to publicly open, misconfigured third-party servers (e.g., NTP, DNS resolvers, Memcached) while **spoofing the source IP address** to match the victim's target IP. The third-party servers generate massive response payloads (amplified up to 500x the size of the request) and stream them at the victim's network, saturating their physical internet pipe.
+* **TCP SYN Flood:** Exploits the standard TCP 3-Way Handshake. The attacker transmits thousands of TCP SYN packets using randomized, spoofed source IP addresses. The target server responds with a SYN-ACK to each request and opens a state entry in its internal Connection Queue (Listen Queue), waiting for the final stabilizing ACK response. The attacker never sends the ACK. The server's connection queue fills up completely, causing it to reject all legitimate user connection requests.
+* **UDP Amplification Attacks:** A highly disruptive volumetric attack. The attacker sends small UDP requests to publicly open, misconfigured third-party servers (e.g., NTP, DNS resolvers, Memcached) while spoofing the source IP address to match the victim's target IP. The third-party servers generate massive response payloads (amplified up to 500x the size of the request) and stream them at the victim's network, saturating their physical internet pipe.
 
 ### 2. Real-World Analogy
 * **TCP SYN Flood:** Imagine a pizza shop with one phone line. A prankster calls the shop, asks for a massive delivery order, and when the cashier asks for a credit card number, the prankster leaves the phone sitting on the counter on mute. The cashier stands there holding the line open, waiting. The prankster does this using hundreds of phones simultaneously. Real customers call the shop but get nothing but a busy signal because all lines are held open by dead calls.
@@ -545,7 +545,7 @@ for that specific domain.       proving authenticity.            fail during ins
 
 ### 3. Attack & Defense Lab Scenario
 * **The Attack (The CEO Fraud Phish):** An attacker crafts a spear-phishing email targeting an accounting clerk, spoofing the email address of the company's CEO. The email uses a high-urgency pretext: *"I am locked in a client meeting, need you to execute an emergency wire transfer of $45,000 to this vendor vendor account within 20 minutes or we lose the contract."*
-* **The Defense (Email Security Standards & Training):** The organization implements a multi-tier defense. Technically, they enforce strict **DMARC rejection policies** across their email gateways; if an incoming external mail attempts to forge internal domain headers, it is dropped instantly. Administratively, they mandate annual interactive security awareness training and enforce a dual-authorization policy stating that any financial wire transfer over $5,000 requires a live voice verification or out-of-band secondary sign-off.
+* **The Defense (Email Security Standards & Training):** The organization implements a multi-tier defense. Technically, they enforce strict DMARC rejection policies across their email gateways; if an incoming external mail attempts to forge internal domain headers, it is dropped instantly. Administratively, they mandate annual interactive security awareness training and enforce a dual-authorization policy stating that any financial wire transfer over $5,000 requires a live voice verification or out-of-band secondary sign-off.
 
 ### 4. Professor's Deep-Dive Notes
 > 💡 *Professor's Tip:* The most effective countermeasure against technical credential harvesting phishing is the enforcement of **FIDO2 / WebAuthn Hardware Security Keys** (like a YubiKey) for Multi-Factor Authentication. Traditional SMS codes or push notifications are highly vulnerable to proxy-phishing tools (like Evilginx), which steal codes in real-time. A hardware key binds the authentication process mathematically to the exact, verified domain string in the browser bar, making credential theft physically impossible even if a user is completely tricked by a phishing email!
@@ -606,7 +606,7 @@ When a security breach occurs, logs can be cleared or altered by an expert attac
 
 #### Structural Traffic Telemetry Data Models
 * **PCAP (Packet Capture):** Full packet capture records every single bit and byte of traffic passing across a wire (Headers + Complete Payload Data). The ultimate gold standard for deep forensic investigation. *Drawback:* Consumes extreme volumes of physical storage space, making long-term retention difficult on high-throughput networks.
-* **NetFlow / IPFIX:** Network metadata tracking. It doesn't store the actual packet payload contents. Instead, it records structural high-level transactional summaries of network sessions, known as **Network Flows**. It tracks: Source IP, Destination IP, Source Port, Destination Port, Protocol, Type of Service, and Total Bytes Transferred.
+* **NetFlow / IPFIX:** Network metadata tracking. It doesn't store the actual packet payload contents. Instead, it records structural high-level transactional summaries of network sessions, known as Network Flows. It tracks: Source IP, Destination IP, Source Port, Destination Port, Protocol, Type of Service, and Total Bytes Transferred.
 
 PCAP (Full Packet Capture)                   NETFLOW (Session Metadata Summary)
 +----------------------------------------+   +---------------------------------------+
@@ -623,7 +623,7 @@ PCAP (Full Packet Capture)                   NETFLOW (Session Metadata Summary)
 
 ### 3. Attack & Defense Lab Scenario
 * **The Attack (Data Exfiltration via DNS Tunneling):** An attacker compromises an internal server. To bypass strict egress firewall restrictions that block all web ports, the attacker uses an advanced malware utility that chunks up sensitive PDF documents, encodes the data fragments into raw alphanumeric strings, and appends them as subdomains to a malicious external DNS query structure (e.g., `[encoded-data-here].attacker-domain.com`).
-* **The Defense (Wireshark & Zeek Forensics):** The forensic analyst opens network traffic records using **Zeek (formerly Bro)** and **Wireshark**. While reviewing NetFlow patterns, they notice an anomaly: an internal host has sent over 5,000,000 separate outbound UDP requests to port 53 within one hour. They pivot to a localized PCAP capture slice, extract the raw DNS queries, identify the anomalous long subdomain strings, and execute an automated script to concatenate the subdomains back together, reconstructing the exact stolen files to determine the precise data loss impact.
+* **The Defense (Wireshark & Zeek Forensics):** The forensic analyst opens network traffic records using Zeek (formerly Bro) and Wireshark. While reviewing NetFlow patterns, they notice an anomaly: an internal host has sent over 5,000,000 separate outbound UDP requests to port 53 within one hour. They pivot to a localized PCAP capture slice, extract the raw DNS queries, identify the anomalous long subdomain strings, and execute an automated script to concatenate the subdomains back together, reconstructing the exact stolen files to determine the precise data loss impact.
 
 ### 4. Professor's Deep-Dive Notes
 > 💡 *Professor's Tip:* Learn your Wireshark display filters by heart for your exams and labs! If you need to quickly isolate an attack stream under pressure during an active incident response window, trying to scroll manually through millions of rows of real-time packets is suicide. Commands like `http.request.method == "POST"`, `tcp.flags.syn == 1 && tcp.flags.ack == 0`, or `ip.addr == 192.168.1.100` are your primary diagnostic weapons.
@@ -684,7 +684,7 @@ Think of a hospital Emergency Room responding to an infectious disease outbreak:
     * *Lessons Learned:* The organization mandates automated endpoint isolation rules to execute without human delay moving forward.
 
 ### 4. Professor's Deep-Dive Notes
-> 💡 *Professor's Tip:* The most common mistake I see young security responders make during an active incident is rushing to physically pull the power plug out of a compromised server. **Do not pull the plug!** If you cut the power instantly, you destroy all data held in volatile memory (RAM)—including running processes, open network connections, and the active encryption keys used by ransomware. Instead, isolate the machine from the network logically by disconnecting its network link, and capture a full dump of volatile RAM forensically before doing anything else!
+> 💡 *Professor's Tip:* The most common mistake I see young security responders make during an active incident is rushing to physically pull the power plug out of a compromised server. **Do not pull the plug!** If you cut the power instantly, you destroy all data held in volatile memory (RAM) - including running processes, open network connections, and the active encryption keys used by ransomware. Instead, isolate the machine from the network logically by disconnecting its network link, and capture a full dump of volatile RAM forensically before doing anything else!
 
 ---
 
@@ -710,11 +710,11 @@ Proactive testing ensures a network's defenses are hardened against future adver
 * **Penetration Testing** is like hiring a professional vault-testing specialist to physically break into your building. They don't check every window latch. Instead, they find *one* loose latch on a second-story window, climb through it, pick the internal office locks, trick the guard into handing over the master keys, break into the main vault room, leave a flag on the counter, and exit completely undetected to prove your defenses are broken.
 
 ### 3. Attack & Defense Lab Scenario
-* **The Pen Test Engagement:** A certified penetration tester is hired for a grey-box assessment. They run an automated vulnerability scanner and discover a legacy internal server running an outdated web console. They use **Metasploit** to execute a verified exploit payload, granting them local shell access. From there, they run local token-scraping scripts, harvest cached administrative domain credentials, execute a **Pass-the-Hash** attack to move laterally across internal subnets, and successfully gain complete Domain Administrator access over the entire corporate network infrastructure.
+* **The Pen Test Engagement:** A certified penetration tester is hired for a grey-box assessment. They run an automated vulnerability scanner and discover a legacy internal server running an outdated web console. They use Metasploit to execute a verified exploit payload, granting them local shell access. From there, they run local token-scraping scripts, harvest cached administrative domain credentials, execute a Pass-the-Hash attack to move laterally across internal subnets, and successfully gain complete Domain Administrator access over the entire corporate network infrastructure.
 * **The Remediation Roadmap:** The tester delivers a structured report mapping out the exact exploitation path. The enterprise network security team reviews the findings, establishes an aggressive emergency patch schedule for the legacy system, configures strict access restrictions preventing administrative tokens from caching on multi-user servers, and enforces network microsegmentation to block communication paths between generic employee subnets and sensitive domain infrastructure.
 
 ### 4. Professor's Deep-Dive Notes
-> 💡 *Professor's Tip:* When managing or executing penetration tests, the single most critical document is the **Rules of Engagement (RoE)**. This is a binding legal contract signed by both parties *before a single packet is transmitted*. It defines the exact scope of allowed IP addresses, explicit testing hours, forbidden high-risk exploits that might crash production databases, and contact information for emergency shutoff procedures. Without a signed RoE document, executing a penetration test isn't ethical hacking—it's a federal cybercrime!
+> 💡 *Professor's Tip:* When managing or executing penetration tests, the single most critical document is the **Rules of Engagement (RoE)**. This is a binding legal contract signed by both parties *before a single packet is transmitted*. It defines the exact scope of allowed IP addresses, explicit testing hours, forbidden high-risk exploits that might crash production databases, and contact information for emergency shutoff procedures. Without a signed RoE document, executing a penetration test isn't ethical hacking - it's a federal cybercrime!
 
 ---
 

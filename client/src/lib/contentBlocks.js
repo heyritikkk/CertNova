@@ -100,15 +100,14 @@ export function findSectionForBlock(modules, blockId) {
 export function getSectionParentBlock(node) {
   if (!node || node.type !== 'section') return null;
   const title = node.title?.trim();
-  if (!title) return node.items.find((b) => b.type === 'markdown') ?? null;
+  if (!title) return null;
   const exact = node.items.find(
     (b) =>
       b.type === 'markdown' &&
       b.sectionTitle?.trim() === title &&
-      (b.navTitle?.trim() === title || !b.navTitle?.trim())
+      b.navTitle?.trim() === title
   );
-  if (exact) return exact;
-  return node.items.find((b) => b.type === 'markdown') ?? null;
+  return exact || null;
 }
 
 /** Sub-lessons only (excludes the parent lesson row from the dropdown list). */

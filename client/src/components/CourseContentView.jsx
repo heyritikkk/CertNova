@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { courseToContentBlocks } from '../lib/contentBlocks';
+import { PlantUMLRenderer } from './PlantUMLRenderer';
 import './CourseContentView.css';
 
 const CourseContentView = ({ course }) => {
@@ -34,7 +35,28 @@ const CourseContentView = ({ course }) => {
         if (block.type === 'markdown' && block.content?.trim()) {
           return (
             <div key={block.id || index} className="course-content-markdown prose">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{block.content}</ReactMarkdown>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  code({ node, inline, className, children, ...props }) {
+                    const match = /language-(plantuml|puml)/i.exec(className || '');
+                    if (!inline && match) {
+                      return (
+                        <PlantUMLRenderer
+                          code={String(children).replace(/\n$/, '')}
+                        />
+                      );
+                    }
+                    return (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    );
+                  },
+                }}
+              >
+                {block.content}
+              </ReactMarkdown>
             </div>
           );
         }

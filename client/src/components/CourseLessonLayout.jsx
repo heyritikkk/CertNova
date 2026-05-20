@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { PlantUMLRenderer } from './PlantUMLRenderer';
 import {
   BookOpen,
   CircleCheck,
@@ -18,6 +19,17 @@ import {
   splitMarkdownLeadingTitle,
 } from '../lib/contentBlocks';
 import { CourseOutlineNav } from './CourseOutlineNav';
+import SuggestedQuiz from './SuggestedQuiz';
+import { getSuggestedQuizForBlock } from '../lib/suggestedQuiz';
+import {
+  LESSON_SIDEBAR_DEFAULT,
+  LESSON_SIDEBAR_MAX,
+  LESSON_SIDEBAR_MIN,
+  clampSidebarWidth,
+  isSidebarCollapsed,
+  loadLessonSidebarWidth,
+  saveLessonSidebarWidth,
+} from '../lib/lessonSidebarWidth';
 import './CourseLessonLayout.css';
 
 const progressStorageKey = (courseId) => `certnova-lesson-progress-${courseId}`;
@@ -45,7 +57,15 @@ function estimateReadMinutes(block) {
 
 const CourseLessonLayout = ({ course }) => {
   const allBlocks = useMemo(() => courseToContentBlocks(course), [course]);
-  const visibleBlocks = useMemo(() => getVisibleBlocks(allBlocks), [allBlocks]);
+  const visibleBlocks = useMemo(() => {
+    const rawVisible = getVisibleBlocks(allBlocks);
+    return rawVisible.filter((b) => {
+      const sec = b.sectionTitle?.trim();
+      const nav = b.navTitle?.trim();
+      const isParent = b.type === 'markdown' && sec && nav && sec === nav;
+      return !isParent;
+    });
+  }, [allBlocks]);
   const modules = useMemo(() => groupBlocksIntoModules(visibleBlocks), [visibleBlocks]);
 
   const [activeId, setActiveId] = useState(visibleBlocks[0]?.id || null);
@@ -55,6 +75,72 @@ const CourseLessonLayout = ({ course }) => {
   const [completedIds, setCompletedIds] = useState(() =>
     course?.id ? loadCompletedIds(course.id) : new Set()
   );
+  const [sidebarWidth, setSidebarWidth] = useState(loadLessonSidebarWidth);
+  const [isResizing, setIsResizing] = useState(false);
+  const [hideHeaderLine, setHideHeaderLine] = useState(false);
+  const layoutRef = useRef(null);
+  const lessonScrollRef = useRef(null);
+  const sidebarWidthRef = useRef(sidebarWidth);
+  sidebarWidthRef.current = sidebarWidth;
+
+  const sidebarCollapsed = isSidebarCollapsed(sidebarWidth);
+
+  const startSidebarResize = useCallback((clientX) => {
+    if (!layoutRef.current) return;
+    const startX = clientX;
+    const startW = sidebarWidthRef.current;
+
+    setIsResizing(true);
+
+    const onMove = (x) => {
+      const delta = x - startX;
+      const next = clampSidebarWidth(startW + delta);
+      setSidebarWidth(next);
+    };
+
+    const onMouseMove = (e) => onMove(e.clientX);
+    const onTouchMove = (e) => {
+      if (e.touches[0]) onMove(e.touches[0].clientX);
+    };
+
+    const end = () => {
+      setIsResizing(false);
+      saveLessonSidebarWidth(sidebarWidthRef.current);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', end);
+      document.removeEventListener('touchmove', onTouchMove);
+      document.removeEventListener('touchend', end);
+      document.body.classList.remove('lesson-sidebar-resizing');
+    };
+
+    document.body.classList.add('lesson-sidebar-resizing');
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', end);
+    document.addEventListener('touchmove', onTouchMove, { passive: true });
+    document.addEventListener('touchend', end);
+  }, []);
+
+  const onResizeHandleMouseDown = (e) => {
+    e.preventDefault();
+    startSidebarResize(e.clientX);
+  };
+
+  const onResizeHandleDoubleClick = () => {
+    const next = sidebarCollapsed ? LESSON_SIDEBAR_DEFAULT : LESSON_SIDEBAR_MIN;
+    setSidebarWidth(next);
+    saveLessonSidebarWidth(next);
+  };
+
+  const onResizeHandleKeyDown = (e) => {
+    let delta = 0;
+    if (e.key === 'ArrowLeft') delta = -16;
+    if (e.key === 'ArrowRight') delta = 16;
+    if (!delta) return;
+    e.preventDefault();
+    const next = clampSidebarWidth(sidebarWidth + delta);
+    setSidebarWidth(next);
+    saveLessonSidebarWidth(next);
+  };
 
   useEffect(() => {
     if (course?.id) {
@@ -67,6 +153,18 @@ const CourseLessonLayout = ({ course }) => {
       setActiveId(visibleBlocks[0].id);
     }
   }, [visibleBlocks, activeId]);
+
+  useEffect(() => {
+    const el = lessonScrollRef.current;
+    if (el) el.scrollTop = 0;
+    setHideHeaderLine(false);
+  }, [activeId]);
+
+  const handleLessonScroll = useCallback(() => {
+    const el = lessonScrollRef.current;
+    if (!el) return;
+    setHideHeaderLine(el.scrollTop > 16);
+  }, []);
 
   useEffect(() => {
     const sec = findSectionForBlock(modules, activeId);
@@ -110,6 +208,11 @@ const CourseLessonLayout = ({ course }) => {
       body: title ? body : activeBlock.content || '',
     };
   }, [activeBlock, lessonTitle]);
+
+  const suggestedQuizQuestions = useMemo(() => {
+    if (activeBlock?.type !== 'markdown') return [];
+    return getSuggestedQuizForBlock(activeBlock);
+  }, [activeBlock]);
 
   const toggleComplete = useCallback(() => {
     if (!activeBlock?.id || !course?.id) return;
@@ -163,8 +266,16 @@ const CourseLessonLayout = ({ course }) => {
   };
 
   return (
-    <div className="lesson-layout">
-      <div className="lesson-sidebar-pin">
+    <div
+      ref={layoutRef}
+      className={`lesson-layout lesson-layout--resizable${isResizing ? ' is-resizing' : ''}${
+        sidebarCollapsed ? ' lesson-layout--sidebar-narrow' : ''
+      }`}
+      style={{ '--lesson-sidebar-col': `${sidebarWidth}px` }}
+    >
+      <div
+        className={`lesson-sidebar-pin${sidebarCollapsed ? ' lesson-sidebar-pin--collapsed' : ''}`}
+      >
         <aside className="lesson-sidebar open">
         <nav className="lesson-nav lesson-nav--accordion" aria-label="Lessons">
           <CourseOutlineNav
@@ -190,45 +301,98 @@ const CourseLessonLayout = ({ course }) => {
         </aside>
       </div>
 
+      <button
+        type="button"
+        className="lesson-resize-handle"
+        title="Drag to resize sidebar. Double-click to collapse or expand."
+        aria-label="Drag to resize lesson navigation. Double-click to collapse or expand."
+        aria-valuemin={LESSON_SIDEBAR_MIN}
+        aria-valuemax={LESSON_SIDEBAR_MAX}
+        aria-valuenow={Math.round(sidebarWidth)}
+        onMouseDown={onResizeHandleMouseDown}
+        onTouchStart={(e) => {
+          if (e.touches[0]) {
+            e.preventDefault();
+            startSidebarResize(e.touches[0].clientX);
+          }
+        }}
+        onDoubleClick={onResizeHandleDoubleClick}
+        onKeyDown={onResizeHandleKeyDown}
+      />
+
       <main className="lesson-main">
         <div className="lesson-main-top-bar" aria-hidden="true" />
-        <header
-          className={`lesson-header${
-            activeBlock?.type === 'markdown' ? ' lesson-header--content-title' : ''
-          }`}
+        <div
+          ref={lessonScrollRef}
+          className={`lesson-scroll${hideHeaderLine ? ' lesson-scroll--past-header' : ''}`}
+          onScroll={handleLessonScroll}
         >
-          {activeBlock?.type === 'markdown' ? <h1>{markdownLesson.title}</h1> : null}
-          {activeBlock?.type === 'quiz' ? <h1>{lessonTitle}</h1> : null}
+          <header
+            className={`lesson-header${
+              activeBlock?.type === 'markdown' ? ' lesson-header--content-title' : ''
+            }`}
+          >
+            {activeBlock?.type === 'markdown' ? <h1>{markdownLesson.title}</h1> : null}
+            {activeBlock?.type === 'quiz' ? <h1>{lessonTitle}</h1> : null}
 
-          <div className="lesson-meta">
-            {readMinutes && activeBlock?.type === 'markdown' ? (
+            <div className="lesson-meta">
+              {readMinutes && activeBlock?.type === 'markdown' ? (
+                <span className="lesson-meta__item">
+                  <Clock size={15} aria-hidden />
+                  {readMinutes} min read
+                </span>
+              ) : null}
               <span className="lesson-meta__item">
-                <Clock size={15} aria-hidden />
-                {readMinutes} min read
+                <BookOpen size={15} aria-hidden />
+                Updated {formatCourseDate(course.updated_at)}
               </span>
-            ) : null}
-            <span className="lesson-meta__item">
-              <BookOpen size={15} aria-hidden />
-              Updated {formatCourseDate(course.updated_at)}
-            </span>
-            <button
-              type="button"
-              className={`lesson-complete-btn${isCurrentComplete ? ' is-done' : ''}`}
-              onClick={toggleComplete}
-              aria-pressed={isCurrentComplete}
-            >
-              <CircleCheck size={16} aria-hidden />
-              {isCurrentComplete ? 'Completed' : 'Mark as complete'}
-            </button>
-          </div>
-        </header>
+              <button
+                type="button"
+                className={`lesson-complete-btn${isCurrentComplete ? ' is-done' : ''}`}
+                onClick={toggleComplete}
+                aria-pressed={isCurrentComplete}
+              >
+                <CircleCheck size={16} aria-hidden />
+                {isCurrentComplete ? 'Completed' : 'Mark as complete'}
+              </button>
+            </div>
+          </header>
+          <div className="lesson-header-boundary" aria-hidden="true" />
 
-        <article className="lesson-article">
+          <article className="lesson-article">
           <div className="lesson-body">
             {activeBlock?.type === 'markdown' && (
-              <div className="lesson-prose prose">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdownLesson.body}</ReactMarkdown>
-              </div>
+              <>
+                <div className="lesson-prose prose">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      code({ node, inline, className, children, ...props }) {
+                        const match = /language-(plantuml|puml)/i.exec(className || '');
+                        if (!inline && match) {
+                          return (
+                            <PlantUMLRenderer
+                              code={String(children).replace(/\n$/, '')}
+                            />
+                          );
+                        }
+                        return (
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        );
+                      },
+                    }}
+                  >
+                    {markdownLesson.body}
+                  </ReactMarkdown>
+                </div>
+                <SuggestedQuiz
+                  key={activeBlock.id}
+                  questions={suggestedQuizQuestions}
+                  lessonTitle={markdownLesson.title}
+                />
+              </>
             )}
 
             {activeBlock?.type === 'quiz' && (
@@ -267,7 +431,8 @@ const CourseLessonLayout = ({ course }) => {
               <span className="lesson-pager-btn__label">Preview →</span>
             </button>
           </footer>
-        </article>
+          </article>
+        </div>
       </main>
     </div>
   );

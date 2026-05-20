@@ -15,10 +15,14 @@ import {
   Image,
   Minus,
   Trash2,
+  Workflow,
 } from 'lucide-react';
 import { getBlockOutlinePath } from '../lib/contentBlocks';
 import { applyMarkdownAction, MARKDOWN_TOOLBAR_ACTIONS } from '../lib/markdownToolbar';
+import PlantUmlAdminPanel from './PlantUmlAdminPanel';
+import SuggestedQuizEditor from './SuggestedQuizEditor';
 import './CourseContentBuilder.css';
+import './PlantUmlAdminPanel.css';
 
 const ICONS = {
   bold: Bold,
@@ -47,6 +51,7 @@ const CourseContentBuilder = ({
     () => blocks.find((b) => b.type === 'markdown')?.id || blocks[0]?.id || null
   );
   const [toolbarHint, setToolbarHint] = useState('');
+  const [plantUmlPanelOpen, setPlantUmlPanelOpen] = useState(false);
   const textareaRefs = useRef({});
 
   const activeBlockId = controlledActiveId ?? internalActiveId;
@@ -113,6 +118,38 @@ const CourseContentBuilder = ({
     });
   };
 
+  const insertMarkdownAtCursor = (markdownChunk) => {
+    const id = activeBlockId;
+    const block = blocks.find((b) => b.id === id && b.type === 'markdown');
+    if (!block) {
+      flashHint('Select a lesson before inserting a diagram.');
+      return;
+    }
+
+    const el = textareaRefs.current[id];
+    const start = el?.selectionStart ?? block.content?.length ?? 0;
+    const end = el?.selectionEnd ?? start;
+    const before = (block.content || '').slice(0, start);
+    const after = (block.content || '').slice(end);
+    const next = `${before}${markdownChunk}${after}`;
+    updateBlock(id, { content: next });
+
+    requestAnimationFrame(() => {
+      const target = textareaRefs.current[id];
+      if (!target) return;
+      target.focus();
+      const pos = start + markdownChunk.length;
+      target.setSelectionRange(pos, pos);
+    });
+
+    flashHint('PlantUML block inserted into lesson.');
+    setPlantUmlPanelOpen(false);
+  };
+
+  const handlePlantUmlInsert = (markdownChunk) => {
+    insertMarkdownAtCursor(markdownChunk);
+  };
+
   const updateQuizOption = (blockId, optIndex, value) => {
     const block = blocks.find((b) => b.id === blockId);
     if (!block || block.type !== 'quiz') return;
@@ -140,11 +177,30 @@ const CourseContentBuilder = ({
     <div className="content-builder content-builder--embedded">
       <div className="content-builder-editor content-builder-editor--full">
         <div className="content-builder-toolbar-wrap">
-          <ContentToolbar canFormat={canFormat} applyToolbar={applyToolbar} />
+          <ContentToolbar
+            canFormat={canFormat}
+            applyToolbar={applyToolbar}
+            plantUmlPanelOpen={plantUmlPanelOpen}
+            onTogglePlantUml={() => {
+              if (!canFormat) {
+                flashHint('Select a lesson (not a quiz) to add PlantUML.');
+                return;
+              }
+              setPlantUmlPanelOpen((open) => !open);
+            }}
+          />
           <p className={`content-builder-toolbar-hint${toolbarHint ? ' is-alert' : ''}`}>
-            {toolbarHint || 'Structure lives in the left outline ? write lesson content here.'}
+            {toolbarHint ||
+              'Structure lives in the left outline — write lesson content here. Use PlantUML for diagrams.'}
           </p>
         </div>
+
+        {plantUmlPanelOpen && canFormat && (
+          <PlantUmlAdminPanel
+            onInsert={handlePlantUmlInsert}
+            onClose={() => setPlantUmlPanelOpen(false)}
+          />
+        )}
 
         {!activeBlock ? (
           <div className="content-builder-empty-editor">
@@ -182,6 +238,7 @@ const CourseContentBuilder = ({
                   placeholder="Write course content in Markdown..."
                   rows={16}
                 />
+                <SuggestedQuizEditor block={activeBlock} updateBlock={updateBlock} />
               </>
             ) : (
               <QuizEditor
@@ -200,11 +257,26 @@ const CourseContentBuilder = ({
   );
 };
 
-function ContentToolbar({ canFormat, applyToolbar }) {
+function ContentToolbar({ canFormat, applyToolbar, plantUmlPanelOpen, onTogglePlantUml }) {
   return (
     <div className="content-builder-toolbar">
       {MARKDOWN_TOOLBAR_ACTIONS.map((action) => {
         const Icon = ICONS[action.key];
+        if (action.key === 'plantuml') {
+          return (
+            <button
+              key={action.key}
+              type="button"
+              className="toolbar-btn toolbar-btn--plantuml"
+              title={action.label}
+              disabled={!canFormat}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => applyToolbar(action)}
+            >
+              <Workflow size={17} />
+            </button>
+          );
+        }
         return (
           <button
             key={action.key}
@@ -219,6 +291,18 @@ function ContentToolbar({ canFormat, applyToolbar }) {
           </button>
         );
       })}
+      <span className="toolbar-divider" aria-hidden />
+      <button
+        type="button"
+        className={`toolbar-btn toolbar-btn--plantuml-panel${plantUmlPanelOpen ? ' is-active' : ''}`}
+        title="Open PlantUML editor with live preview"
+        disabled={!canFormat}
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={onTogglePlantUml}
+      >
+        <Workflow size={17} />
+        <span>PlantUML</span>
+      </button>
     </div>
   );
 }

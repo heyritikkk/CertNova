@@ -1,0 +1,196 @@
+.plantuml-admin-panel {
+  flex-shrink: 0;
+  margin: 0 1.25rem 1rem;
+  border: 1px solid #ffd4c2;
+  border-radius: 14px;
+  background: #fffaf8;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(244, 139, 96, 0.08);
+}
+
+.plantuml-admin-panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(180deg, #fff4ee 0%, #fffaf8 100%);
+  border-bottom: 1px solid #ffe8dc;
+}
+
+.plantuml-admin-panel__head h5 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  color: #c45a2f;
+}
+
+.plantuml-admin-panel__head p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.45;
+  max-width: 52rem;
+}
+
+.plantuml-admin-panel__close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  background: #fff;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.plantuml-admin-panel__close:hover {
+  background: #ffe8dc;
+  color: #c45a2f;
+}
+
+.plantuml-admin-panel__body {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(280px, 1.1fr);
+  gap: 0;
+  border-bottom: 1px solid #ffe8dc;
+}
+
+.plantuml-admin-panel__editor {
+  padding: 0.85rem 1rem;
+  border-right: 1px solid #ffe8dc;
+  min-width: 0;
+}
+
+.plantuml-admin-panel__editor label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.plantuml-admin-panel__code {
+  width: 100%;
+  min-height: 280px;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  resize: vertical;
+  background: #fff;
+  color: #1e293b;
+}
+
+.plantuml-admin-panel__code:focus {
+  outline: 2px solid rgba(244, 139, 96, 0.35);
+  border-color: #f48b60;
+}
+
+.plantuml-admin-panel__note {
+  margin: 0.5rem 0 0;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.plantuml-admin-panel__note code {
+  font-size: 0.76rem;
+  background: #fff4ee;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  color: #c45a2f;
+}
+
+.plantuml-admin-panel__preview {
+  padding: 0.85rem 1rem;
+  min-width: 0;
+  background: #fff;
+}
+
+.plantuml-admin-panel__preview-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.plantuml-admin-panel__preview-empty {
+  margin: 2rem 0;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #94a3b8;
+}
+
+.plantuml-admin-panel__preview .puml-container {
+  margin: 0;
+}
+
+.plantuml-admin-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.plantuml-admin-panel__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+}
+
+.plantuml-admin-panel__btn:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.plantuml-admin-panel__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.plantuml-admin-panel__btn--primary {
+  background: #f48b60;
+  border-color: #e07a52;
+  color: #fff;
+}
+
+.plantuml-admin-panel__btn--primary:hover:not(:disabled) {
+  background: #e07a52;
+}
+
+.plantuml-admin-panel__btn--ghost {
+  border-color: transparent;
+  background: transparent;
+  color: #64748b;
+}
+
+.plantuml-admin-panel__copy-hint {
+  font-size: 0.82rem;
+  color: #15803d;
+  font-weight: 600;
+}
+
+@media (max-width: 960px) {
+  .plantuml-admin-panel__body {
+    grid-template-columns: 1fr;
+  }
+
+  .plantuml-admin-panel__editor {
+    border-right: none;
+    border-bottom: 1px solid #ffe8dc;
+  }
+}

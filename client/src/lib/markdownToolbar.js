@@ -135,4 +135,13 @@ export const MARKDOWN_TOOLBAR_ACTIONS = [
     selectLength: 11,
   },
   { key: 'hr', label: 'Divider', type: 'insert', value: '\n\n---\n\n' },
+  {
+    key: 'plantuml',
+    label: 'PlantUML fence',
+    type: 'insert',
+    value:
+      '\n\n```plantuml\n@startuml\ntitle Diagram title\n\n@enduml\n```\n\n',
+    selectOffset: 15,
+    selectLength: 13,
+  },
 ];

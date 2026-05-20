@@ -1,5 +1,5 @@
 /**
- * Network Security course outline — stored in DB as content_blocks (editable in admin).
+ * Network Security course outline - stored in DB as content_blocks (editable in admin).
  */
 
 const MODULES = [
@@ -38,7 +38,7 @@ const MODULES = [
       {
         num: '2.1',
         title: 'Symmetric & Asymmetric Encryption',
-        desc: 'AES, RSA, ECC — algorithms and use cases',
+        desc: 'AES, RSA, ECC - algorithms and use cases',
       },
       {
         num: '2.2',
@@ -64,7 +64,7 @@ const MODULES = [
     lessons: [
       {
         num: '3.1',
-        title: 'Firewalls — Types, Rules & Architectures',
+        title: 'Firewalls - Types, Rules & Architectures',
         desc: 'Packet filtering, stateful, NGFW, DMZ design',
       },
       {
@@ -183,7 +183,7 @@ const COURSE_META = {
   description:
     'Master network security from foundations through cryptography, defense, attacks, and incident response.',
   cover_title: 'Network Security',
-  cover_subtitle: 'Foundations to incident response — structured for exam-ready learning',
+  cover_subtitle: 'Foundations to incident response - structured for exam-ready learning',
   level: 'Intermediate',
   duration: '24h',
   detail_description:

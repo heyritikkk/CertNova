@@ -14,7 +14,7 @@
 .course-detail-page--lesson {
   padding: 1.75rem 0 2rem;
   overflow: visible;
-  /* Solid peach — matches page bg (not gradient) so scroll cover looks seamless */
+  /* Solid peach - matches page bg (not gradient) so scroll cover looks seamless */
   --lesson-nav-shield: #fff5f0;
   background-color: #fff5f0;
 }

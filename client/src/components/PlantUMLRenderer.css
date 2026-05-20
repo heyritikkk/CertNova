@@ -1,0 +1,156 @@
+/* Shared PlantUML diagram chrome (learn page + admin preview) */
+.puml-container {
+  border: 1px solid #ffd4c2;
+  border-radius: 16px;
+  background: #ffffff;
+  margin: 2.25rem 0;
+  overflow: hidden;
+  box-shadow:
+    0 8px 30px rgba(244, 139, 96, 0.05),
+    0 1px 3px rgba(15, 23, 42, 0.02);
+}
+
+.puml-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.25rem;
+  background: #fffaf8;
+  border-bottom: 1px solid #ffd4c2;
+}
+
+.puml-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: #c45a2f;
+}
+
+.puml-indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #f48b60;
+}
+
+.puml-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.puml-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #fff4ee;
+  color: #c45a2f;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid rgba(244, 139, 96, 0.15);
+}
+
+.puml-zoom-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+}
+
+.puml-zoom-btn:hover {
+  color: #e07a52;
+  border-color: #f48b60;
+  background: #fff4ee;
+}
+
+.puml-diagram-canvas {
+  background: #ffffff;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+}
+
+.puml-image {
+  width: 100%;
+  max-width: 640px;
+  min-width: 200px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.puml-container--loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  gap: 1rem;
+}
+
+.puml-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(244, 139, 96, 0.15);
+  border-top-color: #f48b60;
+  border-radius: 50%;
+  animation: puml-spin 0.8s infinite linear;
+}
+
+@keyframes puml-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.puml-loading-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.puml-container--error {
+  padding: 1.5rem;
+  background: #fff8f8;
+  border-color: #fee2e2;
+}
+
+.puml-error-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.puml-error-header strong {
+  color: #991b1b;
+  font-size: 0.92rem;
+}
+
+.puml-error-hint {
+  font-size: 0.86rem;
+  color: #4b5563;
+  margin-bottom: 0.85rem;
+}
+
+.puml-raw-code {
+  margin: 0.75rem 0 0;
+  background: #0f172a;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 0.82rem;
+  overflow-x: auto;
+  color: #f8fafc;
+  border: 1px solid #1e293b;
+}

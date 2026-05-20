@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import {
   ChevronDown,
   ChevronRight,
@@ -72,7 +72,7 @@ export function CourseOutlineNav({
             )}
             {isModuleExpanded && (
               <div className={moduleItemsClassName}>
-                {sectionNodes.map((node) => {
+                {sectionNodes.map((node, sectionIndex) => {
                   if (node.type === 'lesson') {
                     return (
                       <OutlineNavRow
@@ -104,10 +104,15 @@ export function CourseOutlineNav({
                     (activeBlockId === parentBlock?.id || sectionContainsBlock(node, activeBlockId));
 
                   return (
-                    <div
-                      key={node.id}
-                      className={`course-outline-section${lessonGroupNav ? ' lesson-outline-section' : ''}`}
-                    >
+                    <Fragment key={node.id}>
+                      {lessonGroupNav && sectionIndex > 0 ? (
+                        <hr className="lesson-outline-divider" aria-hidden="true" />
+                      ) : null}
+                      <div
+                        className={`course-outline-section${lessonGroupNav ? ' lesson-outline-section' : ''}${
+                          isSectionExpanded ? ' is-expanded' : ''
+                        }`}
+                      >
                       <OutlineSectionHeader
                         title={node.title}
                         isExpanded={isSectionExpanded}
@@ -156,7 +161,8 @@ export function CourseOutlineNav({
                           )}
                         </div>
                       )}
-                    </div>
+                      </div>
+                    </Fragment>
                   );
                 })}
                 {editable && (
@@ -219,20 +225,7 @@ function OutlineSectionHeader({
           aria-expanded={isExpanded}
           aria-label={`${title}, ${isExpanded ? 'collapse' : 'expand'} sub-lessons`}
         >
-          <span
-            className="lesson-group-header__title"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (parentBlockId) onSelectParent?.(parentBlockId);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                e.stopPropagation();
-                if (parentBlockId) onSelectParent?.(parentBlockId);
-              }
-            }}
-          >
+          <span className="lesson-group-header__title">
             {title}
           </span>
           <span className="lesson-group-header__chevron" aria-hidden>

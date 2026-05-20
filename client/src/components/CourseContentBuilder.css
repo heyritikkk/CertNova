@@ -405,6 +405,29 @@
   background: var(--cn-accent-muted, #ffe8dc);
 }
 
+.toolbar-btn--plantuml:hover:not(:disabled) {
+  background: var(--cn-accent-soft, #fff4ee);
+  color: var(--cn-accent-deep, #c45a2f);
+}
+
+.toolbar-btn--plantuml-panel {
+  padding: 0 0.75rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  background: var(--cn-accent-soft, #fff4ee);
+  color: var(--cn-accent-deep, #c45a2f);
+}
+
+.toolbar-btn--plantuml-panel:hover:not(:disabled) {
+  background: var(--cn-accent-muted, #ffe8dc);
+}
+
+.toolbar-btn--plantuml-panel.is-active {
+  background: #f48b60;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(244, 139, 96, 0.35);
+}
+
 .toolbar-divider {
   width: 1px;
   height: 24px;
