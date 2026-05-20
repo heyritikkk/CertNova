@@ -11,7 +11,10 @@ import {
 } from 'lucide-react';
 import {
   getBlockNavLabel,
+  getSectionParentBlock,
+  getSectionSubLessonBlocks,
   groupModuleItemsIntoSections,
+  sectionContainsBlock,
 } from '../lib/contentBlocks';
 
 /**
@@ -42,24 +45,31 @@ export function CourseOutlineNav({
   onDeleteSection,
   onMoveBlock,
   completedBlockIds,
+  hideModuleHeaders = false,
+  lessonGroupNav = false,
 }) {
   return (
     <>
       {modules.map((mod) => {
-        const isModuleExpanded = expandedModules.has(mod.id);
+        const isModuleExpanded = hideModuleHeaders || expandedModules.has(mod.id);
         const sectionNodes = groupModuleItemsIntoSections(mod.items);
 
         return (
-          <div key={mod.id} className={`${moduleClassName}${isModuleExpanded ? ' is-expanded' : ''}`}>
-            <button
-              type="button"
-              className={moduleBtnClassName}
-              onClick={() => onToggleModule(mod.id)}
-              aria-expanded={isModuleExpanded}
-            >
-              <span>{mod.title}</span>
-              {isModuleExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-            </button>
+          <div
+            key={mod.id}
+            className={`${moduleClassName}${isModuleExpanded ? ' is-expanded' : ''}${hideModuleHeaders ? ' is-flat' : ''}`}
+          >
+            {!hideModuleHeaders && (
+              <button
+                type="button"
+                className={moduleBtnClassName}
+                onClick={() => onToggleModule(mod.id)}
+                aria-expanded={isModuleExpanded}
+              >
+                <span>{mod.title}</span>
+                {isModuleExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              </button>
+            )}
             {isModuleExpanded && (
               <div className={moduleItemsClassName}>
                 {sectionNodes.map((node) => {
@@ -85,8 +95,19 @@ export function CourseOutlineNav({
                   }
 
                   const isSectionExpanded = expandedSections.has(node.id);
+                  const parentBlock = lessonGroupNav ? getSectionParentBlock(node) : null;
+                  const sectionItems = lessonGroupNav
+                    ? getSectionSubLessonBlocks(node)
+                    : node.items;
+                  const isSectionActive =
+                    lessonGroupNav &&
+                    (activeBlockId === parentBlock?.id || sectionContainsBlock(node, activeBlockId));
+
                   return (
-                    <div key={node.id} className="course-outline-section">
+                    <div
+                      key={node.id}
+                      className={`course-outline-section${lessonGroupNav ? ' lesson-outline-section' : ''}`}
+                    >
                       <OutlineSectionHeader
                         title={node.title}
                         isExpanded={isSectionExpanded}
@@ -98,10 +119,14 @@ export function CourseOutlineNav({
                           onAddSubLessonInSection?.(mod, node.title, node.items[node.items.length - 1]?.id)
                         }
                         onDelete={() => onDeleteSection?.(mod, node.title)}
+                        learnGroupHeader={lessonGroupNav}
+                        parentBlockId={parentBlock?.id}
+                        isSectionActive={isSectionActive}
+                        onSelectParent={onSelectBlock}
                       />
                       {isSectionExpanded && (
                         <div className={sectionItemsClassName}>
-                          {node.items.map((block) => (
+                          {sectionItems.map((block) => (
                             <OutlineNavRow
                               key={block.id}
                               block={block}
@@ -161,6 +186,10 @@ function OutlineSectionHeader({
   onRename,
   onAddSubLesson,
   onDelete,
+  learnGroupHeader = false,
+  parentBlockId,
+  isSectionActive = false,
+  onSelectParent,
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(title);
@@ -179,6 +208,40 @@ function OutlineSectionHeader({
     if (next && next !== title) onRename?.(next);
     setEditing(false);
   };
+
+  if (learnGroupHeader && !editable) {
+    return (
+      <div className={`lesson-group-header${isSectionActive ? ' is-active' : ''}`}>
+        <button
+          type="button"
+          className="lesson-group-header__main"
+          onClick={onToggle}
+          aria-expanded={isExpanded}
+          aria-label={`${title}, ${isExpanded ? 'collapse' : 'expand'} sub-lessons`}
+        >
+          <span
+            className="lesson-group-header__title"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (parentBlockId) onSelectParent?.(parentBlockId);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                if (parentBlockId) onSelectParent?.(parentBlockId);
+              }
+            }}
+          >
+            {title}
+          </span>
+          <span className="lesson-group-header__chevron" aria-hidden>
+            {isExpanded ? <ChevronDown size={16} strokeWidth={2.25} /> : <ChevronRight size={16} strokeWidth={2.25} />}
+          </span>
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={`outline-section-head${editable ? ' is-editable' : ''}`}>

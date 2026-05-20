@@ -2,9 +2,21 @@
   min-height: 100vh;
   width: 100%;
   background: var(--bg-main);
-  overflow-x: hidden;
+  /* clip avoids breaking position:sticky (hidden creates a scroll container) */
+  overflow-x: clip;
   display: flex;
   flex-direction: column;
+}
+
+@supports not (overflow: clip) {
+  .app-container {
+    overflow-x: hidden;
+  }
+}
+
+/* Lesson sidebar sticky: no overflow clipping on the page scroll chain */
+.app-container:has(.course-detail-page--lesson) {
+  overflow-x: visible;
 }
 
 .main-content {

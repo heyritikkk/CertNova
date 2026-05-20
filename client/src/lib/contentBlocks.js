@@ -96,6 +96,45 @@ export function findSectionForBlock(modules, blockId) {
   return null;
 }
 
+/** Parent lesson block for a section group (e.g. Network Security). */
+export function getSectionParentBlock(node) {
+  if (!node || node.type !== 'section') return null;
+  const title = node.title?.trim();
+  if (!title) return node.items.find((b) => b.type === 'markdown') ?? null;
+  const exact = node.items.find(
+    (b) =>
+      b.type === 'markdown' &&
+      b.sectionTitle?.trim() === title &&
+      (b.navTitle?.trim() === title || !b.navTitle?.trim())
+  );
+  if (exact) return exact;
+  return node.items.find((b) => b.type === 'markdown') ?? null;
+}
+
+/** Sub-lessons only (excludes the parent lesson row from the dropdown list). */
+export function getSectionSubLessonBlocks(node) {
+  if (!node || node.type !== 'section') return [];
+  const parent = getSectionParentBlock(node);
+  if (parent) return node.items.filter((b) => b.id !== parent.id);
+  return node.items;
+}
+
+export function sectionContainsBlock(node, blockId) {
+  return node?.type === 'section' && node.items.some((b) => b.id === blockId);
+}
+
+/** First `# heading` becomes the page title; remaining markdown is lesson body. */
+export function splitMarkdownLeadingTitle(content) {
+  const trimmed = (content || '').trim();
+  if (!trimmed) return { title: null, body: '' };
+  const match = trimmed.match(/^#\s+(.+?)(?:\r?\n|$)/);
+  if (!match) return { title: null, body: trimmed };
+  return {
+    title: match[1].trim(),
+    body: trimmed.slice(match[0].length).trim(),
+  };
+}
+
 export function getBlockNavLabel(block, index) {
   if (block.type === 'markdown') {
     return block.navTitle?.trim() || `Lesson ${index + 1}`;

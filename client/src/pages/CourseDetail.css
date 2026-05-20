@@ -13,6 +13,31 @@
 /* Lesson view: same horizontal span as .navbar-container */
 .course-detail-page--lesson {
   padding: 1.75rem 0 2rem;
+  overflow: visible;
+  /* Solid peach — matches page bg (not gradient) so scroll cover looks seamless */
+  --lesson-nav-shield: #fff5f0;
+  background-color: #fff5f0;
+}
+
+.course-detail-page--lesson::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-offset);
+  z-index: 150;
+  background: var(--lesson-nav-shield);
+  pointer-events: none;
+}
+
+.course-detail-page--lesson .course-detail-inner {
+  overflow: visible;
+}
+
+[data-theme='dark'] .course-detail-page--lesson {
+  --lesson-nav-shield: #0b1220;
+  background-color: #0b1220;
 }
 
 .course-detail-page--lesson .course-detail-inner {

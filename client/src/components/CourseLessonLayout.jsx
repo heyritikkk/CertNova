@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
-  ArrowLeft,
   BookOpen,
   CircleCheck,
   Clock,
@@ -13,11 +11,11 @@ import {
 import {
   courseToContentBlocks,
   formatCourseDate,
-  findModuleForBlock,
   findSectionForBlock,
   getBlockNavLabel,
   getVisibleBlocks,
   groupBlocksIntoModules,
+  splitMarkdownLeadingTitle,
 } from '../lib/contentBlocks';
 import { CourseOutlineNav } from './CourseOutlineNav';
 import './CourseLessonLayout.css';
@@ -51,7 +49,6 @@ const CourseLessonLayout = ({ course }) => {
   const modules = useMemo(() => groupBlocksIntoModules(visibleBlocks), [visibleBlocks]);
 
   const [activeId, setActiveId] = useState(visibleBlocks[0]?.id || null);
-  const [expandedModules, setExpandedModules] = useState(() => new Set());
   const [expandedSections, setExpandedSections] = useState(() => new Set());
   const [answers, setAnswers] = useState({});
   const [submittedQuizzes, setSubmittedQuizzes] = useState({});
@@ -72,36 +69,28 @@ const CourseLessonLayout = ({ course }) => {
   }, [visibleBlocks, activeId]);
 
   useEffect(() => {
-    const mod = findModuleForBlock(modules, activeId);
-    if (mod) {
-      setExpandedModules((prev) => new Set([...prev, mod.id]));
-    }
     const sec = findSectionForBlock(modules, activeId);
     if (sec) {
       setExpandedSections((prev) => new Set([...prev, sec.id]));
     }
   }, [activeId, modules]);
 
-  useEffect(() => {
-    if (modules.length && expandedModules.size === 0) {
-      setExpandedModules(new Set([modules[0].id]));
-    }
-  }, [modules, expandedModules.size]);
+  const toggleSection = (secId) => {
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(secId)) next.delete(secId);
+      else next.add(secId);
+      return next;
+    });
+  };
 
   const activeBlock = visibleBlocks.find((b) => b.id === activeId) || visibleBlocks[0];
   const activeIndex = visibleBlocks.findIndex((b) => b.id === activeBlock?.id);
-  const activeModule = findModuleForBlock(modules, activeBlock?.id);
-  const activeSection = findSectionForBlock(modules, activeBlock?.id);
   const prevBlock = activeIndex > 0 ? visibleBlocks[activeIndex - 1] : null;
   const nextBlock =
     activeIndex >= 0 && activeIndex < visibleBlocks.length - 1
       ? visibleBlocks[activeIndex + 1]
       : null;
-
-  const progressPct =
-    visibleBlocks.length > 0
-      ? Math.round((completedIds.size / visibleBlocks.length) * 100)
-      : 0;
 
   const isCurrentComplete = activeBlock && completedIds.has(activeBlock.id);
   const readMinutes = estimateReadMinutes(activeBlock);
@@ -110,6 +99,17 @@ const CourseLessonLayout = ({ course }) => {
     activeBlock?.type === 'markdown'
       ? activeBlock.navTitle?.trim() || getBlockNavLabel(activeBlock, activeIndex)
       : getBlockNavLabel(activeBlock, activeIndex);
+
+  const markdownLesson = useMemo(() => {
+    if (activeBlock?.type !== 'markdown') {
+      return { title: null, body: '' };
+    }
+    const { title, body } = splitMarkdownLeadingTitle(activeBlock.content);
+    return {
+      title: title || lessonTitle,
+      body: title ? body : activeBlock.content || '',
+    };
+  }, [activeBlock, lessonTitle]);
 
   const toggleComplete = useCallback(() => {
     if (!activeBlock?.id || !course?.id) return;
@@ -162,96 +162,43 @@ const CourseLessonLayout = ({ course }) => {
     }
   };
 
-  const toggleModule = (modId) => {
-    setExpandedModules((prev) => {
-      const next = new Set(prev);
-      if (next.has(modId)) next.delete(modId);
-      else next.add(modId);
-      return next;
-    });
-  };
-
-  const toggleSection = (secId) => {
-    setExpandedSections((prev) => {
-      const next = new Set(prev);
-      if (next.has(secId)) next.delete(secId);
-      else next.add(secId);
-      return next;
-    });
-  };
-
-  const lessonTypeLabel =
-    activeBlock?.type === 'quiz'
-      ? 'Knowledge check'
-      : activeSection
-        ? 'Sub-lesson'
-        : 'Lesson';
-
   return (
     <div className="lesson-layout">
-      <aside className="lesson-sidebar open">
-        <div className="lesson-sidebar-top">
-          <Link to={`/courses/${course.slug}`} className="lesson-back-link">
-            <ArrowLeft size={16} aria-hidden />
-            Course overview
-          </Link>
-
-          <div className="lesson-progress" aria-label="Course progress">
-            <div className="lesson-progress__labels">
-              <span>Your progress</span>
-              <strong>
-                {completedIds.size} / {visibleBlocks.length}
-              </strong>
-            </div>
-            <div
-              className="lesson-progress__track"
-              role="progressbar"
-              aria-valuenow={progressPct}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            >
-              <span className="lesson-progress__bar" style={{ width: `${progressPct}%` }} />
-            </div>
-          </div>
-        </div>
-
-        <div className="lesson-sidebar-head">
-          <p className="lesson-sidebar-label">Course content</p>
-          <h2 className="lesson-sidebar-title">{course.title}</h2>
-        </div>
-
+      <div className="lesson-sidebar-pin">
+        <aside className="lesson-sidebar open">
         <nav className="lesson-nav lesson-nav--accordion" aria-label="Lessons">
-            <CourseOutlineNav
-              modules={modules}
-              blocksForIndex={visibleBlocks}
-              activeBlockId={activeId}
-              onSelectBlock={setActiveId}
-              expandedModules={expandedModules}
-              onToggleModule={toggleModule}
-              expandedSections={expandedSections}
-              onToggleSection={toggleSection}
-              completedBlockIds={completedIds}
-              navItemClassName="lesson-nav-item lesson-nav-item--child"
-              moduleBtnClassName="lesson-module-btn"
-              moduleItemsClassName="lesson-module-items"
-              sectionBtnClassName="lesson-section-btn"
-              sectionItemsClassName="lesson-section-items"
-              moduleClassName="lesson-module"
-            />
+          <CourseOutlineNav
+            modules={modules}
+            blocksForIndex={visibleBlocks}
+            activeBlockId={activeId}
+            onSelectBlock={setActiveId}
+            expandedModules={new Set(modules.map((m) => m.id))}
+            onToggleModule={() => {}}
+            expandedSections={expandedSections}
+            onToggleSection={toggleSection}
+            completedBlockIds={completedIds}
+            hideModuleHeaders
+            lessonGroupNav
+            navItemClassName="lesson-nav-item lesson-nav-item--child"
+            moduleBtnClassName="lesson-module-btn"
+            moduleItemsClassName="lesson-module-items"
+            sectionBtnClassName="lesson-section-btn"
+            sectionItemsClassName="lesson-section-items"
+            moduleClassName="lesson-module"
+          />
         </nav>
-      </aside>
+        </aside>
+      </div>
 
       <main className="lesson-main">
-        <header className="lesson-header">
-          <p className="lesson-eyebrow">
-            {activeModule?.title || 'Course'}
-            <span className="lesson-eyebrow__dot" aria-hidden>
-              ·
-            </span>
-            {lessonTypeLabel} {activeIndex + 1} of {visibleBlocks.length}
-          </p>
-
-          <h1>{lessonTitle}</h1>
+        <div className="lesson-main-top-bar" aria-hidden="true" />
+        <header
+          className={`lesson-header${
+            activeBlock?.type === 'markdown' ? ' lesson-header--content-title' : ''
+          }`}
+        >
+          {activeBlock?.type === 'markdown' ? <h1>{markdownLesson.title}</h1> : null}
+          {activeBlock?.type === 'quiz' ? <h1>{lessonTitle}</h1> : null}
 
           <div className="lesson-meta">
             {readMinutes && activeBlock?.type === 'markdown' ? (
@@ -274,17 +221,13 @@ const CourseLessonLayout = ({ course }) => {
               {isCurrentComplete ? 'Completed' : 'Mark as complete'}
             </button>
           </div>
-
-          {activeIndex === 0 && course.description ? (
-            <p className="lesson-intro">{course.description}</p>
-          ) : null}
         </header>
 
         <article className="lesson-article">
           <div className="lesson-body">
             {activeBlock?.type === 'markdown' && (
               <div className="lesson-prose prose">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{activeBlock.content}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdownLesson.body}</ReactMarkdown>
               </div>
             )}
 

@@ -218,7 +218,7 @@
 .visual-card {
   position: relative;
   flex: 1;
-  min-height: 320px;
+  min-height: 404px;
   border-radius: 24px;
   background: transparent;
   border: 2px solid rgba(255, 255, 255, 0.97);
@@ -228,25 +228,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: visible;
+  padding: 0.65rem;
+  overflow: hidden;
 }
 
 .cyber-stack {
   position: relative;
-  width: min(92%, 340px);
+  width: min(100%, 408px);
+  max-height: 100%;
   aspect-ratio: 1;
   margin: 0 auto;
-  transform: translateY(-2%);
 }
 
 .cyber-arcs {
   position: absolute;
-  inset: -8%;
-  width: calc(116%);
-  height: calc(116%);
-  left: -8%;
-  top: -8%;
-  overflow: visible;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   pointer-events: none;
 }
 
@@ -265,16 +264,16 @@
 }
 
 .cyber-orb-left {
-  width: 44px;
-  height: 44px;
-  left: -2%;
+  width: 52px;
+  height: 52px;
+  left: 3%;
   top: 40%;
 }
 
 .cyber-orb-right {
-  width: 62px;
-  height: 62px;
-  right: -6%;
+  width: 70px;
+  height: 70px;
+  right: 3%;
   top: 32%;
   background:
     radial-gradient(circle at 22% 48%, rgba(255, 186, 150, 0.55) 0%, transparent 42%),
@@ -287,10 +286,10 @@
 }
 
 .cyber-orb-small {
-  width: 22px;
-  height: 22px;
-  right: 14%;
-  bottom: 14%;
+  width: 32px;
+  height: 32px;
+  right: 11%;
+  bottom: 11%;
   opacity: 0.92;
   box-shadow:
     inset 3px 3px 6px rgba(255, 255, 255, 0.28),
@@ -302,9 +301,9 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -48%);
-  width: clamp(118px, 36%, 140px);
-  height: clamp(118px, 36%, 140px);
+  transform: translate(-50%, -50%);
+  width: clamp(134px, 52%, 168px);
+  height: clamp(134px, 52%, 168px);
   border-radius: 28%;
   display: grid;
   place-items: center;
@@ -461,10 +460,10 @@
   }
 
   .visual-card {
-    min-height: 250px;
+    min-height: 300px;
   }
 
   .cyber-stack {
-    transform: translateY(-1%);
+    width: min(100%, 348px);
   }
 }
