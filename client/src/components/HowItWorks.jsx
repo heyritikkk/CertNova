@@ -15,23 +15,39 @@ const HowItWorks = () => {
         <div className="how-body">
           <div className="how-step-marker">1</div>
           <div className="how-left">
-            <h3>Sign Up &amp; Start Your Security+ Plan</h3>
-            <p>
-              Create your account, choose your plan, and access structured lessons and practical labs without setup
-              delays.
-            </p>
-            <p className="how-subtitle">After signup, you will get:</p>
-            <ul>
-              <li>
-                <CheckCircle2 size={16} /> Personalized learning path
-              </li>
-              <li>
-                <CheckCircle2 size={16} /> Full access to labs and mock tests
-              </li>
-              <li>
-                <CheckCircle2 size={16} /> Clear progress and exam-readiness tracking
-              </li>
-            </ul>
+            <div className="how-copy">
+              <h3>Sign Up &amp; Start Security+</h3>
+              <div className="how-copy-lines">
+                <span className="how-copy-line">
+                  Access a complete Security+ learning path with clear module progression,
+                </span>
+                <span className="how-copy-line">
+                  practical labs, and targeted exam preparation.
+                </span>
+              </div>
+              <div className="how-copy-benefits how-copy-benefits--tight">
+                <ul className="how-benefits-list">
+                  <li>
+                    <span className="how-benefit-icon" aria-hidden="true">
+                      <CheckCircle2 size={18} strokeWidth={2.25} />
+                    </span>
+                    <span className="how-benefit-text">Personalized learning path</span>
+                  </li>
+                  <li>
+                    <span className="how-benefit-icon" aria-hidden="true">
+                      <CheckCircle2 size={18} strokeWidth={2.25} />
+                    </span>
+                    <span className="how-benefit-text">Full access to labs and mock tests</span>
+                  </li>
+                  <li>
+                    <span className="how-benefit-icon" aria-hidden="true">
+                      <CheckCircle2 size={18} strokeWidth={2.25} />
+                    </span>
+                    <span className="how-benefit-text">Clear progress and exam-readiness tracking</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
 
           <div className="how-right">
@@ -82,56 +98,96 @@ console.log(lesson.progress);
           </div>
 
           <div className="how-right how-right-text">
-            <h3>Choose Your Learning Modules</h3>
-            <p>
-              Access a complete Security+ learning path with clear module progression, practical labs, and targeted
-              exam preparation.
-            </p>
-            <ul className="how-two-col-list">
-              <li>
-                <CheckCircle2 size={16} /> Threat Management
-              </li>
-              <li>
-                <CheckCircle2 size={16} /> Network Security
-              </li>
-              <li>
-                <CheckCircle2 size={16} /> Identity and Access
-              </li>
-              <li>
-                <CheckCircle2 size={16} /> Security Operations
-              </li>
-              <li>
-                <CheckCircle2 size={16} /> Vulnerability Labs
-              </li>
-              <li>
-                <CheckCircle2 size={16} /> Exam Practice Sets
-              </li>
-            </ul>
+            <div className="how-copy">
+              <h3>Choose Your Learning Modules</h3>
+              <div className="how-copy-lines">
+                <span className="how-copy-line">
+                  Access a complete Security+ learning path with clear module progression,
+                </span>
+                <span className="how-copy-line">
+                  practical labs, and targeted exam preparation.
+                </span>
+              </div>
+              <ul className="how-two-col-list how-benefits-list how-benefits-list--grid">
+                <li>
+                  <span className="how-benefit-icon" aria-hidden="true">
+                    <CheckCircle2 size={18} strokeWidth={2.25} />
+                  </span>
+                  <span className="how-benefit-text">Threat Management</span>
+                </li>
+                <li>
+                  <span className="how-benefit-icon" aria-hidden="true">
+                    <CheckCircle2 size={18} strokeWidth={2.25} />
+                  </span>
+                  <span className="how-benefit-text">Network Security</span>
+                </li>
+                <li>
+                  <span className="how-benefit-icon" aria-hidden="true">
+                    <CheckCircle2 size={18} strokeWidth={2.25} />
+                  </span>
+                  <span className="how-benefit-text">Identity and Access</span>
+                </li>
+                <li>
+                  <span className="how-benefit-icon" aria-hidden="true">
+                    <CheckCircle2 size={18} strokeWidth={2.25} />
+                  </span>
+                  <span className="how-benefit-text">Security Operations</span>
+                </li>
+                <li>
+                  <span className="how-benefit-icon" aria-hidden="true">
+                    <CheckCircle2 size={18} strokeWidth={2.25} />
+                  </span>
+                  <span className="how-benefit-text">Vulnerability Labs</span>
+                </li>
+                <li>
+                  <span className="how-benefit-icon" aria-hidden="true">
+                    <CheckCircle2 size={18} strokeWidth={2.25} />
+                  </span>
+                  <span className="how-benefit-text">Exam Practice Sets</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
         <div className="how-body how-body-step-two">
           <div className="how-step-marker">3</div>
           <div className="how-left">
-            <h3>Integrate &amp; Scale</h3>
-            <p>
-              Start smoothly and scale your Security+ preparation plan as your learning pace increases.
-            </p>
-            <p className="how-subtitle">Scale your prep with confidence:</p>
-            <ul className="how-two-col-list">
-              <li>
-                <CheckCircle2 size={16} /> Real-time progress monitoring
-              </li>
-              <li>
-                <CheckCircle2 size={16} /> Adaptive practice intensity
-              </li>
-              <li>
-                <CheckCircle2 size={16} /> Upgrade plans in one click
-              </li>
-              <li>
-                <CheckCircle2 size={16} /> No interruption while scaling
-              </li>
-            </ul>
+            <div className="how-copy">
+              <h3>Integrate &amp; Scale</h3>
+              <p className="how-copy-lead">
+                Start smoothly and scale your Security+ preparation plan as your learning pace increases.
+              </p>
+              <div className="how-copy-benefits">
+                <p className="how-copy-label">Scale your prep with confidence</p>
+                <ul className="how-two-col-list how-benefits-list how-benefits-list--grid">
+                  <li>
+                    <span className="how-benefit-icon" aria-hidden="true">
+                      <CheckCircle2 size={18} strokeWidth={2.25} />
+                    </span>
+                    <span className="how-benefit-text">Real-time progress monitoring</span>
+                  </li>
+                  <li>
+                    <span className="how-benefit-icon" aria-hidden="true">
+                      <CheckCircle2 size={18} strokeWidth={2.25} />
+                    </span>
+                    <span className="how-benefit-text">Adaptive practice intensity</span>
+                  </li>
+                  <li>
+                    <span className="how-benefit-icon" aria-hidden="true">
+                      <CheckCircle2 size={18} strokeWidth={2.25} />
+                    </span>
+                    <span className="how-benefit-text">Upgrade plans in one click</span>
+                  </li>
+                  <li>
+                    <span className="how-benefit-icon" aria-hidden="true">
+                      <CheckCircle2 size={18} strokeWidth={2.25} />
+                    </span>
+                    <span className="how-benefit-text">No interruption while scaling</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
 
           <div className="how-right">

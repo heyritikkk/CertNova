@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { courseToContentBlocks } from '../lib/contentBlocks';
-import { PlantUMLRenderer } from './PlantUMLRenderer';
+import CertnovaMarkdown from './CertnovaMarkdown';
 import './CourseContentView.css';
 
 const CourseContentView = ({ course }) => {
@@ -34,29 +32,8 @@ const CourseContentView = ({ course }) => {
       {blocks.map((block, index) => {
         if (block.type === 'markdown' && block.content?.trim()) {
           return (
-            <div key={block.id || index} className="course-content-markdown prose">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  code({ node, inline, className, children, ...props }) {
-                    const match = /language-(plantuml|puml)/i.exec(className || '');
-                    if (!inline && match) {
-                      return (
-                        <PlantUMLRenderer
-                          code={String(children).replace(/\n$/, '')}
-                        />
-                      );
-                    }
-                    return (
-                      <code className={className} {...props}>
-                        {children}
-                      </code>
-                    );
-                  },
-                }}
-              >
-                {block.content}
-              </ReactMarkdown>
+            <div key={block.id || index} className="course-content-markdown">
+              <CertnovaMarkdown>{block.content}</CertnovaMarkdown>
             </div>
           );
         }

@@ -38,7 +38,7 @@
   color: #1a202c;
   margin-bottom: 1rem;
   letter-spacing: -0.5px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.12);
+  text-shadow: var(--heading-text-shadow);
 }
 
 .footer-description {

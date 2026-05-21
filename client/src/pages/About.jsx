@@ -61,16 +61,15 @@ const About = () => {
           </p>
         </header>
 
-        <ul className="about-stats" aria-label="Platform highlights">
-          {STATS.map((item) => (
-            <li key={item.label} className="about-stat">
-              <span className="about-stat__value">{item.value}</span>
-              <span className="about-stat__label">{item.label}</span>
-            </li>
-          ))}
-        </ul>
-
-        <section className="about-block" aria-labelledby="about-mission-heading">
+        <section className="about-highlights" aria-labelledby="about-mission-heading">
+          <ul className="about-stats" aria-label="Platform highlights">
+            {STATS.map((item) => (
+              <li key={item.label} className="about-stat">
+                <span className="about-stat__value">{item.value}</span>
+                <span className="about-stat__label">{item.label}</span>
+              </li>
+            ))}
+          </ul>
           <div className="about-duo">
             <article className="about-card about-card--accent">
               <div className="about-card__icon" aria-hidden>
@@ -82,7 +81,7 @@ const About = () => {
                 experiences without overwhelming dashboards or outdated materials.
               </p>
             </article>
-            <article className="about-card">
+            <article className="about-card about-card--vision">
               <div className="about-card__icon" aria-hidden>
                 <Eye size={22} />
               </div>
@@ -116,10 +115,10 @@ const About = () => {
         <section className="about-block about-approach" aria-labelledby="about-approach-heading">
           <div className="about-approach__copy">
             <span className="about-eyebrow">How we teach</span>
-            <h2 id="about-approach-heading">A simple path from signup to exam-ready</h2>
+            <h2 id="about-approach-heading">From signup to exam-ready</h2>
             <p>
-              We design courses as living syllabi: modules, lessons, and outcomes your team can update in
-              admin, so learners always see the latest structure on the public site.
+              Living syllabi your team updates in admin—learners always see the latest modules and lessons
+              on the site.
             </p>
             <ul className="about-approach__list">
               {APPROACH.map((line) => (
@@ -133,7 +132,7 @@ const About = () => {
               Browse courses <ArrowRight size={18} />
             </Link>
           </div>
-          <div className="about-approach__panel" aria-hidden>
+          <div className="about-approach__panel" aria-label="Your learning journey">
             <p className="about-approach__panel-label">Your learning journey</p>
             <ol>
               <li>

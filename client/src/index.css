@@ -20,6 +20,11 @@
   --navbar-bar-height: calc(1.4rem + 2.5rem);
   --navbar-top-gap: 1.5rem;
   --navbar-offset: calc(var(--navbar-top-gap) + var(--navbar-bar-height));
+  --heading-text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  --heading-text-shadow-sm: 1px 1px 6px rgba(0, 0, 0, 0.1);
+  /* 25% brand tint + 75% white (lesson panels, content surfaces) */
+  --surface-brand-25: color-mix(in srgb, var(--brand-accent-soft) 25%, #ffffff 75%);
+  --surface-brand-25-code: color-mix(in srgb, var(--brand-accent-soft) 25%, #f8fafc 75%);
 }
 
 /* Navbar spans full width; page content stays a bit narrower and centered */
@@ -38,6 +43,8 @@
 }
 
 [data-theme='dark'] {
+  --surface-brand-25: color-mix(in srgb, var(--brand-accent-soft) 25%, #1e293b 75%);
+  --surface-brand-25-code: color-mix(in srgb, var(--brand-accent-soft) 25%, #0f172a 75%);
   --bg-main: radial-gradient(circle at 50% 50%, #0f172a 0%, #1e293b 100%);
   --text-main: #e2e8f0;
 }
@@ -149,6 +156,20 @@ body {
   border-color: transparent !important;
 }
 
+[data-theme='dark'] .pricing-eyebrow,
+[data-theme='dark'] .courses-eyebrow,
+[data-theme='dark'] .blog-eyebrow {
+  color: #ffb18f !important;
+}
+
+[data-theme='dark'] .blog-hero h1 {
+  color: #f1f5f9 !important;
+}
+
+[data-theme='dark'] .blog-hero p {
+  color: #94a3b8 !important;
+}
+
 [data-theme='dark'] .how-profile,
 [data-theme='dark'] .how-panel,
 [data-theme='dark'] .how-code-card,
@@ -168,6 +189,41 @@ body {
 
 [data-theme='dark'] .how-item {
   border-top-color: rgba(148, 163, 184, 0.25) !important;
+}
+
+[data-theme='dark'] .how-copy h3 {
+  color: #f1f5f9 !important;
+}
+
+[data-theme='dark'] .how-copy-lead {
+  color: #94a3b8 !important;
+}
+
+[data-theme='dark'] .how-copy-label {
+  color: #64748b !important;
+}
+
+[data-theme='dark'] .how-copy-desc,
+[data-theme='dark'] .how-copy-line {
+  color: #94a3b8 !important;
+}
+
+[data-theme='dark'] .how-copy-benefits {
+  border-top-color: rgba(148, 163, 184, 0.25) !important;
+}
+
+[data-theme='dark'] .how-benefits-list li {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+}
+
+[data-theme='dark'] .how-benefit-text {
+  color: #e2e8f0 !important;
+}
+
+[data-theme='dark'] .how-benefit-icon {
+  background: rgba(196, 90, 47, 0.2) !important;
+  color: #ffb18f !important;
 }
 
 [data-theme='dark'] .testimonial-left,
@@ -214,7 +270,7 @@ h1, h2, h3, h4, h5, h6, .serif-text {
   font-weight: 400;
   letter-spacing: -0.5px;
   line-height: 1.1;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+  text-shadow: var(--heading-text-shadow);
 }
 
 /* Keep key social-proof sections readable on theme toggle */

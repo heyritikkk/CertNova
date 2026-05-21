@@ -30,7 +30,7 @@
   font-weight: 400;
   letter-spacing: -0.5px;
   color: #1a202c;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+  text-shadow: var(--heading-text-shadow);
 }
 
 .testimonials-header p {
@@ -70,7 +70,7 @@
   font-family: 'Playfair Display', serif;
   font-weight: 400;
   letter-spacing: -0.3px;
-  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.08);
+  text-shadow: var(--heading-text-shadow-sm);
 }
 
 .testimonial-author {

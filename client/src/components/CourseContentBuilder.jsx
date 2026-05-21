@@ -18,9 +18,11 @@ import {
   Workflow,
 } from 'lucide-react';
 import { getBlockOutlinePath } from '../lib/contentBlocks';
+import { normalizeNavTitle, NAV_TITLE_MAX_WORDS } from '../lib/navTitleWords';
 import { applyMarkdownAction, MARKDOWN_TOOLBAR_ACTIONS } from '../lib/markdownToolbar';
 import PlantUmlAdminPanel from './PlantUmlAdminPanel';
 import SuggestedQuizEditor from './SuggestedQuizEditor';
+import CertnovaMarkdown from './CertnovaMarkdown';
 import './CourseContentBuilder.css';
 import './PlantUmlAdminPanel.css';
 
@@ -227,17 +229,26 @@ const CourseContentBuilder = ({
             {activeBlock.type === 'markdown' ? (
               <>
                 <BlockPlacementDetails block={activeBlock} updateBlock={updateBlock} />
-                <textarea
-                  ref={(el) => {
-                    textareaRefs.current[activeBlock.id] = el;
-                  }}
-                  className="content-block-textarea content-block-textarea--editor"
-                  value={activeBlock.content}
-                  onChange={(e) => updateBlock(activeBlock.id, { content: e.target.value })}
-                  onFocus={() => setActiveBlockId(activeBlock.id)}
-                  placeholder="Write course content in Markdown..."
-                  rows={16}
-                />
+                <div className="content-builder-markdown-split">
+                  <textarea
+                    ref={(el) => {
+                      textareaRefs.current[activeBlock.id] = el;
+                    }}
+                    className="content-block-textarea content-block-textarea--editor"
+                    value={activeBlock.content}
+                    onChange={(e) => updateBlock(activeBlock.id, { content: e.target.value })}
+                    onFocus={() => setActiveBlockId(activeBlock.id)}
+                    placeholder="Write course content in Markdown..."
+                    rows={16}
+                    aria-label="Lesson markdown source"
+                  />
+                  <aside className="admin-lesson-preview" aria-label="Lesson preview">
+                    <p className="admin-lesson-preview__label">Live preview</p>
+                    <div className="admin-lesson-preview__body">
+                      <CertnovaMarkdown>{activeBlock.content}</CertnovaMarkdown>
+                    </div>
+                  </aside>
+                </div>
                 <SuggestedQuizEditor block={activeBlock} updateBlock={updateBlock} />
               </>
             ) : (
@@ -356,6 +367,12 @@ function BlockPlacementDetails({ block, updateBlock }) {
 }
 
 function motionContentBuilderPlacementSection({ block, updateBlock }) {
+  const navHint = `Use ${NAV_TITLE_MAX_WORDS} words or fewer (e.g. 1.1 Security Introduction).`;
+
+  const commitNavField = (field, raw) => {
+    updateBlock(block.id, { [field]: normalizeNavTitle(raw) });
+  };
+
   return (
     <>
       <div className="form-group content-section-title">
@@ -364,8 +381,10 @@ function motionContentBuilderPlacementSection({ block, updateBlock }) {
           id={`sec-${block.id}`}
           value={block.sectionTitle || ''}
           onChange={(e) => updateBlock(block.id, { sectionTitle: e.target.value })}
-          placeholder="e.g. Lesson 1"
+          onBlur={(e) => commitNavField('sectionTitle', e.target.value)}
+          placeholder="e.g. 01 Network Foundations"
         />
+        <small className="content-nav-hint">{navHint}</small>
       </div>
       <div className="form-group content-nav-title">
         <label htmlFor={`nav-${block.id}`}>Sidebar title</label>
@@ -373,8 +392,10 @@ function motionContentBuilderPlacementSection({ block, updateBlock }) {
           id={`nav-${block.id}`}
           value={block.navTitle || ''}
           onChange={(e) => updateBlock(block.id, { navTitle: e.target.value })}
-          placeholder="e.g. Introduction"
+          onBlur={(e) => commitNavField('navTitle', e.target.value)}
+          placeholder="e.g. 1.1 Security Introduction"
         />
+        <small className="content-nav-hint">{navHint}</small>
       </div>
     </>
   );

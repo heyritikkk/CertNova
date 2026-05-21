@@ -50,7 +50,7 @@
   font-weight: 400;
   letter-spacing: -0.5px;
   color: #1a202c;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+  text-shadow: var(--heading-text-shadow);
   margin: 0;
 }
 

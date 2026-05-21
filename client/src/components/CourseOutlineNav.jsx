@@ -16,6 +16,7 @@ import {
   groupModuleItemsIntoSections,
   sectionContainsBlock,
 } from '../lib/contentBlocks';
+import { normalizeNavTitle } from '../lib/navTitleWords';
 
 /**
  * Renders module → optional section → lesson tree (public + admin editable).
@@ -210,7 +211,7 @@ function OutlineSectionHeader({
   }, [editing]);
 
   const commitRename = () => {
-    const next = draft.trim();
+    const next = normalizeNavTitle(draft);
     if (next && next !== title) onRename?.(next);
     setEditing(false);
   };
@@ -325,7 +326,8 @@ function OutlineNavRow({
   }, [editing]);
 
   const commitRename = () => {
-    const next = draft.trim();
+    const next =
+      block.type === 'markdown' ? normalizeNavTitle(draft) : draft.trim();
     if (next) onRename?.(next);
     setEditing(false);
   };

@@ -29,6 +29,8 @@ function parseContentBlocks(raw) {
   }
 }
 
+const { normalizeContentBlocksNavTitles } = require('./lib/navTitleWords');
+
 function normalizeCoursePayload(body = {}) {
   const title = String(body.title || '').trim();
   const description = String(body.description || '').trim();
@@ -43,7 +45,7 @@ function normalizeCoursePayload(body = {}) {
   const price = Number.isFinite(Number(body.price)) ? Number(body.price) : 0;
   const published = body.published === true || body.published === 1 || body.published === '1' ? 1 : 0;
   const quiz = parseQuiz(body.quiz);
-  const contentBlocks = parseContentBlocks(body.content_blocks);
+  const contentBlocks = normalizeContentBlocksNavTitles(parseContentBlocks(body.content_blocks));
   const detailDescription = String(body.detail_description || description).trim();
   const learningOutcomes = String(body.learning_outcomes || '').trim();
   const instructorName = String(body.instructor_name || '').trim();

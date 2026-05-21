@@ -1,3 +1,5 @@
+import { normalizeNavTitle, normalizeContentBlocksNavTitles } from './navTitleWords';
+
 export function newBlockId() {
   return `b-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -179,7 +181,7 @@ export function addTopLevelLesson(blocks, mod) {
   const moduleTitle = moduleTitleForStorage(mod);
   const block = createMarkdownBlock();
   block.moduleTitle = moduleTitle;
-  block.navTitle = 'New lesson';
+  block.navTitle = 'New Lesson';
   const last = mod.items[mod.items.length - 1];
   return { blocks: insertBlockAfter(blocks, last?.id, block), block };
 }
@@ -188,7 +190,7 @@ export function addSubLesson(blocks, { moduleTitle, sectionTitle, afterId }) {
   const block = createMarkdownBlock();
   block.moduleTitle = moduleTitle || '';
   block.sectionTitle = sectionTitle;
-  block.navTitle = 'New sub-lesson';
+  block.navTitle = 'New Sublesson';
   return { blocks: insertBlockAfter(blocks, afterId, block), block };
 }
 
@@ -211,7 +213,7 @@ export function addSubLessonUnderFlat(blocks, blockId) {
 
 export function renameSectionInModule(blocks, mod, oldTitle, newTitle) {
   const oldT = oldTitle?.trim();
-  const newT = newTitle?.trim();
+  const newT = normalizeNavTitle(newTitle);
   if (!oldT || !newT || oldT === newT) return blocks;
   const itemIds = new Set(mod.items.map((b) => b.id));
   return blocks.map((b) => {
@@ -271,7 +273,9 @@ export function parseContentBlocks(raw) {
   if (Array.isArray(raw)) return raw.length ? raw : [createMarkdownBlock()];
   try {
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length ? parsed : [createMarkdownBlock()];
+    return normalizeContentBlocksNavTitles(
+      Array.isArray(parsed) && parsed.length ? parsed : [createMarkdownBlock()]
+    );
   } catch {
     return [createMarkdownBlock()];
   }
@@ -349,10 +353,11 @@ export function countVisibleLessons(course) {
 }
 
 export function blocksToLegacyFields(blocks) {
+  const normalized = normalizeContentBlocksNavTitles(blocks || []);
   const markdownParts = [];
   const quiz = [];
 
-  (blocks || []).forEach((block) => {
+  normalized.forEach((block) => {
     if (block.type === 'markdown' && block.content?.trim()) {
       markdownParts.push(block.content.trim());
     }
@@ -369,6 +374,6 @@ export function blocksToLegacyFields(blocks) {
   return {
     content_markdown: markdownParts.join('\n\n'),
     quiz,
-    content_blocks: blocks,
+    content_blocks: normalized,
   };
 }

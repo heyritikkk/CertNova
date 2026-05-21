@@ -15,8 +15,8 @@
   padding: 1.75rem 0 2rem;
   overflow: visible;
   /* Solid peach - matches page bg (not gradient) so scroll cover looks seamless */
-  --lesson-nav-shield: #fff5f0;
-  background-color: #fff5f0;
+  --lesson-nav-shield: color-mix(in srgb, var(--brand-accent-soft) 25%, #fff5f0 75%);
+  background-color: var(--lesson-nav-shield);
 }
 
 .course-detail-page--lesson::before {
@@ -36,8 +36,8 @@
 }
 
 [data-theme='dark'] .course-detail-page--lesson {
-  --lesson-nav-shield: #0b1220;
-  background-color: #0b1220;
+  --lesson-nav-shield: color-mix(in srgb, var(--brand-accent-soft) 12%, #0b1220 88%);
+  background-color: var(--lesson-nav-shield);
 }
 
 .course-detail-page--lesson .course-detail-inner {

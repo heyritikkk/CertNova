@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { PlantUMLRenderer } from './PlantUMLRenderer';
+import CertnovaMarkdown from './CertnovaMarkdown';
 import {
   BookOpen,
   CircleCheck,
@@ -363,29 +361,8 @@ const CourseLessonLayout = ({ course }) => {
           <div className="lesson-body">
             {activeBlock?.type === 'markdown' && (
               <>
-                <div className="lesson-prose prose">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      code({ node, inline, className, children, ...props }) {
-                        const match = /language-(plantuml|puml)/i.exec(className || '');
-                        if (!inline && match) {
-                          return (
-                            <PlantUMLRenderer
-                              code={String(children).replace(/\n$/, '')}
-                            />
-                          );
-                        }
-                        return (
-                          <code className={className} {...props}>
-                            {children}
-                          </code>
-                        );
-                      },
-                    }}
-                  >
-                    {markdownLesson.body}
-                  </ReactMarkdown>
+                <div className="lesson-prose">
+                  <CertnovaMarkdown>{markdownLesson.body}</CertnovaMarkdown>
                 </div>
                 <SuggestedQuiz
                   key={activeBlock.id}

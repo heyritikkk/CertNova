@@ -8,6 +8,7 @@ const Pricing = ({ hideHeader = false }) => {
     <section className={`pricing-section${hideHeader ? ' pricing-section--no-header' : ''}`} id="pricing">
       {!hideHeader && (
         <div className="pricing-header">
+          <span className="pricing-eyebrow">Pricing</span>
           <h2>
             Pick a plan that <span>scales with you</span>
           </h2>

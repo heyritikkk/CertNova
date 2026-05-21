@@ -61,13 +61,46 @@ For steps, use ordered lists:
 
 ---
 
-## Blockquotes (Professor Tips)
+## Lesson sections (standard 4-part layout)
 
-Use `>` for callout boxes — these appear as styled blockquotes in the lesson viewer.
+Each sub-lesson should use these four sections in order:
+
+| Section | Heading | Content |
+| :------ | :------ | :------ |
+| **1** | `### 1. Core Technical Breakdown` | Technical explanations (bullets, tables, diagrams). No callouts here. |
+| **2** | `### 2. Real-World Analogy` | Plain-language analogies; each bullet gets a **Real life example** callout below it. |
+| **3** | `### 3. Attack & Defense Lab Scenario` | Attack/defense walkthrough; each bullet gets a **Real life example** callout below it. |
+| **4** | `### 4. Professor's Deep-Dive Notes` | One **Professor's Tip** blockquote at the end. |
+
+## Blockquotes (Real life examples & Professor tips)
+
+Use `>` for callout boxes — peach accent for real-life examples, gray for professor tips.
+
+**Section 2 — Real life example** (after each analogy bullet):
 
 ```markdown
-> 💡 *Professor's Tip:* Memorize the layer-by-layer attacks for CISSP and Security+. Interviewers love asking at which layer a Next-Generation Firewall operates versus a traditional packet-filtering firewall.
+### 2. Real-World Analogy
+* **Stateful Firewall:** The bouncer gives you a UV hand-stamp when you enter…
+
+  > *Real life example:* **Stateful Firewall** The bouncer gives you a UV hand-stamp when you enter…
 ```
+
+**Section 3 — Real life example** (after each Attack / Defense bullet):
+
+```markdown
+### 3. Attack & Defense Lab Scenario
+* **The Attack (Port Evasion):** An attacker tunnels SSH over port 443…
+
+  > *Real life example:* An attacker tunnels SSH over port 443…
+```
+
+**Section 4 — Professor's Tip:**
+
+```markdown
+> *Professor's Tip:* Memorize the layer-by-layer attacks for CISSP and Security+…
+```
+
+Indent section 2 and 3 callouts with **two spaces** so they nest under the list item above.
 
 ---
 

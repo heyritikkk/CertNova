@@ -1,0 +1,429 @@
+/* Shared lesson / course / admin markdown typography */
+.lesson-prose,
+.course-content-markdown,
+.admin-lesson-preview {
+  line-height: 1.8;
+  color: #1e293b;
+  font-size: 1.05rem;
+}
+
+.lesson-prose h2,
+.lesson-prose h3,
+.lesson-prose h4,
+.course-content-markdown h2,
+.course-content-markdown h3,
+.course-content-markdown h4,
+.admin-lesson-preview h2,
+.admin-lesson-preview h3,
+.admin-lesson-preview h4 {
+  color: #0f172a;
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.lesson-prose > h2:first-child,
+.lesson-prose > h3:first-child,
+.lesson-prose > h4:first-child {
+  margin-top: 2px;
+}
+
+.lesson-prose > p:first-child,
+.lesson-prose > pre:first-child,
+.lesson-prose > ul:first-child,
+.lesson-prose > ol:first-child,
+.course-content-markdown > h2:first-child,
+.course-content-markdown > h3:first-child,
+.course-content-markdown > h4:first-child,
+.course-content-markdown > p:first-child,
+.course-content-markdown > pre:first-child,
+.admin-lesson-preview > h2:first-child,
+.admin-lesson-preview > h3:first-child,
+.admin-lesson-preview > h4:first-child,
+.admin-lesson-preview__body > :first-child {
+  margin-top: 0;
+}
+
+.lesson-prose h2,
+.course-content-markdown h2,
+.admin-lesson-preview h2 {
+  font-size: 1.6rem;
+}
+
+.lesson-prose h3,
+.course-content-markdown h3,
+.admin-lesson-preview h3 {
+  font-size: 1.35rem;
+}
+
+.lesson-prose h4,
+.course-content-markdown h4,
+.admin-lesson-preview h4 {
+  font-size: 1.15rem;
+}
+
+.lesson-prose p,
+.course-content-markdown p,
+.admin-lesson-preview p {
+  margin: 0 0 3.2rem;
+  line-height: 1.8;
+}
+
+.lesson-prose p:last-child,
+.course-content-markdown p:last-child,
+.admin-lesson-preview p:last-child {
+  margin-bottom: 0;
+}
+
+.lesson-prose ul,
+.lesson-prose ol,
+.course-content-markdown ul,
+.course-content-markdown ol,
+.admin-lesson-preview ul,
+.admin-lesson-preview ol {
+  padding-left: 1.75rem;
+  margin: 3.5rem 0 4rem;
+}
+
+.lesson-prose pre + ul,
+.lesson-prose pre + ol,
+.lesson-prose .puml-container + ul,
+.lesson-prose .puml-container + ol,
+.lesson-prose p + ul,
+.lesson-prose p + ol,
+.course-content-markdown pre + ul,
+.course-content-markdown pre + ol,
+.course-content-markdown .puml-container + ul,
+.course-content-markdown .puml-container + ol,
+.course-content-markdown p + ul,
+.course-content-markdown p + ol,
+.admin-lesson-preview pre + ul,
+.admin-lesson-preview pre + ol,
+.admin-lesson-preview .puml-container + ul,
+.admin-lesson-preview .puml-container + ol,
+.admin-lesson-preview p + ul,
+.admin-lesson-preview p + ol {
+  margin-top: 2.5rem;
+}
+
+.lesson-prose .puml-container,
+.course-content-markdown .puml-container,
+.admin-lesson-preview .puml-container {
+  margin: 3.5rem 0 5rem;
+}
+
+.lesson-prose ul + p,
+.lesson-prose ol + p,
+.lesson-prose ul + pre,
+.lesson-prose ol + pre,
+.lesson-prose ul + h2,
+.lesson-prose ol + h2,
+.lesson-prose ul + h3,
+.lesson-prose ol + h3,
+.course-content-markdown ul + p,
+.course-content-markdown ol + p,
+.course-content-markdown ul + pre,
+.course-content-markdown ol + pre,
+.course-content-markdown ul + h2,
+.course-content-markdown ol + h2,
+.admin-lesson-preview ul + p,
+.admin-lesson-preview ol + p,
+.admin-lesson-preview ul + pre,
+.admin-lesson-preview ol + pre {
+  margin-top: 4rem;
+}
+
+.lesson-prose li,
+.course-content-markdown li,
+.admin-lesson-preview li {
+  margin-bottom: 3rem;
+  line-height: 1.8;
+  padding-left: 0.2rem;
+}
+
+.lesson-prose li + li,
+.course-content-markdown li + li,
+.admin-lesson-preview li + li {
+  margin-top: 0.7rem;
+}
+
+.lesson-prose li:last-child,
+.course-content-markdown li:last-child,
+.admin-lesson-preview li:last-child {
+  margin-bottom: 0;
+}
+
+.lesson-prose li > p,
+.course-content-markdown li > p,
+.admin-lesson-preview li > p {
+  margin: 1rem 0 0;
+  line-height: 1.8;
+}
+
+.lesson-prose li > p:last-child,
+.course-content-markdown li > p:last-child,
+.admin-lesson-preview li > p:last-child {
+  margin-bottom: 0;
+}
+
+.lesson-prose li > ul,
+.lesson-prose li > ol,
+.course-content-markdown li > ul,
+.course-content-markdown li > ol,
+.admin-lesson-preview li > ul,
+.admin-lesson-preview li > ol {
+  margin-top: 1.7rem;
+  margin-bottom: 1.3rem;
+}
+
+.lesson-prose h2 + p,
+.lesson-prose h3 + p,
+.lesson-prose h4 + p,
+.course-content-markdown h2 + p,
+.course-content-markdown h3 + p,
+.course-content-markdown h4 + p,
+.admin-lesson-preview h2 + p,
+.admin-lesson-preview h3 + p,
+.admin-lesson-preview h4 + p {
+  margin-top: 1.3rem;
+}
+
+.lesson-prose img,
+.course-content-markdown img,
+.admin-lesson-preview img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 4rem 0;
+}
+
+.lesson-prose pre,
+.course-content-markdown pre,
+.admin-lesson-preview pre {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 3.5rem 0 5rem;
+  background: var(--surface-brand-25-code);
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  padding: 3rem 3.3rem;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  white-space: pre;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-align: center;
+}
+
+.lesson-prose pre code,
+.course-content-markdown pre code,
+.admin-lesson-preview pre code {
+  font-family: inherit;
+  background: none;
+  padding: 0;
+  border: none;
+  white-space: pre;
+}
+
+.lesson-prose blockquote,
+.course-content-markdown blockquote,
+.admin-lesson-preview blockquote {
+  margin: 4rem 0;
+  padding: 2.3rem 2.7rem;
+  border-left: 3px solid #cbd5e1;
+  background: var(--surface-brand-25-code);
+  color: #475569;
+  line-height: 1.75;
+}
+
+.lesson-prose blockquote.prose-callout--tip,
+.course-content-markdown blockquote.prose-callout--tip,
+.admin-lesson-preview blockquote.prose-callout--tip {
+  border-left-color: #94a3b8;
+}
+
+.lesson-prose blockquote.prose-callout--example,
+.course-content-markdown blockquote.prose-callout--example,
+.admin-lesson-preview blockquote.prose-callout--example {
+  border-left-color: var(--brand-accent, #f48b60);
+  background: color-mix(in srgb, var(--brand-accent-soft, #fff4ee) 18%, #ffffff 82%);
+}
+
+.lesson-prose li blockquote,
+.course-content-markdown li blockquote,
+.admin-lesson-preview li blockquote {
+  margin: 1.6rem 0 0.4rem;
+  padding: 1.35rem 1.5rem;
+  font-size: 0.98rem;
+}
+
+.lesson-prose li blockquote.prose-callout--example,
+.course-content-markdown li blockquote.prose-callout--example,
+.admin-lesson-preview li blockquote.prose-callout--example {
+  margin-top: 1.25rem;
+}
+
+.lesson-prose hr,
+.course-content-markdown hr,
+.admin-lesson-preview hr {
+  margin: 5rem 0;
+  border: none;
+  border-top: 1px solid #e2e8f0;
+}
+
+.lesson-prose table,
+.course-content-markdown table,
+.admin-lesson-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 4.5rem 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: left;
+  border: 1px solid var(--brand-accent-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(244, 139, 96, 0.05);
+}
+
+.lesson-prose th,
+.course-content-markdown th,
+.admin-lesson-preview th {
+  background-color: var(--brand-accent-soft);
+  color: var(--brand-accent-deep);
+  font-weight: 600;
+  padding: 1rem 1.25rem;
+  border-bottom: 2px solid var(--brand-accent-border);
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.lesson-prose td,
+.course-content-markdown td,
+.admin-lesson-preview td {
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid rgba(244, 139, 96, 0.1);
+  color: #334155;
+  vertical-align: top;
+}
+
+.lesson-prose tr:last-child td,
+.course-content-markdown tr:last-child td,
+.admin-lesson-preview tr:last-child td {
+  border-bottom: none;
+}
+
+.lesson-prose tr:nth-child(even),
+.course-content-markdown tr:nth-child(even),
+.admin-lesson-preview tr:nth-child(even) {
+  background-color: rgba(255, 244, 238, 0.3);
+}
+
+.lesson-prose tr:hover,
+.course-content-markdown tr:hover,
+.admin-lesson-preview tr:hover {
+  background-color: rgba(255, 244, 238, 0.7);
+  transition: background-color 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  .lesson-prose table,
+  .course-content-markdown table,
+  .admin-lesson-preview table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+[data-theme='dark'] .lesson-prose,
+[data-theme='dark'] .course-content-markdown,
+[data-theme='dark'] .admin-lesson-preview,
+[data-theme='dark'] .lesson-prose h2,
+[data-theme='dark'] .lesson-prose h3,
+[data-theme='dark'] .lesson-prose h4,
+[data-theme='dark'] .course-content-markdown h2,
+[data-theme='dark'] .course-content-markdown h3,
+[data-theme='dark'] .course-content-markdown h4,
+[data-theme='dark'] .admin-lesson-preview h2,
+[data-theme='dark'] .admin-lesson-preview h3,
+[data-theme='dark'] .admin-lesson-preview h4,
+[data-theme='dark'] .lesson-prose p,
+[data-theme='dark'] .lesson-prose li,
+[data-theme='dark'] .lesson-prose strong,
+[data-theme='dark'] .course-content-markdown p,
+[data-theme='dark'] .course-content-markdown li,
+[data-theme='dark'] .course-content-markdown strong,
+[data-theme='dark'] .admin-lesson-preview p,
+[data-theme='dark'] .admin-lesson-preview li,
+[data-theme='dark'] .admin-lesson-preview strong {
+  color: #e2e8f0;
+}
+
+[data-theme='dark'] .lesson-prose pre,
+[data-theme='dark'] .course-content-markdown pre,
+[data-theme='dark'] .admin-lesson-preview pre {
+  background: var(--surface-brand-25-code);
+  border-color: rgba(148, 163, 184, 0.32);
+  color: #e2e8f0;
+}
+
+[data-theme='dark'] .lesson-prose pre code,
+[data-theme='dark'] .course-content-markdown pre code,
+[data-theme='dark'] .admin-lesson-preview pre code {
+  color: #e2e8f0;
+}
+
+[data-theme='dark'] .lesson-prose blockquote,
+[data-theme='dark'] .course-content-markdown blockquote,
+[data-theme='dark'] .admin-lesson-preview blockquote {
+  background: rgba(30, 41, 59, 0.65);
+  border-left-color: rgba(148, 163, 184, 0.45);
+  color: #cbd5e1;
+}
+
+[data-theme='dark'] .lesson-prose code:not(pre code),
+[data-theme='dark'] .course-content-markdown code:not(pre code),
+[data-theme='dark'] .admin-lesson-preview code:not(pre code) {
+  background: rgba(30, 41, 59, 0.8);
+  color: #f8fafc;
+}
+
+[data-theme='dark'] .lesson-prose table,
+[data-theme='dark'] .course-content-markdown table,
+[data-theme='dark'] .admin-lesson-preview table {
+  border-color: rgba(148, 163, 184, 0.22);
+  box-shadow: none;
+}
+
+[data-theme='dark'] .lesson-prose th,
+[data-theme='dark'] .course-content-markdown th,
+[data-theme='dark'] .admin-lesson-preview th {
+  background-color: rgba(30, 41, 59, 0.95);
+  color: #ffb18f;
+  border-bottom-color: rgba(148, 163, 184, 0.3);
+}
+
+[data-theme='dark'] .lesson-prose td,
+[data-theme='dark'] .course-content-markdown td,
+[data-theme='dark'] .admin-lesson-preview td {
+  border-bottom-color: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+}
+
+[data-theme='dark'] .lesson-prose tr:nth-child(even),
+[data-theme='dark'] .course-content-markdown tr:nth-child(even),
+[data-theme='dark'] .admin-lesson-preview tr:nth-child(even) {
+  background-color: rgba(30, 41, 59, 0.25);
+}
+
+[data-theme='dark'] .lesson-prose tr:hover,
+[data-theme='dark'] .course-content-markdown tr:hover,
+[data-theme='dark'] .admin-lesson-preview tr:hover {
+  background-color: rgba(30, 41, 59, 0.55);
+}
