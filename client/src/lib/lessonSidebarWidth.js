@@ -1,5 +1,5 @@
 export const LESSON_SIDEBAR_WIDTH_KEY = 'certnova-lesson-sidebar-width';
-export const LESSON_SIDEBAR_DEFAULT = 240;
+export const LESSON_SIDEBAR_DEFAULT = 220;
 export const LESSON_SIDEBAR_MIN = 56;
 export const LESSON_SIDEBAR_MAX = 480;
 export const LESSON_SIDEBAR_COLLAPSED = 56;

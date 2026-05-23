@@ -364,11 +364,13 @@ const CourseLessonLayout = ({ course }) => {
                 <div className="lesson-prose">
                   <CertnovaMarkdown>{markdownLesson.body}</CertnovaMarkdown>
                 </div>
-                <SuggestedQuiz
-                  key={activeBlock.id}
-                  questions={suggestedQuizQuestions}
-                  lessonTitle={markdownLesson.title}
-                />
+                <div className="lesson-suggested-quiz">
+                  <SuggestedQuiz
+                    key={activeBlock.id}
+                    questions={suggestedQuizQuestions}
+                    lessonTitle={markdownLesson.title}
+                  />
+                </div>
               </>
             )}
 

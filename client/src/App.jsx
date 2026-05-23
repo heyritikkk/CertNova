@@ -11,11 +11,13 @@ import CourseLearn from './pages/CourseLearn';
 import Home from './pages/Home';
 import Customers from './pages/Customers';
 import Partners from './pages/Partners';
+import BlogPost from './pages/BlogPost';
 import AdminDashboard from './admin/AdminDashboard';
 import Login from './pages/Login';
 import AdminLogin from './pages/AdminLogin';
 import Pricing from './components/Pricing';
 import PricingPage from './pages/PricingPage';
+import Payment from './pages/Payment';
 import './App.css';
 
 const Layout = ({ theme, onToggleTheme }) => {
@@ -75,6 +77,7 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="courses" element={<Courses />} />
             <Route path="courses/:slug" element={<CourseDetail />} />
+            <Route path="payment/:slug" element={<Payment />} />
             <Route
               path="courses/:slug/learn"
               element={
@@ -85,6 +88,7 @@ function App() {
             />
             <Route path="pricing" element={<PricingPage />} />
             <Route path="blog" element={<Blog />} />
+            <Route path="blog/:slug" element={<BlogPost />} />
             <Route path="customers" element={<Customers />} />
             <Route path="partners" element={<Partners />} />
           </Route>

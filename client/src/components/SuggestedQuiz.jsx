@@ -25,6 +25,7 @@ export default function SuggestedQuiz({ questions, lessonTitle }) {
   const currentPick = picks[index];
   const isRevealed = Boolean(revealed[index]);
   const isCorrect = isRevealed && currentPick === current?.correctIndex;
+  const answeredCount = Object.keys(revealed).length;
 
   const loginHref = useMemo(() => {
     if (typeof window === 'undefined') return '/login';
@@ -35,6 +36,7 @@ export default function SuggestedQuiz({ questions, lessonTitle }) {
 
   const goPrev = () => setIndex((i) => Math.max(0, i - 1));
   const goNext = () => setIndex((i) => Math.min(total - 1, i + 1));
+  const goTo = (i) => setIndex(i);
 
   const handlePick = (optIndex) => {
     setPicks((prev) => ({ ...prev, [index]: optIndex }));
@@ -44,7 +46,13 @@ export default function SuggestedQuiz({ questions, lessonTitle }) {
   return (
     <section className="suggested-quiz" aria-labelledby="suggested-quiz-heading">
       <header className="suggested-quiz__head">
-        <h3 id="suggested-quiz-heading">Suggested Quiz</h3>
+        <div className="suggested-quiz__head-text">
+          <h3 id="suggested-quiz-heading">Suggested Quiz</h3>
+          <p className="suggested-quiz__sub">
+            {answeredCount} of {total} answered
+            {lessonTitle ? ` · ${lessonTitle}` : ''}
+          </p>
+        </div>
         <button
           type="button"
           className="suggested-quiz__refresh"
@@ -56,10 +64,29 @@ export default function SuggestedQuiz({ questions, lessonTitle }) {
         </button>
       </header>
 
+      <div className="suggested-quiz__steps" role="tablist" aria-label="Quiz questions">
+        {Array.from({ length: total }, (_, i) => {
+          const answered = revealed[i] != null;
+          const correct = answered && picks[i] === questions[i]?.correctIndex;
+          return (
+            <button
+              key={i}
+              type="button"
+              role="tab"
+              aria-selected={i === index}
+              aria-label={`Question ${i + 1}${answered ? (correct ? ', correct' : ', incorrect') : ''}`}
+              className={`suggested-quiz__step${i === index ? ' is-active' : ''}${
+                answered ? (correct ? ' is-correct' : ' is-wrong') : ''
+              }`}
+              onClick={() => goTo(i)}
+            >
+              {i + 1}
+            </button>
+          );
+        })}
+      </div>
+
       <div className="suggested-quiz__body">
-        {lessonTitle ? (
-          <p className="suggested-quiz__context">{lessonTitle}</p>
-        ) : null}
         <p className="suggested-quiz__question">{current.question}</p>
         <ul className="suggested-quiz__options" role="listbox" aria-label="Answer choices">
           {current.options.map((opt, optIndex) => {
@@ -76,6 +103,7 @@ export default function SuggestedQuiz({ questions, lessonTitle }) {
                     showCorrect ? ' is-correct' : ''
                   }${showWrong ? ' is-wrong' : ''}`}
                   onClick={() => handlePick(optIndex)}
+                  disabled={isRevealed && !selected && !showCorrect}
                 >
                   <span className="suggested-quiz__letter">{LETTERS[optIndex]}</span>
                   <span className="suggested-quiz__option-text">{opt}</span>
@@ -100,29 +128,31 @@ export default function SuggestedQuiz({ questions, lessonTitle }) {
           <p className="suggested-quiz__explanation">{current.explanation}</p>
         ) : (
           <Link to={loginHref} className="suggested-quiz__login-link">
-            Login to View Explanation
+            Login to view explanation
           </Link>
         )}
-        <span className="suggested-quiz__progress">
-          {index + 1}/{total}
-        </span>
-        <div className="suggested-quiz__nav">
-          <button
-            type="button"
-            className="suggested-quiz__nav-btn"
-            disabled={index === 0}
-            onClick={goPrev}
-          >
-            &lt; Previous
-          </button>
-          <button
-            type="button"
-            className="suggested-quiz__nav-btn suggested-quiz__nav-btn--next"
-            disabled={index >= total - 1}
-            onClick={goNext}
-          >
-            Next &gt;
-          </button>
+        <div className="suggested-quiz__foot-nav">
+          <span className="suggested-quiz__progress">
+            Question {index + 1} of {total}
+          </span>
+          <div className="suggested-quiz__nav">
+            <button
+              type="button"
+              className="suggested-quiz__nav-btn"
+              disabled={index === 0}
+              onClick={goPrev}
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              className="suggested-quiz__nav-btn suggested-quiz__nav-btn--next"
+              disabled={index >= total - 1}
+              onClick={goNext}
+            >
+              Next
+            </button>
+          </div>
         </div>
       </footer>
     </section>

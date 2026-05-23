@@ -1,6 +1,6 @@
 .lesson-layout {
-  --lesson-pad-x: clamp(1.25rem, 2.5vw, 2.25rem);
-  --lesson-sidebar-col: 240px;
+  --lesson-pad-x: clamp(1.35rem, 2.2vw, 2.75rem);
+  --lesson-sidebar-col: 220px;
   --lesson-content-max: 100%;
   --lesson-sticky-top: var(--navbar-offset);
   --lesson-page-bg: color-mix(in srgb, var(--brand-accent-soft) 25%, #fff5f0 75%);
@@ -11,6 +11,10 @@
   --lesson-divider-soft: #f1f5f9;
   --lesson-radius: 20px;
   --lesson-main-chrome: calc(var(--lesson-radius) + 1px);
+  --lesson-nav-font-bump: 0.75pt;
+  --lesson-nav-module-size: 0.88rem;
+  --lesson-nav-lesson-size: 0.84rem;
+  --lesson-nav-nested-size: 0.82rem;
   display: grid;
   grid-template-columns: var(--lesson-sidebar-col) minmax(0, 1fr);
   gap: 0;
@@ -47,11 +51,16 @@
 
 @media (min-width: 901px) {
   .lesson-layout {
-    overflow: visible;
-    align-items: start;
-    background: transparent;
-    border: none;
-    box-shadow: none;
+    overflow: hidden;
+    align-items: stretch;
+    width: 100%;
+    max-width: none;
+    background: var(--lesson-panel-surface);
+    border: 1px solid var(--lesson-divider);
+    border-radius: var(--lesson-radius);
+    box-shadow:
+      0 4px 24px rgba(244, 139, 96, 0.08),
+      0 1px 3px rgba(15, 23, 42, 0.04);
   }
 
   /* Sidebar stays fixed; lesson content scrolls on the right */
@@ -59,17 +68,15 @@
     position: sticky;
     top: var(--lesson-sticky-top);
     z-index: 30;
-    align-self: start;
-    height: calc(100vh - var(--navbar-offset) - 2rem);
-    max-height: calc(100vh - var(--navbar-offset) - 2rem);
-    border: 1px solid var(--lesson-divider);
-    border-right: none;
+    align-self: stretch;
+    height: calc(100vh - var(--navbar-offset) - 1.5rem);
+    max-height: calc(100vh - var(--navbar-offset) - 1.5rem);
+    border: none;
+    border-right: 1px solid var(--lesson-divider);
     border-radius: var(--lesson-radius) 0 0 var(--lesson-radius);
-    overflow: visible;
+    overflow: hidden;
     background: var(--lesson-sidebar-surface);
-    box-shadow:
-      0 4px 24px rgba(244, 139, 96, 0.08),
-      0 1px 3px rgba(15, 23, 42, 0.04);
+    box-shadow: none;
   }
 
   .lesson-sidebar-pin .lesson-sidebar {
@@ -189,41 +196,29 @@
    */
   .lesson-layout--resizable .lesson-main {
     position: relative;
-    align-self: start;
+    align-self: stretch;
     margin-left: 0;
-    height: calc(100vh - var(--navbar-offset) - 2rem);
-    max-height: calc(100vh - var(--navbar-offset) - 2rem);
-    overflow-x: visible;
-    overflow-y: hidden;
+    height: calc(100vh - var(--navbar-offset) - 1.5rem);
+    max-height: calc(100vh - var(--navbar-offset) - 1.5rem);
+    overflow: hidden;
     background: var(--lesson-panel-surface);
-    border: 1px solid var(--lesson-divider);
-    border-left: none;
+    border: none;
     border-radius: 0 var(--lesson-radius) var(--lesson-radius) 0;
-    box-shadow:
-      0 4px 24px rgba(244, 139, 96, 0.08),
-      0 1px 3px rgba(15, 23, 42, 0.04);
+    box-shadow: none;
+    flex: 1;
+    min-width: 0;
   }
 
   .lesson-main-top-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 30;
-    height: var(--lesson-radius);
-    border-top: 1px solid var(--lesson-divider);
-    border-right: 1px solid var(--lesson-divider);
-    border-top-right-radius: var(--lesson-radius);
-    background: var(--lesson-panel-bg);
-    pointer-events: none;
+    display: none;
   }
 
   .lesson-scroll {
     position: absolute;
     inset: 0;
     overflow-y: auto;
-    overflow-x: visible;
-    padding-top: var(--lesson-main-chrome);
+    overflow-x: auto;
+    padding-top: 0;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
@@ -241,7 +236,6 @@
     overflow: visible;
     background: var(--lesson-panel-surface);
     border-bottom: none;
-    border-top-right-radius: 0;
     padding-bottom: 1rem;
   }
 
@@ -280,9 +274,6 @@
     overflow-y: visible;
   }
 
-  .lesson-scroll .lesson-pager {
-    border-bottom-right-radius: var(--lesson-radius);
-  }
 }
 
 @media (max-width: 900px) {
@@ -485,7 +476,7 @@ body.lesson-sidebar-resizing * {
   border: none;
   border-left: none;
   padding: 0.45rem 0.65rem 0.45rem 0.85rem;
-  font-size: calc(0.84rem + 1pt);
+  font-size: calc(var(--lesson-nav-lesson-size) + var(--lesson-nav-font-bump));
   font-weight: 500;
   border-radius: 0;
   width: 100%;
@@ -567,7 +558,7 @@ body.lesson-sidebar-resizing * {
   flex: 1;
   min-width: 0;
   font-weight: 500;
-  font-size: calc(0.88rem + 1pt);
+  font-size: calc(var(--lesson-nav-module-size) + var(--lesson-nav-font-bump));
   line-height: 1.35;
   color: #1e293b;
   overflow: hidden;
@@ -642,7 +633,7 @@ body.lesson-sidebar-resizing * {
 
 .lesson-nav-item--child.is-nested {
   padding-left: 1.15rem;
-  font-size: calc(0.82rem + 1pt);
+  font-size: calc(var(--lesson-nav-nested-size) + var(--lesson-nav-font-bump));
   font-weight: 500;
   color: #475569;
   background: transparent;
@@ -809,8 +800,17 @@ body.lesson-sidebar-resizing * {
   padding: 0;
 }
 
+.lesson-suggested-quiz {
+  width: 100%;
+  max-width: var(--lesson-content-max);
+  margin-top: 3.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--lesson-divider);
+}
+
 .lesson-quiz {
-  max-width: 36rem;
+  max-width: none;
+  width: 100%;
 }
 
 .lesson-quiz-title {
@@ -983,9 +983,10 @@ body.lesson-sidebar-resizing * {
     grid-template-columns: 1fr;
     min-height: auto;
     max-height: none;
-    overflow: visible;
+    overflow: hidden;
     background: var(--lesson-panel-surface);
     border: 1px solid var(--brand-accent-border);
+    border-radius: var(--lesson-radius);
     box-shadow:
       0 4px 24px rgba(244, 139, 96, 0.08),
       0 1px 3px rgba(15, 23, 42, 0.04);
@@ -1003,7 +1004,7 @@ body.lesson-sidebar-resizing * {
     border: none;
     border-right: none;
     border-bottom: 1px solid var(--brand-accent-border);
-    border-radius: 0;
+    border-radius: var(--lesson-radius) var(--lesson-radius) 0 0;
     box-shadow: none;
   }
 
@@ -1017,9 +1018,9 @@ body.lesson-sidebar-resizing * {
     grid-column: 1;
     position: static;
     max-height: none;
-    overflow: visible;
+    overflow: hidden;
     border: none;
-    border-radius: 0;
+    border-radius: 0 0 var(--lesson-radius) var(--lesson-radius);
     box-shadow: none;
   }
 

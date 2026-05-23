@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Blog.css';
 
 const FILTERS = [
@@ -17,91 +18,7 @@ function blogImageSrc(path) {
   return `${path}${sep}v=${BLOG_IMAGE_VERSION}`;
 }
 
-const POSTS = [
-  {
-    id: 1,
-    title: 'Mapping network security lessons to exam domains',
-    titleLines: ['Mapping network security', 'lessons to exam', 'domains'],
-    category: 'Network',
-    date: '28 Apr 2026',
-    filterId: 'network',
-    featured: true,
-    image: '/blog/1-network.jpg',
-    imageAlt: 'Network cables and server infrastructure',
-  },
-  {
-    id: 2,
-    title: 'VLANs and network segmentation for Security+',
-    category: 'Network',
-    date: '18 Apr 2026',
-    filterId: 'network',
-    image: '/blog/2-vlan.jpg',
-    imageAlt: 'Network topology and connected systems',
-  },
-  {
-    id: 3,
-    title: 'Firewall rules every candidate should memorize',
-    category: 'Network',
-    date: '5 Apr 2026',
-    filterId: 'network',
-    image: '/blog/3-firewall.jpg',
-    imageAlt: 'Cybersecurity professional at a secure workstation',
-  },
-  {
-    id: 4,
-    title: 'Symmetric vs asymmetric encryption explained',
-    category: 'Cryptography',
-    date: '30 Mar 2026',
-    filterId: 'cryptography',
-    image: '/blog/4-encryption.jpg',
-    imageAlt: 'Digital lock representing encryption',
-  },
-  {
-    id: 5,
-    title: 'PKI and digital certificates on the exam',
-    category: 'Cryptography',
-    date: '22 Mar 2026',
-    filterId: 'cryptography',
-    image: '/blog/5-pki.jpg',
-    imageAlt: 'Secure authentication and certificate concept',
-  },
-  {
-    id: 6,
-    title: 'Hashing vs encryption: know the difference',
-    category: 'Cryptography',
-    date: '10 Mar 2026',
-    filterId: 'cryptography',
-    image: '/blog/6-hashing.jpg',
-    imageAlt: 'Developer reviewing secure application code',
-  },
-  {
-    id: 7,
-    title: '5 mistakes first-time Security+ candidates make',
-    category: 'Cyber Security',
-    date: '12 Apr 2026',
-    filterId: 'cyber-security',
-    image: '/blog/7-mistakes.jpg',
-    imageAlt: 'Student planning a certification study path',
-  },
-  {
-    id: 8,
-    title: 'Incident response basics for SY0-701',
-    category: 'Cyber Security',
-    date: '15 Mar 2026',
-    filterId: 'cyber-security',
-    image: '/blog/8-incident.jpg',
-    imageAlt: 'Security operations center monitoring screens',
-  },
-  {
-    id: 9,
-    title: 'Threat modeling for modern attack surfaces',
-    category: 'Cyber Security',
-    date: '28 Feb 2026',
-    filterId: 'cyber-security',
-    image: '/blog/9-threat.jpg',
-    imageAlt: 'Team discussing cyber threat analysis',
-  },
-];
+import { POSTS } from '../data/blogPosts';
 
 function categorySlug(category) {
   return category.toLowerCase().replace(/\s+/g, '-');
@@ -152,9 +69,9 @@ function BlogFeatured({ post }) {
           <time dateTime={post.date}>{post.date}</time>
           <span> {post.category}</span>
         </p>
-        <button type="button" className="blog-read-btn" disabled>
+        <Link to={`/blog/${post.slug}`} className="blog-read-btn">
           Read blog
-        </button>
+        </Link>
       </div>
       <BlogPostThumb post={post} category={post.category} variant="wide" />
     </article>
@@ -221,9 +138,9 @@ const Blog = () => {
                     </span>
                     <span>{post.category}</span>
                   </p>
-                  <button type="button" className="blog-read-btn" disabled>
+                  <Link to={`/blog/${post.slug}`} className="blog-read-btn">
                     Read blog
-                  </button>
+                  </Link>
                 </div>
                 <BlogPostThumb post={post} category={post.category} />
               </article>

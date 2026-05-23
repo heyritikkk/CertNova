@@ -35,22 +35,34 @@
   left: 4rem;
   top: 50%;
   transform: translateY(-50%) rotate(-10deg);
+  animation: float-left 6s ease-in-out infinite alternate;
 }
 
 .cta-float-icon.right {
   right: 4rem;
   top: 50%;
   transform: translateY(-50%) rotate(10deg);
+  animation: float-right 7s ease-in-out infinite alternate;
+}
+
+@keyframes float-left {
+  0% { transform: translateY(-50%) rotate(-10deg) translate(0, 0); }
+  100% { transform: translateY(-50%) rotate(-5deg) translate(10px, -15px); }
+}
+
+@keyframes float-right {
+  0% { transform: translateY(-50%) rotate(10deg) translate(0, 0); }
+  100% { transform: translateY(-50%) rotate(5deg) translate(-10px, -15px); }
 }
 
 .cta-banner h2 {
   font-family: 'Playfair Display', serif;
   font-size: 4.4rem;
-  line-height: 1.08;
+  line-height: 1.15;
   font-weight: 400;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.02em;
   color: #1a202c;
-  text-shadow: var(--heading-text-shadow);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
   margin: 0;
 }
 
@@ -76,12 +88,35 @@
   background: radial-gradient(circle at 50% 50%, #ff9e7a 0%, #f48b60 100%);
   cursor: pointer;
   box-shadow: 0 10px 22px rgba(244, 139, 96, 0.35);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.cta-main-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-20deg);
+  transition: none;
+}
+
+.cta-main-btn:hover::after {
+  animation: shine 1.5s ease-out;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 200%; }
 }
 
 .cta-main-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(244, 139, 96, 0.42);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(244, 139, 96, 0.5);
 }
 
 .cta-btn-icon {
@@ -92,6 +127,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.cta-main-btn:hover .cta-btn-icon {
+  transform: translateX(4px);
 }
 
 @media (max-width: 968px) {

@@ -10,9 +10,9 @@
   margin: 0 auto;
 }
 
-/* Lesson view: same horizontal span as .navbar-container */
+/* Lesson view: use full viewport width (minimal side inset) */
 .course-detail-page--lesson {
-  padding: 1.75rem 0 2rem;
+  padding: 0.75rem clamp(0.65rem, 1.5vw, 1.25rem) 1.5rem;
   overflow: visible;
   /* Solid peach - matches page bg (not gradient) so scroll cover looks seamless */
   --lesson-nav-shield: color-mix(in srgb, var(--brand-accent-soft) 25%, #fff5f0 75%);
@@ -43,12 +43,8 @@
 .course-detail-page--lesson .course-detail-inner {
   display: block;
   width: 100%;
-  max-width: min(
-    var(--site-content-max-width, 1228px),
-    calc(100% - 2 * var(--site-gutter, 2rem))
-  );
-  margin-left: auto;
-  margin-right: auto;
+  max-width: none;
+  margin: 0;
 }
 
 .course-detail-status {
@@ -80,10 +76,7 @@
   }
 
   .course-detail-page--lesson .course-detail-inner {
-    max-width: min(
-      var(--site-content-max-width, 1228px),
-      calc(100% - 2 * var(--site-gutter, 1rem))
-    );
+    max-width: none;
   }
 
   .course-detail-sidebar {

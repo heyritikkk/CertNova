@@ -3,7 +3,7 @@
   max-width: var(--site-max-width, 100%);
   box-sizing: border-box;
   margin: 0 auto;
-  padding: 1.6rem 2rem 3.2rem;
+  padding: 1.6rem 0 3.2rem;
 }
 
 .faq-container {

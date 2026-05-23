@@ -6,6 +6,19 @@ import './Hero.css';
 const HERO_TITLE = 'Turning&nbsp;Effort<br/>into Security+<br/>Success';
 const HERO_SUBHEADING = 'Built to simplify Security+ preparation through structured lessons, practical labs, mock exams, and real-world cybersecurity training designed to help students pass.';
 
+const HERO_SUBJECTS = [
+  'Network Security',
+  'Cryptography',
+  'Threat Management',
+  'Identity & Access',
+  'Risk & Compliance',
+  'Incident Response',
+  'Secure Protocols',
+  'Vulnerability Assessment',
+  'Security Architecture',
+  'Governance & Policies',
+];
+
 const Hero = () => {
   const navigate = useNavigate();
   const [content, setContent] = useState({
@@ -65,7 +78,18 @@ const Hero = () => {
         <div className="hero-visual">
           <LayeredCards />
         </div>
+      </div>
 
+      <div className="hero-subjects" aria-label="Security+ study topics">
+        <div className="hero-subjects__viewport">
+          <div className="hero-subjects__track">
+            {[...HERO_SUBJECTS, ...HERO_SUBJECTS, ...HERO_SUBJECTS].map((subject, index) => (
+              <span key={`${subject}-${index}`} className="hero-subjects__item">
+                {subject}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -113,8 +113,8 @@
 
 .courses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 300px));
-  gap: 1.25rem 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1.5rem;
   justify-content: start;
   margin-bottom: 2.5rem;
 }

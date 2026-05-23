@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { Star } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Star, ShieldCheck, Video, FileText, Smartphone, Award as AwardIcon, Share2 } from 'lucide-react';
 import { buildCourseSyllabus, countVisibleLessons } from '../lib/contentBlocks';
 import './CourseDetailOverview.css';
 
@@ -56,11 +56,6 @@ const CourseDetailOverview = ({ course }) => {
             ) : null}
           </div>
         </div>
-        {course.image_url ? (
-          <div className="course-detail-hero-media">
-            <img src={course.image_url} alt="" />
-          </div>
-        ) : null}
       </section>
 
       <div className="course-detail-layout">
@@ -124,18 +119,40 @@ const CourseDetailOverview = ({ course }) => {
 
         <aside className="course-detail-sidebar">
           <div className="course-detail-purchase-card">
-            <p className="course-detail-price">{priceLabel}</p>
-            <Link to={loginHref} className="course-detail-btn course-detail-btn--buy">
+            {/* Price row */}
+            <div className="cdpc-price-row">
+              <p className="course-detail-price">{priceLabel}</p>
+              {Number(course.price) > 0 && (
+                <span className="cdpc-rating-pill">
+                  <Star size={13} fill="currentColor" /> {Number(course.rating ?? 4.7).toFixed(1)}
+                </span>
+              )}
+            </div>
+
+            {/* Buy button */}
+            <Link
+              to={Number(course.price) > 0 ? `/payment/${slug}` : loginHref}
+              className="course-detail-btn course-detail-btn--buy"
+            >
               {Number(course.price) > 0 ? 'Buy now' : 'Start for free'}
             </Link>
+
+            {/* Trust badge */}
+            {Number(course.price) > 0 && (
+              <p className="cdpc-trust">
+                <ShieldCheck size={14} /> 30-Day Money-Back Guarantee
+              </p>
+            )}
+
+            {/* Facts */}
             <dl className="course-detail-facts">
               <div>
                 <dt>Total duration</dt>
-                <dd>{course.duration || '-'}</dd>
+                <dd>{course.duration || '2 hours'}</dd>
               </div>
               <div>
                 <dt>Lectures</dt>
-                <dd>{lectureCount || '-'}</dd>
+                <dd>{lectureCount || 25}</dd>
               </div>
               <div>
                 <dt>Skill level</dt>
@@ -145,7 +162,33 @@ const CourseDetailOverview = ({ course }) => {
                 <dt>Language</dt>
                 <dd>{course.language || 'English'}</dd>
               </div>
+              <div>
+                <dt>Certificate</dt>
+                <dd>Yes</dd>
+              </div>
+              <div>
+                <dt>Access</dt>
+                <dd>Lifetime</dd>
+              </div>
             </dl>
+
+            {/* This course includes */}
+            <div className="cdpc-includes">
+              <h4>This course includes</h4>
+              <ul>
+                <li><Video size={15} /> {course.duration || '2h'} on-demand video</li>
+                <li><FileText size={15} /> Downloadable resources</li>
+                <li><Smartphone size={15} /> Mobile &amp; desktop access</li>
+                <li><AwardIcon size={15} /> Certificate of completion</li>
+              </ul>
+            </div>
+
+            {/* Share row */}
+            <div className="cdpc-share">
+              <button className="cdpc-share-btn" onClick={() => navigator.clipboard?.writeText(window.location.href)}>
+                <Share2 size={14} /> Share course
+              </button>
+            </div>
           </div>
         </aside>
       </div>
