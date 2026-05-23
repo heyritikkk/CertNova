@@ -22,7 +22,7 @@ const CtaBanner = () => {
         <p>
           Learn with structured lessons, practical labs, and mock exams designed to help you pass with confidence.
         </p>
-        <Link to="/login" className="cta-main-btn">
+        <Link to="/courses" className="cta-main-btn">
           Start Learning Today
           <span className="cta-btn-icon">
             <ArrowRight size={18} />

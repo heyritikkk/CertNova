@@ -18,6 +18,9 @@ import AdminLogin from './pages/AdminLogin';
 import Pricing from './components/Pricing';
 import PricingPage from './pages/PricingPage';
 import Payment from './pages/Payment';
+import Certificate from './pages/Certificate';
+import VerifyCertificate from './pages/VerifyCertificate';
+import MyCertificates from './pages/MyCertificates';
 import './App.css';
 
 const Layout = ({ theme, onToggleTheme }) => {
@@ -77,7 +80,22 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="courses" element={<Courses />} />
             <Route path="courses/:slug" element={<CourseDetail />} />
-            <Route path="payment/:slug" element={<Payment />} />
+            <Route path="payment/:slug" element={
+              <UserProtectedRoute>
+                <Payment />
+              </UserProtectedRoute>
+            } />
+            <Route path="certificate/:slug" element={
+              <UserProtectedRoute>
+                <Certificate />
+              </UserProtectedRoute>
+            } />
+            <Route path="verify-certificate" element={<VerifyCertificate />} />
+            <Route path="my-certificates" element={
+              <UserProtectedRoute>
+                <MyCertificates />
+              </UserProtectedRoute>
+            } />
             <Route
               path="courses/:slug/learn"
               element={

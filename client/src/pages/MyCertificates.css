@@ -1,0 +1,197 @@
+.mycerts-page {
+  min-height: 100vh;
+  padding: 3rem 1.5rem 5rem;
+  background: linear-gradient(160deg, #f8fafc 0%, #fff5ee 100%);
+}
+
+.mycerts-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.mycerts-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.mycerts-header-icon {
+  color: #f48b60;
+  margin-bottom: 0.5rem;
+}
+
+.mycerts-header h1 {
+  font-size: 2rem;
+  color: #0f172a;
+  margin: 0 0 0.4rem;
+}
+
+.mycerts-header p {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.mycerts-header p strong {
+  color: #0f172a;
+}
+
+.mycerts-loading {
+  text-align: center;
+  color: #94a3b8;
+  padding: 3rem 0;
+}
+
+.mycerts-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.06);
+  border: 1.5px solid rgba(244, 139, 96, 0.2);
+}
+
+.mycerts-empty svg {
+  color: #94a3b8;
+  margin-bottom: 1rem;
+}
+
+.mycerts-empty h2 {
+  color: #0f172a;
+  margin: 0 0 0.5rem;
+}
+
+.mycerts-empty p {
+  color: #64748b;
+  margin: 0 0 1.5rem;
+}
+
+.mycerts-browse-btn {
+  display: inline-flex;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #ff9e7a, #f48b60);
+  color: #fff;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(244, 139, 96, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mycerts-browse-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(244, 139, 96, 0.4);
+}
+
+.mycerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mycerts-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  border: 1.5px solid rgba(244, 139, 96, 0.2);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.mycerts-card:hover {
+  border-color: rgba(244, 139, 96, 0.45);
+  box-shadow: 0 12px 32px rgba(244, 139, 96, 0.12);
+}
+
+.mycerts-card-left {
+  flex-shrink: 0;
+}
+
+.mycerts-card-icon {
+  color: #f48b60;
+}
+
+.mycerts-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.mycerts-card-body h3 {
+  margin: 0 0 0.3rem;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.mycerts-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.mycerts-card-id {
+  font-family: monospace;
+  color: #64748b;
+}
+
+.mycerts-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.mycerts-view-btn,
+.mycerts-verify-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.mycerts-view-btn {
+  background: rgba(244, 139, 96, 0.1);
+  color: #f48b60;
+}
+
+.mycerts-view-btn:hover {
+  background: rgba(244, 139, 96, 0.2);
+  transform: translateY(-1px);
+}
+
+.mycerts-verify-btn {
+  background: rgba(22, 163, 74, 0.1);
+  color: #16a34a;
+}
+
+.mycerts-verify-btn:hover {
+  background: rgba(22, 163, 74, 0.2);
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] .mycerts-page {
+  background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
+}
+
+[data-theme='dark'] .mycerts-header h1 { color: #f8fafc; }
+[data-theme='dark'] .mycerts-header p { color: #94a3b8; }
+[data-theme='dark'] .mycerts-header p strong { color: #f1f5f9; }
+[data-theme='dark'] .mycerts-card { background: rgba(15, 23, 42, 0.9); border-color: rgba(244, 139, 96, 0.25); }
+[data-theme='dark'] .mycerts-card-body h3 { color: #f1f5f9; }
+[data-theme='dark'] .mycerts-empty { background: rgba(15, 23, 42, 0.9); border-color: rgba(244, 139, 96, 0.25); }
+[data-theme='dark'] .mycerts-empty h2 { color: #f1f5f9; }
+[data-theme='dark'] .mycerts-empty p { color: #94a3b8; }
+
+@media (max-width: 640px) {
+  .mycerts-page { padding: 2rem 1rem 3rem; }
+  .mycerts-card { flex-direction: column; text-align: center; }
+  .mycerts-card-actions { width: 100%; justify-content: center; }
+}

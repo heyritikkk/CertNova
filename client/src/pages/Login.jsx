@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import LoginCyberVisual from '../components/LoginCyberVisual';
 import './Login.css';
 
@@ -14,20 +14,37 @@ function safeRedirect(path) {
 const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirectTo = safeRedirect(searchParams.get('redirect'));
+  const redirectParam = searchParams.get('redirect');
+  const redirectTo = safeRedirect(redirectParam);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem('userAuth') === 'true') {
+    if (localStorage.getItem('userAuth') === 'true' && redirectParam) {
       navigate(redirectTo, { replace: true });
     }
-  }, [navigate, redirectTo]);
+  }, [navigate, redirectTo, redirectParam]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const normalized = email.trim().toLowerCase();
+
+    if (isRegistering) {
+      if (password !== confirmPassword) {
+        setError('Passwords do not match. Please try again.');
+        return;
+      }
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters.');
+        return;
+      }
+      localStorage.setItem('userAuth', 'true');
+      navigate(redirectTo, { replace: true });
+      return;
+    }
 
     if (normalized === DEMO_EMAIL.toLowerCase() && password === DEMO_PASSWORD) {
       localStorage.setItem('userAuth', 'true');
@@ -39,8 +56,6 @@ const Login = () => {
   };
 
   const handleOAuthLogin = (provider) => {
-    // Simulated OAuth login for the portfolio demo
-    // In production, this would redirect to your OAuth backend endpoint
     localStorage.setItem('userAuth', 'true');
     navigate(redirectTo, { replace: true });
   };
@@ -50,10 +65,9 @@ const Login = () => {
       <div className="login-shell">
         <section className="login-card">
 
-
           <div className="login-header">
-            <h1>Sign in to CertNova</h1>
-            <p>Welcome back! Please sign in to continue</p>
+            <h1>{isRegistering ? 'Create your account' : 'Sign in to CertNova'}</h1>
+            <p>{isRegistering ? 'Get started with your learning journey' : 'Welcome back! Please sign in to continue'}</p>
           </div>
 
           <div className="login-oauth">
@@ -101,7 +115,7 @@ const Login = () => {
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete={isRegistering ? 'new-password' : 'current-password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
@@ -109,17 +123,44 @@ const Login = () => {
               />
             </div>
 
+            {isRegistering && (
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Re-enter password"
+                  required
+                />
+              </div>
+            )}
+
             <button type="submit" className="login-submit-btn">
-              Continue
+              {isRegistering ? 'Sign Up' : 'Continue'}
             </button>
           </form>
 
-          <p className="login-admin-hint">
-            Need to manage courses?{' '}
-            <Link to="/admin-login" className="login-admin-link">
-              Admin sign-in
-            </Link>
-          </p>
+          <div className="login-footer-links">
+            <p className="login-new-hint">
+              {isRegistering ? (
+                <>Already have an account?{' '}
+                  <span className="login-new-link" onClick={() => { setIsRegistering(false); setError(''); }}>
+                    Sign in
+                  </span>
+                </>
+              ) : (
+                <>New user?{' '}
+                  <span className="login-new-link" onClick={() => { setIsRegistering(true); setError(''); }}>
+                    Sign in first
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
         </section>
 
         <LoginCyberVisual />

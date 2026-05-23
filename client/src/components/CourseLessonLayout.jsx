@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import CertnovaMarkdown from './CertnovaMarkdown';
 import {
   BookOpen,
@@ -43,6 +44,18 @@ function loadCompletedIds(courseId) {
 
 function saveCompletedIds(courseId, ids) {
   localStorage.setItem(progressStorageKey(courseId), JSON.stringify([...ids]));
+}
+
+const certStorageKey = (courseId) => `certnova-course-certificate-${courseId}`;
+
+function saveCompletionDate(courseId) {
+  const existing = localStorage.getItem(certStorageKey(courseId));
+  if (existing) return;
+  localStorage.setItem(certStorageKey(courseId), JSON.stringify({
+    date: new Date().toLocaleDateString('en-US', {
+      year: 'numeric', month: 'long', day: 'numeric',
+    }),
+  }));
 }
 
 function estimateReadMinutes(block) {
@@ -189,6 +202,14 @@ const CourseLessonLayout = ({ course }) => {
       : null;
 
   const isCurrentComplete = activeBlock && completedIds.has(activeBlock.id);
+  const isCourseComplete = visibleBlocks.length > 0 && visibleBlocks.every((b) => completedIds.has(b.id));
+
+  useEffect(() => {
+    if (isCourseComplete && course?.id) {
+      saveCompletionDate(course.id);
+    }
+  }, [isCourseComplete, course?.id]);
+
   const readMinutes = estimateReadMinutes(activeBlock);
 
   const lessonTitle =
@@ -386,6 +407,19 @@ const CourseLessonLayout = ({ course }) => {
               />
             )}
           </div>
+
+          {isCourseComplete && (
+            <div className="lesson-complete-banner">
+              <div className="lesson-complete-banner__icon">🎉</div>
+              <div className="lesson-complete-banner__text">
+                <strong>Course Complete!</strong>
+                <span>You&apos;ve finished all lessons.</span>
+              </div>
+              <Link to={`/certificate/${course?.slug}`} className="lesson-cert-btn">
+                Get Certificate
+              </Link>
+            </div>
+          )}
 
           <footer className="lesson-pager">
             <button

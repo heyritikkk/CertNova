@@ -819,6 +819,61 @@ body.lesson-sidebar-resizing * {
   color: #0f172a;
 }
 
+.lesson-complete-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem var(--lesson-pad-x);
+  background: linear-gradient(135deg, rgba(244, 139, 96, 0.1), rgba(22, 163, 74, 0.08));
+  border-top: 2px solid rgba(244, 139, 96, 0.3);
+  border-bottom: 2px solid rgba(244, 139, 96, 0.3);
+}
+
+.lesson-complete-banner__icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.lesson-complete-banner__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.lesson-complete-banner__text strong {
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.lesson-complete-banner__text span {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.lesson-cert-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.3rem;
+  background: linear-gradient(135deg, #ff9e7a, #f48b60);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(244, 139, 96, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.lesson-cert-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(244, 139, 96, 0.4);
+}
+
+[data-theme='dark'] .lesson-complete-banner__text strong { color: #f1f5f9; }
+[data-theme='dark'] .lesson-complete-banner__text span { color: #94a3b8; }
+
 .lesson-pager {
   flex: none;
   flex-shrink: 0;

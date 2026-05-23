@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Lock, CreditCard, Smartphone, Building2, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, Lock, CreditCard, Smartphone, Building2, CheckCircle2 } from 'lucide-react';
 import QRModal from '../components/QRModal';
 import './Payment.css';
 
@@ -66,11 +66,6 @@ export default function Payment() {
       )}
 
       <div className="payment-inner">
-        {/* Back */}
-        <Link to={`/courses/${slug}`} className="payment-back">
-          <ArrowLeft size={16} /> Back to course
-        </Link>
-
         <div className="payment-grid">
           {/* ── LEFT: Order Summary ── */}
           <div className="payment-summary">
@@ -88,6 +83,7 @@ export default function Payment() {
                   <li><CheckCircle2 size={14} /> Lifetime access</li>
                   <li><CheckCircle2 size={14} /> Certificate of completion</li>
                   <li><CheckCircle2 size={14} /> {course?.duration || '10h+'} content</li>
+                  <li><CheckCircle2 size={14} /> Hands-on practice labs</li>
                 </ul>
               </div>
             </div>
@@ -102,9 +98,17 @@ export default function Payment() {
                 <span>Discount</span>
                 <span className="payment-discount">-$0.00</span>
               </div>
+              <div className="payment-breakdown__row">
+                <span>Tax (GST @ 18%)</span>
+                <span>${(price * 0.18).toFixed(2)}</span>
+              </div>
+              <div className="payment-breakdown__row">
+                <span>Platform fee</span>
+                <span className="payment-free">FREE</span>
+              </div>
               <div className="payment-breakdown__row payment-breakdown__total">
                 <span>Total</span>
-                <span>${price.toFixed(2)} <small>(≈ ₹{inrAmount})</small></span>
+                <span>${(price * 1.18).toFixed(2)} <small>(≈ ₹{(price * 1.18 * 83).toLocaleString('en-IN', { maximumFractionDigits: 0 })})</small></span>
               </div>
             </div>
 

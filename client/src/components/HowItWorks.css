@@ -476,6 +476,26 @@
   background: #fef3c7;
 }
 
+/* ── Dark mode ── */
+[data-theme='dark'] .how-header h2 { color: #f8fafc; }
+[data-theme='dark'] .how-header p { color: #94a3b8; }
+[data-theme='dark'] .how-chip { background: rgba(15, 23, 42, 0.6); border-color: rgba(148, 163, 184, 0.35); }
+[data-theme='dark'] .how-copy h3 { color: #f1f5f9; }
+[data-theme='dark'] .how-copy-lead { color: #94a3b8; }
+[data-theme='dark'] .how-copy-desc { color: #94a3b8; }
+[data-theme='dark'] .how-copy-line { color: #94a3b8; }
+[data-theme='dark'] .how-copy-label { color: #64748b; }
+[data-theme='dark'] .how-benefit-text { color: #e2e8f0; }
+[data-theme='dark'] .how-benefits-list li { background: rgba(15, 23, 42, 0.6); border-color: rgba(244, 139, 96, 0.3); }
+[data-theme='dark'] .how-profile { background: rgba(15, 23, 42, 0.6); border-color: rgba(244, 139, 96, 0.3); }
+[data-theme='dark'] .how-profile h4 { color: #f1f5f9; }
+[data-theme='dark'] .how-profile p { color: #94a3b8; }
+[data-theme='dark'] .how-panel { background: rgba(15, 23, 42, 0.6); border-color: rgba(244, 139, 96, 0.3); }
+[data-theme='dark'] .how-panel h5 { color: #94a3b8; }
+[data-theme='dark'] .how-item strong { color: #f1f5f9; }
+[data-theme='dark'] .how-item span { color: #94a3b8; }
+[data-theme='dark'] .how-step-marker { border-color: rgba(15, 23, 42, 0.8); }
+
 @media (max-width: 968px) {
   .how-section {
     padding: 2.6rem 1.2rem 2rem;

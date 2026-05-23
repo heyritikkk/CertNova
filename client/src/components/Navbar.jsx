@@ -52,7 +52,7 @@ const Navbar = ({ theme, onToggleTheme }) => {
               {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
               <span className="nav-theme-label">{theme === 'dark' ? 'Light' : 'Dark'}</span>
             </button>
-            <Link to="/login" className="nav-contact-btn">
+            <Link to="/courses" className="nav-contact-btn">
               Start Learning
             </Link>
           </div>
@@ -96,7 +96,7 @@ const Navbar = ({ theme, onToggleTheme }) => {
             </NavLink>
           ))}
           <Link
-            to="/login"
+            to="/courses"
             className="nav-contact-btn nav-contact-btn--mobile"
             onClick={() => setMenuOpen(false)}
           >

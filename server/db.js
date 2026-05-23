@@ -69,6 +69,16 @@ const db = new sqlite3.Database(dbPath, (err) => {
       icon_name TEXT
     )`);
 
+    db.run(`CREATE TABLE IF NOT EXISTS certificates (
+      id TEXT PRIMARY KEY,
+      course_slug TEXT,
+      course_title TEXT,
+      user_email TEXT,
+      user_name TEXT,
+      completed_at TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    )`);
+
     db.get(`SELECT COUNT(*) as count FROM content`, (contentErr, contentRow) => {
       if (!contentErr && contentRow.count === 0) {
         db.run(

@@ -160,21 +160,28 @@
   box-shadow: 0 14px 30px rgba(244, 139, 96, 0.33);
 }
 
-.login-admin-hint {
+.login-footer-links {
   margin-top: 1.5rem;
-  font-size: 0.9rem;
-  color: #64748b;
-  line-height: 1.5;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: center;
 }
 
-.login-admin-link {
+.login-new-hint {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  text-align: center;
+  margin: 0;
+}
+
+.login-new-link {
   color: #f48b60;
   font-weight: 600;
-  text-decoration: none;
+  cursor: pointer;
 }
 
-.login-admin-link:hover {
+.login-new-link:hover {
   text-decoration: underline;
 }
 
@@ -376,14 +383,6 @@
 [data-theme='dark'] .login-divider::before,
 [data-theme='dark'] .login-divider::after {
   border-bottom-color: rgba(148, 163, 184, 0.25);
-}
-
-[data-theme='dark'] .login-admin-hint {
-  color: #94a3b8;
-}
-
-[data-theme='dark'] .login-admin-link {
-  color: #ff9e7a;
 }
 
 [data-theme='dark'] .form-group input {

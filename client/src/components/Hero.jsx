@@ -60,7 +60,7 @@ const Hero = () => {
             <button
               type="button"
               className="hero-btn secondary"
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/courses')}
             >
               Start Learning
             </button>

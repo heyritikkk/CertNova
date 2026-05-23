@@ -29,6 +29,11 @@ const Footer = () => {
               <a href="#careers">Careers</a>
             </div>
             <div className="footer-column">
+              <h4>Support</h4>
+              <Link to="/verify-certificate">Verify Certificate</Link>
+              <a href="#contact">Contact</a>
+            </div>
+            <div className="footer-column">
               <h4>Legal Terms</h4>
               <a href="#terms">Terms & Conditions</a>
               <a href="#privacy">Privacy Policy</a>

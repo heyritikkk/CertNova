@@ -64,6 +64,41 @@ app.put('/api/highlights/:id', (req, res) => {
   );
 });
 
+// ── Certificate endpoints ──
+
+app.post('/api/certificates', (req, res) => {
+  const { id, course_slug, course_title, user_email, user_name, completed_at } = req.body;
+  if (!id || !course_slug || !course_title) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+  db.run(
+    `INSERT OR IGNORE INTO certificates (id, course_slug, course_title, user_email, user_name, completed_at) VALUES (?, ?, ?, ?, ?, ?)`,
+    [id, course_slug, course_title, user_email || '', user_name || '', completed_at || ''],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true, id });
+    }
+  );
+});
+
+app.get('/api/certificates', (req, res) => {
+  const { email } = req.query;
+  if (!email) return res.status(400).json({ error: 'Email query param required' });
+  db.all('SELECT * FROM certificates WHERE user_email = ? ORDER BY created_at DESC', [email], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+app.get('/api/certificates/verify/:id', (req, res) => {
+  const { id } = req.params;
+  db.get('SELECT * FROM certificates WHERE id = ?', [id], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!row) return res.status(404).json({ valid: false, error: 'Certificate not found' });
+    res.json({ valid: true, certificate: row });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

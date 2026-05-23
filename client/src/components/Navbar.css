@@ -353,6 +353,9 @@
   }
 
   .nav-contact-btn--mobile {
-    font-size: 0.92rem;
+    text-align: center;
+    padding: 1.1rem 1.2rem;
+    width: 100%;
+    margin-top: 0.5rem;
   }
 }
