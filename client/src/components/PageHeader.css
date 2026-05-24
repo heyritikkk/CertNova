@@ -1,0 +1,46 @@
+.page-header {
+  text-align: center;
+  max-width: min(100%, 52rem);
+  margin: 0 auto 3rem;
+  padding-top: 1rem;
+}
+
+.page-header__eyebrow {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-accent-deep);
+  margin-bottom: 0.75rem;
+}
+
+.page-header__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.65rem, 2.6vw, 2.35rem);
+  font-weight: 400; /* Removed bold */
+  color: #0f172a;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+  text-wrap: pretty;
+}
+
+/* Orange underline beneath the title */
+.page-header__title::after {
+  content: '';
+  display: block;
+  width: 4rem;
+  height: 3px;
+  background: var(--brand-accent);
+  margin: 1rem auto 0;
+  border-radius: 2px;
+}
+
+.page-header__subtitle {
+  margin: 1.25rem auto 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #475569;
+  max-width: 48rem;
+  text-wrap: pretty;
+}

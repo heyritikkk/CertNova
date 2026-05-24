@@ -1,21 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { Moon, Sun, Menu, X } from 'lucide-react';
 import './Navbar.css';
 
 const NAV_LINKS = [
   { to: '/courses', label: 'Courses' },
-  { to: '/pricing', label: 'Pricing' },
   { to: '/blog', label: 'Blog' },
-  { to: '/about', label: 'About' },
+  { to: '/pricing', label: 'Pricing' },
+  { to: '/contact', label: 'Contact' },
 ];
 
 const Navbar = ({ theme, onToggleTheme }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const location = useLocation();
+  const lastScrollY = useRef(0);
+  const isLearnPage = /\/learn\/?$/.test(location.pathname);
 
   useEffect(() => {
     setMenuOpen(false);
+    setHidden(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -25,8 +29,42 @@ const Navbar = ({ theme, onToggleTheme }) => {
     };
   }, [menuOpen]);
 
+  /* Hide navbar on scroll-down, show on scroll-up (learn pages only) */
+  useEffect(() => {
+    if (!isLearnPage) { setHidden(false); return; }
+
+    const onScroll = (e) => {
+      // Use custom event detail if it's from the lesson container, otherwise window.scrollY
+      const y = e.type === 'lessonScroll' ? e.detail : window.scrollY;
+      
+      if (y > 80) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+      lastScrollY.current = y;
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('lessonScroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('lessonScroll', onScroll);
+    };
+  }, [isLearnPage]);
+
+  // Sync hidden state to body class so other components can react
+  useEffect(() => {
+    if (hidden) {
+      document.body.classList.add('navbar-hidden');
+    } else {
+      document.body.classList.remove('navbar-hidden');
+    }
+    return () => document.body.classList.remove('navbar-hidden');
+  }, [hidden]);
+
   return (
-    <nav className="navbar" aria-label="Main">
+    <nav className={`navbar${hidden ? ' navbar--hidden' : ''}`} aria-label="Main">
       <div className={`navbar-container${menuOpen ? ' is-menu-open' : ''}`}>
         <div className="navbar-row">
           <div className="navbar-logo">

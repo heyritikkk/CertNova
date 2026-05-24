@@ -19,6 +19,7 @@ import {
 } from '../lib/contentBlocks';
 import { CourseOutlineNav } from './CourseOutlineNav';
 import SuggestedQuiz from './SuggestedQuiz';
+import CourseProgressStrip from './CourseProgressStrip';
 import { getSuggestedQuizForBlock } from '../lib/suggestedQuiz';
 import {
   LESSON_SIDEBAR_DEFAULT,
@@ -175,6 +176,9 @@ const CourseLessonLayout = ({ course }) => {
     const el = lessonScrollRef.current;
     if (!el) return;
     setHideHeaderLine(el.scrollTop > 16);
+    
+    // Notify the navbar of the scroll position within the lesson container
+    window.dispatchEvent(new CustomEvent('lessonScroll', { detail: el.scrollTop }));
   }, []);
 
   useEffect(() => {
@@ -285,6 +289,14 @@ const CourseLessonLayout = ({ course }) => {
   };
 
   return (
+    <>
+    <CourseProgressStrip
+      courseTitle={course?.title || 'Course'}
+      courseSlug={course?.slug}
+      currentLessonTitle={lessonTitle}
+      totalLessons={visibleBlocks.length}
+      completedCount={completedIds.size}
+    />
     <div
       ref={layoutRef}
       className={`lesson-layout lesson-layout--resizable${isResizing ? ' is-resizing' : ''}${
@@ -448,6 +460,7 @@ const CourseLessonLayout = ({ course }) => {
         </div>
       </main>
     </div>
+    </>
   );
 };
 

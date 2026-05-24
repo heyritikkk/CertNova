@@ -25,6 +25,12 @@
   flex-direction: column;
   /* Space for fixed full-width navbar */
   padding-top: var(--navbar-offset);
+  transition: padding-top 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.navbar-hidden .main-content {
+  padding-top: 0.5rem; /* When navbar hides, slide content up! */
+  --navbar-offset: 0.5rem; /* Dynamically update variable so layouts expand to fill the void */
 }
 
 @media (max-width: 900px) {

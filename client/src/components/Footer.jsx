@@ -20,17 +20,13 @@ const Footer = () => {
               <h4>Product</h4>
               <a href="#features">Features</a>
               <Link to="/pricing">Pricing</Link>
-              <a href="#download">Download</a>
+              <Link to="/verify-certificate">Verify Certificate</Link>
             </div>
             <div className="footer-column">
               <h4>Company</h4>
               <Link to="/about">About</Link>
               <Link to="/blog">Blog</Link>
               <a href="#careers">Careers</a>
-            </div>
-            <div className="footer-column">
-              <h4>Support</h4>
-              <Link to="/verify-certificate">Verify Certificate</Link>
               <a href="#contact">Contact</a>
             </div>
             <div className="footer-column">

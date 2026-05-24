@@ -17,6 +17,9 @@
   /* Solid peach - matches page bg (not gradient) so scroll cover looks seamless */
   --lesson-nav-shield: color-mix(in srgb, var(--brand-accent-soft) 25%, #fff5f0 75%);
   background-color: var(--lesson-nav-shield);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .course-detail-page--lesson::before {
@@ -41,7 +44,9 @@
 }
 
 .course-detail-page--lesson .course-detail-inner {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   width: 100%;
   max-width: none;
   margin: 0;

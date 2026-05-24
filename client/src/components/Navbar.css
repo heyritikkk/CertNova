@@ -13,6 +13,12 @@
   box-shadow: none;
   box-sizing: border-box;
   pointer-events: auto;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar--hidden {
+  transform: translateY(calc(-100% - var(--navbar-top-gap, 1.5rem) - 10px));
+  pointer-events: none;
 }
 
 [data-theme='dark'] .navbar {

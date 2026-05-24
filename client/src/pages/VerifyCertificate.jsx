@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, CheckCircle2, XCircle, Award } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
 import './VerifyCertificate.css';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -32,11 +33,11 @@ export default function VerifyCertificate() {
   return (
     <div className="verify-page">
       <div className="verify-container">
-        <div className="verify-header">
-          <Award size={40} className="verify-header-icon" />
-          <h1>Verify Certificate</h1>
-          <p>Enter a Certificate ID to verify its authenticity</p>
-        </div>
+        <PageHeader 
+          eyebrow="Verification"
+          title="Verify Certificate"
+          subtitle="Enter a Certificate ID to verify its authenticity and completion details. Securely validate student credentials and achievements instantly."
+        />
 
         <form onSubmit={handleVerify} className="verify-form">
           <div className="verify-input-group">

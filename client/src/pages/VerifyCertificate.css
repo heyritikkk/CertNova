@@ -4,7 +4,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  background: linear-gradient(160deg, #f8fafc 0%, #fff5ee 100%);
+  background: var(--bg-main);
 }
 
 .verify-container {
@@ -162,7 +162,7 @@
 }
 
 [data-theme='dark'] .verify-page {
-  background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
+  background: var(--bg-main);
 }
 
 [data-theme='dark'] .verify-header h1 { color: #f8fafc; }

@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { CheckCircle2, Award, Download, Linkedin, Twitter, Facebook, MessageCircle, Link2, Check } from 'lucide-react';
+import {
+  CheckCircle2, Award, Download, Link2, Check, AlertTriangle,
+} from 'lucide-react';
+import { generateCertificate } from '../lib/generateCertificate';
 import './Certificate.css';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -52,12 +55,49 @@ function saveCertificateToServer(certId, course) {
   }).catch(() => {});
 }
 
+/**
+ * Check if the user has completed all lessons.
+ * Returns { complete: boolean, total: number, done: number }
+ */
+function checkCourseCompletion(course) {
+  if (!course?.id) return { complete: false, total: 0, done: 0 };
+
+  try {
+    const raw = localStorage.getItem(`certnova-lesson-progress-${course.id}`);
+    const completedIds = new Set(JSON.parse(raw || '[]'));
+
+    // Parse content blocks to count visible lessons
+    let blocks = [];
+    try {
+      blocks = JSON.parse(course.content_blocks_json || '[]');
+    } catch {
+      blocks = course.content_blocks || [];
+    }
+
+    const visible = blocks.filter((b) => {
+      if (b.hidden) return false;
+      const sec = b.sectionTitle?.trim();
+      const nav = b.navTitle?.trim();
+      const isParent = b.type === 'markdown' && sec && nav && sec === nav;
+      return !isParent;
+    });
+
+    const total = visible.length;
+    const done = visible.filter((b) => completedIds.has(b.id)).length;
+
+    return { complete: total > 0 && done >= total, total, done };
+  } catch {
+    return { complete: false, total: 0, done: 0 };
+  }
+}
+
 export default function Certificate() {
   const { slug } = useParams();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [certId] = useState(generateCertId);
   const [saved, setSaved] = useState(false);
+  const [certPreview, setCertPreview] = useState(null);
   const certRef = useRef(null);
 
   useEffect(() => {
@@ -67,41 +107,37 @@ export default function Certificate() {
       .catch(() => setLoading(false));
   }, [slug]);
 
+  const completion = course ? checkCourseCompletion(course) : { complete: false, total: 0, done: 0 };
+
   useEffect(() => {
-    if (course && !saved) {
+    if (course && !saved && completion.complete) {
       saveCertificateToServer(certId, course);
       setSaved(true);
     }
-  }, [course, certId, saved]);
+  }, [course, certId, saved, completion.complete]);
 
-  const handlePrint = () => {
-    const w = window.open('', '_blank');
-    if (!w) return;
-    w.document.write(`
-      <html><head><title>Certificate of Completion</title>
-      <style>
-        body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Georgia', serif; }
-        .cert-print { width: 900px; padding: 50px; text-align: center; border: 8px solid #f48b60; }
-        .cert-print h1 { font-size: 2.5rem; color: #0f172a; margin-bottom: 0.5rem; }
-        .cert-print .sub { font-size: 1.1rem; color: #64748b; margin-bottom: 2rem; }
-        .cert-print .name { font-size: 2rem; color: #f48b60; font-weight: 700; margin: 1.5rem 0; }
-        .cert-print .course-name { font-size: 1.5rem; color: #0f172a; font-weight: 600; margin: 1rem 0; }
-        .cert-print .details { color: #64748b; font-size: 0.95rem; margin-top: 2rem; }
-        .cert-print .cert-id { color: #94a3b8; font-size: 0.8rem; margin-top: 1.5rem; }
-      </style></head><body>
-        <div class="cert-print">
-          <h1>Certificate of Completion</h1>
-          <p class="sub">This is proudly presented to</p>
-          <div class="name">${getUserName()}</div>
-          <p class="sub">for successfully completing the course</p>
-          <div class="course-name">${course?.title || slug}</div>
-          <div class="details">Completed on ${getCompletionDate(course?.id)}</div>
-          <div class="cert-id">Certificate ID: ${certId}</div>
-        </div>
-      </body></html>
-    `);
-    w.document.close();
-    setTimeout(() => { w.print(); }, 500);
+  // Generate preview once course is loaded + complete
+  useEffect(() => {
+    if (course && completion.complete) {
+      const dataUrl = generateCertificate({
+        userName: getUserName(),
+        courseTitle: course.title,
+        completionDate: getCompletionDate(course.id),
+        certId,
+        instructorName: course.instructor_name || 'CertNova Team',
+      });
+      setCertPreview(dataUrl);
+    }
+  }, [course, completion.complete, certId]);
+
+  const handleDownload = () => {
+    if (!certPreview) return;
+    const link = document.createElement('a');
+    link.download = `CertNova-Certificate-${slug}.png`;
+    link.href = certPreview;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   if (loading) {
@@ -123,6 +159,38 @@ export default function Certificate() {
     );
   }
 
+  /* ── COMPLETION GUARD ── */
+  if (!completion.complete) {
+    const pct = completion.total > 0 ? Math.round((completion.done / completion.total) * 100) : 0;
+    return (
+      <div className="cert-page">
+        <div className="cert-guard">
+          <div className="cert-guard__icon">
+            <AlertTriangle size={48} />
+          </div>
+          <h1>Course Not Yet Completed</h1>
+          <p>
+            You need to complete <strong>all lessons and quizzes</strong> to earn your certificate.
+          </p>
+
+          <div className="cert-guard__progress">
+            <div className="cert-guard__bar">
+              <div className="cert-guard__bar-fill" style={{ width: `${pct}%` }} />
+            </div>
+            <span className="cert-guard__stats">
+              {completion.done} / {completion.total} lessons ({pct}%)
+            </span>
+          </div>
+
+          <Link to={`/courses/${slug}/learn`} className="cert-guard__btn">
+            ← Continue Learning
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── CERTIFICATE VIEW ── */
   const userName = getUserName();
   const completionDate = getCompletionDate(course.id);
   const courseUrl = `${window.location.origin}/courses/${slug}`;
@@ -138,55 +206,66 @@ export default function Certificate() {
   };
 
   const shareLinks = [
-    { name: 'LinkedIn', icon: Linkedin, url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(courseUrl)}&summary=${encodeURIComponent(shareText)}` },
-    { name: 'Twitter', icon: Twitter, url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(courseUrl)}` },
-    { name: 'Facebook', icon: Facebook, url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(courseUrl)}` },
-    { name: 'WhatsApp', icon: MessageCircle, url: `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + courseUrl)}` },
+    { name: 'LinkedIn', icon: Link2, url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(courseUrl)}&summary=${encodeURIComponent(shareText)}` },
+    { name: 'Twitter', icon: Link2, url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(courseUrl)}` },
+    { name: 'Facebook', icon: Link2, url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(courseUrl)}` },
+    { name: 'WhatsApp', icon: Link2, url: `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + courseUrl)}` },
   ];
 
   return (
     <div className="cert-page">
       <div className="cert-container">
         <div className="cert-actions">
-          <button type="button" className="cert-print-btn" onClick={handlePrint}>
-            <Download size={16} /> Download PDF
+          <button type="button" className="cert-print-btn" onClick={handleDownload}>
+            <Download size={16} /> Download Certificate
           </button>
         </div>
 
-        <div className="cert-card" ref={certRef}>
-          <div className="cert-badge">
-            <Award size={48} />
+        {/* Canvas-rendered certificate preview */}
+        {certPreview ? (
+          <div className="cert-canvas-preview" ref={certRef}>
+            <img
+              src={certPreview}
+              alt={`Certificate of Completion — ${course.title}`}
+              className="cert-canvas-img"
+            />
           </div>
-
-          <h1 className="cert-title">Certificate of Completion</h1>
-          <p className="cert-sub">This is proudly presented to</p>
-
-          <div className="cert-name">{userName}</div>
-
-          <p className="cert-sub">for successfully completing the course</p>
-          <div className="cert-course-name">{course.title}</div>
-
-          <div className="cert-footer">
-            <div className="cert-footer-item">
-              <span className="cert-footer-label">Completion Date</span>
-              <span className="cert-footer-value">{completionDate}</span>
+        ) : (
+          <div className="cert-card" ref={certRef}>
+            <div className="cert-badge">
+              <Award size={48} />
             </div>
-            <div className="cert-footer-divider" />
-            <div className="cert-footer-item">
-              <span className="cert-footer-label">Certificate ID</span>
-              <span className="cert-footer-value">{certId}</span>
+
+            <h1 className="cert-title">Certificate of Completion</h1>
+            <p className="cert-sub">This is proudly presented to</p>
+
+            <div className="cert-name">{userName}</div>
+
+            <p className="cert-sub">for successfully completing the course</p>
+            <div className="cert-course-name">{course.title}</div>
+
+            <div className="cert-footer">
+              <div className="cert-footer-item">
+                <span className="cert-footer-label">Completion Date</span>
+                <span className="cert-footer-value">{completionDate}</span>
+              </div>
+              <div className="cert-footer-divider" />
+              <div className="cert-footer-item">
+                <span className="cert-footer-label">Certificate ID</span>
+                <span className="cert-footer-value">{certId}</span>
+              </div>
             </div>
-          </div>
 
-          <div className="cert-check">
-            <CheckCircle2 size={20} /> Verified & Authentic
-          </div>
+            <div className="cert-check">
+              <CheckCircle2 size={20} /> Verified & Authentic
+            </div>
 
-          <p className="cert-verify-note">
-            Verify this certificate at{' '}
-            <Link to="/verify-certificate">CertNova /verify-certificate</Link>
-          </p>
-        </div>
+            <p className="cert-verify-note">
+              Verify this certificate at{' '}
+              <Link to="/verify-certificate">CertNova /verify-certificate</Link>
+            </p>
+          </div>
+        )}
 
         <div className="cert-share">
           <p className="cert-share-label">Share your achievement</p>

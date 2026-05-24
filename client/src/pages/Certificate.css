@@ -67,6 +67,107 @@
   position: relative;
 }
 
+/* ── Canvas-rendered certificate preview ── */
+.cert-canvas-preview {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12), 0 0 0 1.5px rgba(244, 139, 96, 0.25);
+  border: 1.5px solid rgba(244, 139, 96, 0.3);
+  background: #fff;
+}
+
+.cert-canvas-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Completion Guard ── */
+.cert-guard {
+  max-width: 520px;
+  margin: 4rem auto 0;
+  text-align: center;
+  background: #fff;
+  border-radius: 28px;
+  padding: 3rem 2.5rem;
+  border: 1.5px solid rgba(244, 139, 96, 0.3);
+  box-shadow: 0 0 40px rgba(244, 139, 96, 0.1), 0 20px 48px rgba(15, 23, 42, 0.06);
+}
+
+.cert-guard__icon {
+  color: #f59e0b;
+  margin-bottom: 1.25rem;
+  animation: cert-glow 2s ease-in-out infinite;
+}
+
+.cert-guard h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  color: #0f172a;
+  margin: 0 0 0.5rem;
+}
+
+.cert-guard p {
+  color: #64748b;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+}
+
+.cert-guard__progress {
+  margin-bottom: 1.75rem;
+}
+
+.cert-guard__bar {
+  width: 100%;
+  height: 10px;
+  background: #f1f5f9;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.cert-guard__bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f48b60, #e07048);
+  transition: width 0.6s ease;
+}
+
+.cert-guard__stats {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.cert-guard__btn {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background: linear-gradient(135deg, #f48b60, #e07048);
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(244, 139, 96, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cert-guard__btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(244, 139, 96, 0.45);
+}
+
+[data-theme='dark'] .cert-guard {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(244, 139, 96, 0.25);
+}
+
+[data-theme='dark'] .cert-guard h1 { color: #f8fafc; }
+[data-theme='dark'] .cert-guard p { color: #94a3b8; }
+[data-theme='dark'] .cert-guard__bar { background: rgba(255, 255, 255, 0.08); }
+[data-theme='dark'] .cert-guard__stats { color: #94a3b8; }
+
 .cert-badge {
   color: #f48b60;
   margin-bottom: 1rem;

@@ -100,13 +100,6 @@ const LoginCyberVisual = () => {
           </div>
         </div>
       </div>
-      <div className="visual-copy">
-        <h2>Core Cybersecurity Learning</h2>
-        <p>
-          Build and follow structured Security+ courses with labs, quizzes, and a clear roadmap to exam
-          readiness, all in one place.
-        </p>
-      </div>
     </section>
   );
 };

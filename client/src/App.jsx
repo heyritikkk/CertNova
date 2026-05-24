@@ -34,7 +34,7 @@ const Layout = ({ theme, onToggleTheme }) => {
         <Outlet />
       </main>
       {!hideCta && <CtaBanner />}
-      <Footer />
+      {!hideCta && <Footer />}
     </>
   );
 };

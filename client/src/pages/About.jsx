@@ -98,8 +98,7 @@ const About = () => {
           <span className="about-eyebrow">About CertNova</span>
           <h1>Focused Security+ exam preparation</h1>
           <p>
-            CertNova helps learners prepare for the CompTIA Security+ exam with structured courses,
-            practical lessons, and a clear path from first login to exam day.
+            Structured courses and practical lessons to help you confidently pass the Security+ exam.
           </p>
         </header>
 

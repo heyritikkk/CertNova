@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ShieldCheck, Lock, CreditCard, Smartphone, Building2, CheckCircle2 } from 'lucide-react';
 import QRModal from '../components/QRModal';
+import PageHeader from '../components/PageHeader';
 import './Payment.css';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -66,15 +67,18 @@ export default function Payment() {
       )}
 
       <div className="payment-inner">
+        <PageHeader 
+          eyebrow="Checkout"
+          title="Secure Payment"
+          subtitle="Complete your secure order to instantly unlock your course. You will receive lifetime access to the curriculum, practice labs, and a digital certificate of completion."
+        />
         <div className="payment-grid">
           {/* ── LEFT: Order Summary ── */}
           <div className="payment-summary">
             <h1 className="payment-title">Complete Your Order</h1>
 
             <div className="payment-course-card">
-              <div className="payment-course-cover">
-                <span className="payment-course-emoji">🔐</span>
-              </div>
+
               <div className="payment-course-info">
                 <span className="payment-course-tag">Security+</span>
                 <h2>{course?.title || 'Security+ Course'}</h2>
