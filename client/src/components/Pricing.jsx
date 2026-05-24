@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Check } from 'lucide-react';
+import { useCurrency } from '../hooks/useCurrency';
 import './Pricing.css';
 
 const Pricing = ({ hideHeader = false }) => {
+  const { formatPrice } = useCurrency();
+
   return (
     <section className={`pricing-section${hideHeader ? ' pricing-section--no-header' : ''}`} id="pricing">
       {!hideHeader && (
@@ -21,7 +24,7 @@ const Pricing = ({ hideHeader = false }) => {
           <div className="pricing-card-top">
             <h3>Launch</h3>
             <div className="price">
-              <span className="amount">$0</span>
+              <span className="amount">{formatPrice(0)}</span>
               <span className="period">/mo</span>
             </div>
             <p className="pricing-desc">Perfect for solo builders testing ideas and shipping their first workflows.</p>
@@ -42,7 +45,7 @@ const Pricing = ({ hideHeader = false }) => {
               <span className="badge">Best Value</span>
             </div>
             <div className="price">
-              <span className="amount">$24</span>
+              <span className="amount">{formatPrice(24)}</span>
               <span className="period">/mo</span>
             </div>
             <p className="pricing-desc">Built for growing teams that need faster delivery, deeper control, and premium support.</p>

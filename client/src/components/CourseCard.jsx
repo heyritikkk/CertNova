@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Clock3 } from 'lucide-react';
 import './CourseCard.css';
+import { useCurrency } from '../hooks/useCurrency';
 
 const CourseCard = ({ course, linkToDetail = true, preview = false }) => {
+  const { formatPrice } = useCurrency();
   const detailPath = `/courses/${course.slug || course.id}`;
-  const priceLabel =
-    Number(course.price) > 0 ? `$${Number(course.price).toFixed(2)}` : 'Free';
+  const priceLabel = formatPrice(course.price);
 
   const coverTitle = course.cover_title?.trim() || '';
   const coverSubtitle = course.cover_subtitle?.trim() || '';

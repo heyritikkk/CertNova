@@ -188,7 +188,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 1.15rem;
 }
 
 .how-benefits-list--grid {

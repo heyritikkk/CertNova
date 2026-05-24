@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ShieldCheck, Lock, CreditCard, Smartphone, Building2, CheckCircle2 } from 'lucide-react';
 import QRModal from '../components/QRModal';
 import PageHeader from '../components/PageHeader';
+import { useCurrency } from '../hooks/useCurrency';
 import './Payment.css';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -23,9 +24,10 @@ export default function Payment() {
       .catch(() => setLoading(false));
   }, [slug]);
 
+  const { formatPrice, currency } = useCurrency();
   const price = Number(course?.price ?? 49.99);
-  // Convert USD → INR (approx) for UPI display
-  const inrAmount = (price * 83).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+  const tax = price * 0.18;
+  const total = price + tax;
 
   const handlePaid = () => {
     setShowQR(false);
@@ -60,7 +62,7 @@ export default function Payment() {
     <div className="payment-page">
       {showQR && (
         <QRModal
-          amount={`₹${inrAmount}`}
+          amount={formatPrice(total)}
           courseTitle={course?.title}
           onClose={handlePaid}
         />
@@ -96,15 +98,15 @@ export default function Payment() {
             <div className="payment-breakdown">
               <div className="payment-breakdown__row">
                 <span>Course price</span>
-                <span>${price.toFixed(2)}</span>
+                <span>{formatPrice(price)}</span>
               </div>
               <div className="payment-breakdown__row">
                 <span>Discount</span>
-                <span className="payment-discount">-$0.00</span>
+                <span className="payment-discount">-{formatPrice(0)}</span>
               </div>
               <div className="payment-breakdown__row">
                 <span>Tax (GST @ 18%)</span>
-                <span>${(price * 0.18).toFixed(2)}</span>
+                <span>{formatPrice(tax)}</span>
               </div>
               <div className="payment-breakdown__row">
                 <span>Platform fee</span>
@@ -112,7 +114,7 @@ export default function Payment() {
               </div>
               <div className="payment-breakdown__row payment-breakdown__total">
                 <span>Total</span>
-                <span>${(price * 1.18).toFixed(2)} <small>(≈ ₹{(price * 1.18 * 83).toLocaleString('en-IN', { maximumFractionDigits: 0 })})</small></span>
+                <span>{formatPrice(total)}</span>
               </div>
             </div>
 

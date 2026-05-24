@@ -22,13 +22,14 @@ function StarRating({ value = 4.7 }) {
     </span>
   );
 }
+import { useCurrency } from '../hooks/useCurrency';
 
 const CourseDetailOverview = ({ course }) => {
+  const { formatPrice } = useCurrency();
   const slug = course.slug || course.id;
   const learnPath = `/courses/${slug}/learn`;
   const loginHref = `/login?redirect=${encodeURIComponent(learnPath)}`;
-  const priceLabel =
-    Number(course.price) > 0 ? `$${Number(course.price).toFixed(2)}` : 'Free';
+  const priceLabel = formatPrice(course.price);
   const heroText = course.detail_description?.trim() || course.description;
   const outcomes =
     course.learning_outcomes_list?.length > 0
