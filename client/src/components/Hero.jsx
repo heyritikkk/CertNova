@@ -23,8 +23,7 @@ const Hero = () => {
   const navigate = useNavigate();
   const [content, setContent] = useState({
     title: HERO_TITLE,
-    description: HERO_SUBHEADING,
-    button_text: 'Log In'
+    description: HERO_SUBHEADING
   });
 
   useEffect(() => {
@@ -62,14 +61,14 @@ const Hero = () => {
               className="hero-btn secondary"
               onClick={() => navigate('/courses')}
             >
-              Start Learning
+              Browse courses
             </button>
             <button
               type="button"
               className="hero-btn primary"
-              onClick={() => navigate('/courses')}
+              onClick={() => navigate('/login')}
             >
-              Browse courses
+              Login Here
             </button>
           </div>
         </div>
