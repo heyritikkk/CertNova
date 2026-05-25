@@ -3,7 +3,7 @@
   max-width: var(--site-max-width, 100%);
   box-sizing: border-box;
   margin: 0 auto;
-  padding: 4rem 0 2.5rem;
+  padding: 1.5rem 0 2.5rem;
 }
 
 .how-header {
@@ -47,7 +47,7 @@
   position: relative;
 }
 
-/* Steps with profile cards (1 & 3) — card column width */
+/* Steps with profile cards (1 & 3) - card column width */
 .how-body:has(> .how-right > .how-card) {
   grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr);
   gap: clamp(1.5rem, 3vw, 2.75rem);
@@ -61,7 +61,7 @@
   padding-left: clamp(0.75rem, 2vw, 1.75rem);
 }
 
-/* Step 2 code card — same column width as profile cards (mirrored) */
+/* Step 2 code card - same column width as profile cards (mirrored) */
 .how-body:has(> .how-left > .how-code-card) {
   grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
   gap: clamp(1.5rem, 3vw, 2.75rem);
@@ -94,7 +94,7 @@
   pointer-events: none;
 }
 
-/* Step copy — headline → lead → benefits (readable hierarchy) */
+/* Step copy - headline → lead → benefits (readable hierarchy) */
 .how-copy {
   width: 100%;
   max-width: none;
@@ -498,7 +498,7 @@
 
 @media (max-width: 968px) {
   .how-section {
-    padding: 2.6rem 1.2rem 2rem;
+    padding: 1.2rem 1.2rem 2rem;
   }
 
   .how-header h2 {

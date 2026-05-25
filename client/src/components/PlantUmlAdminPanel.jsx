@@ -22,7 +22,7 @@ export default function PlantUmlAdminPanel({ onInsert, onClose }) {
       setCopyHint('Markdown block copied');
       window.setTimeout(() => setCopyHint(''), 2400);
     } catch {
-      setCopyHint('Copy failed — use Insert instead');
+      setCopyHint('Copy failed - use Insert instead');
       window.setTimeout(() => setCopyHint(''), 2400);
     }
   };
@@ -55,7 +55,7 @@ export default function PlantUmlAdminPanel({ onInsert, onClose }) {
           />
           <p className="plantuml-admin-panel__note">
             You can also type{' '}
-            <code>{'```plantuml'}</code> directly in the lesson markdown — both methods work.
+            <code>{'```plantuml'}</code> directly in the lesson markdown - both methods work.
           </p>
         </div>
 

@@ -24,7 +24,7 @@ export default function Payment() {
       .catch(() => setLoading(false));
   }, [slug]);
 
-  const { formatPrice, currency } = useCurrency();
+  const { formatPrice } = useCurrency();
   const price = Number(course?.price ?? 49.99);
   const tax = price * 0.18;
   const total = price + tax;
@@ -180,7 +180,7 @@ export default function Payment() {
             <div className="payment-action">
               {method === 'upi' && (
                 <button className="payment-pay-btn" onClick={() => setShowQR(true)}>
-                  Scan QR &amp; Pay ₹{inrAmount}
+                  Scan QR &amp; Pay {formatPrice(total)}
                 </button>
               )}
               {method === 'card' && (

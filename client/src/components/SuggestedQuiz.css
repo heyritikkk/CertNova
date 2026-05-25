@@ -27,7 +27,7 @@
   font-size: 1.2rem;
   font-weight: 700;
   color: #0f172a;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
 }
 
 .suggested-quiz__sub {

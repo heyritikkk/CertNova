@@ -214,6 +214,27 @@ const CourseLessonLayout = ({ course }) => {
     }
   }, [isCourseComplete, course?.id]);
 
+  useEffect(() => {
+    if (course?.id && activeBlock) {
+      const progressPercent = visibleBlocks.length > 0
+        ? Math.round((completedIds.size / visibleBlocks.length) * 100)
+        : 0;
+
+      const lastActivity = {
+        courseId: course.id,
+        courseTitle: course.title,
+        courseSlug: course.slug,
+        lessonId: activeBlock.id,
+        lessonTitle: activeBlock.navTitle?.trim() || activeBlock.title || 'Lesson',
+        lessonHash: `#${activeBlock.id}`,
+        progressPercent: progressPercent > 100 ? 100 : progressPercent
+      };
+      
+      localStorage.setItem('certnova-last-activity', JSON.stringify(lastActivity));
+      window.dispatchEvent(new Event('lastActivityUpdated'));
+    }
+  }, [course, activeBlock, completedIds.size, visibleBlocks.length]);
+
   const readMinutes = estimateReadMinutes(activeBlock);
 
   const lessonTitle =

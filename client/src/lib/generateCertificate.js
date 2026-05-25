@@ -1,21 +1,9 @@
-/**
- * generateCertificate.js — Renders a premium certificate on HTML5 Canvas
- * and returns a downloadable data URL (PNG).
- *
- * @param {Object} opts
- * @param {string} opts.userName
- * @param {string} opts.courseTitle
- * @param {string} opts.completionDate
- * @param {string} opts.certId
- * @param {string} [opts.instructorName]
- * @returns {string} data:image/png URL
- */
 export function generateCertificate({
   userName,
   courseTitle,
   completionDate,
   certId,
-  instructorName = 'CertNova Team',
+  instructorName = 'CertNova Security Team',
 }) {
   const W = 1600;
   const H = 1130;
@@ -24,223 +12,202 @@ export function generateCertificate({
   canvas.height = H;
   const ctx = canvas.getContext('2d');
 
-  /* ── Background ── */
-  const bg = ctx.createLinearGradient(0, 0, W, H);
-  bg.addColorStop(0, '#fffaf6');
-  bg.addColorStop(0.5, '#fff8f2');
-  bg.addColorStop(1, '#fef5ee');
-  ctx.fillStyle = bg;
+  /* ── 1. Background (Light Gray/White) ── */
+  ctx.fillStyle = '#f8fafc';
   ctx.fillRect(0, 0, W, H);
 
-  /* ── Subtle texture pattern ── */
-  ctx.globalAlpha = 0.03;
-  for (let x = 0; x < W; x += 30) {
-    for (let y = 0; y < H; y += 30) {
-      ctx.fillStyle = '#c05621';
-      ctx.fillRect(x, y, 1, 1);
-    }
-  }
-  ctx.globalAlpha = 1;
+  // Subtle geometric background polygons (faceted look)
+  ctx.fillStyle = '#f1f5f9';
+  ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(800, 0); ctx.lineTo(0, 800); ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath(); ctx.moveTo(0, 800); ctx.lineTo(800, 0); ctx.lineTo(W, 400); ctx.lineTo(600, H); ctx.lineTo(0, H); ctx.fill();
 
-  /* ── Outer border ── */
-  const borderW = 12;
-  ctx.strokeStyle = '#f48b60';
-  ctx.lineWidth = borderW;
-  roundRect(ctx, borderW / 2, borderW / 2, W - borderW, H - borderW, 24);
-  ctx.stroke();
-
-  /* ── Inner border ── */
-  const inner = 28;
-  ctx.strokeStyle = 'rgba(244, 139, 96, 0.35)';
-  ctx.lineWidth = 2;
-  roundRect(ctx, inner, inner, W - inner * 2, H - inner * 2, 16);
-  ctx.stroke();
-
-  /* ── Corner ornaments ── */
-  drawCornerOrnaments(ctx, W, H);
-
-  /* ── Top decorative line ── */
-  const lineY = 100;
-  const lineGrad = ctx.createLinearGradient(200, lineY, W - 200, lineY);
-  lineGrad.addColorStop(0, 'rgba(244,139,96,0)');
-  lineGrad.addColorStop(0.3, 'rgba(244,139,96,0.5)');
-  lineGrad.addColorStop(0.5, 'rgba(244,139,96,0.8)');
-  lineGrad.addColorStop(0.7, 'rgba(244,139,96,0.5)');
-  lineGrad.addColorStop(1, 'rgba(244,139,96,0)');
-  ctx.strokeStyle = lineGrad;
-  ctx.lineWidth = 1.5;
+  /* ── 2. Diagonal Ribbons (Right Side) ── */
+  ctx.save();
+  // We use polygons instead of rotated rects to get exact edge-to-edge coverage
+  
+  // Ribbon 1 (Back/Darkest Orange)
+  ctx.fillStyle = '#c05621'; // Deep brand orange
   ctx.beginPath();
-  ctx.moveTo(200, lineY);
-  ctx.lineTo(W - 200, lineY);
+  ctx.moveTo(1100, 0);
+  ctx.lineTo(W, 0);
+  ctx.lineTo(W, 800);
+  ctx.lineTo(700, H);
+  ctx.lineTo(400, H);
+  ctx.fill();
+
+  // Ribbon 2 (Middle/Main Brand Orange)
+  const grad1 = ctx.createLinearGradient(900, 0, 1400, H);
+  grad1.addColorStop(0, '#f48b60');
+  grad1.addColorStop(1, '#e07048');
+  ctx.fillStyle = grad1;
+  ctx.beginPath();
+  ctx.moveTo(1350, 0);
+  ctx.lineTo(W, 0);
+  ctx.lineTo(W, H);
+  ctx.lineTo(850, H);
+  ctx.lineTo(700, H);
+  ctx.fill();
+
+  // Ribbon 3 (Front/Dark Slate Accent on very bottom right)
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.moveTo(W, 600);
+  ctx.lineTo(W, H);
+  ctx.lineTo(1200, H);
+  ctx.fill();
+  ctx.restore();
+
+  /* ── 3. Top Left Logo ── */
+  const startX = 120;
+  
+  // Logo Icon (Square outline with rounded corners)
+  ctx.strokeStyle = '#c05621';
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.roundRect(startX, 100, 40, 40, 10);
   ctx.stroke();
 
-  /* ── CertNova branding ── */
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#c05621';
-  ctx.font = '600 18px "Inter", "Segoe UI", sans-serif';
-  ctx.letterSpacing = '6px';
-  ctx.fillText('C E R T N O V A', W / 2, 82);
-
-  /* ── Award icon (star) ── */
-  drawAwardStar(ctx, W / 2, 155, 32);
-
-  /* ── "Certificate of Completion" ── */
+  // Company Name
+  ctx.textAlign = 'left';
   ctx.fillStyle = '#0f172a';
-  ctx.font = '700 52px "Georgia", "Playfair Display", serif';
-  ctx.fillText('Certificate of Completion', W / 2, 235);
-
-  /* ── Subtitle ── */
+  ctx.font = '800 24px "Inter", sans-serif';
+  ctx.fillText('CertNova', startX + 60, 120);
+  
+  // Slogan
   ctx.fillStyle = '#64748b';
-  ctx.font = '400 20px "Inter", "Segoe UI", sans-serif';
-  ctx.fillText('This is proudly presented to', W / 2, 290);
+  ctx.font = '500 14px "Inter", sans-serif';
+  ctx.fillText('Learn. Build. Secure.', startX + 60, 140);
 
-  /* ── Decorative divider before name ── */
-  drawDivider(ctx, W / 2 - 120, 315, 240);
+  /* ── 4. Main Typography ── */
+  
+  // Dual-color Heading
+  ctx.font = '800 64px "Inter", sans-serif';
+  ctx.fillStyle = '#f48b60'; // Brand Orange
+  ctx.fillText('CERTIFICATE', startX, 280);
+  
+  const certWidth = ctx.measureText('CERTIFICATE ').width;
+  ctx.fillStyle = '#1e293b'; // Slate
+  ctx.fillText('OF COMPLETION', startX + certWidth, 280);
 
-  /* ── Recipient name ── */
-  const nameGrad = ctx.createLinearGradient(W / 2 - 200, 360, W / 2 + 200, 360);
-  nameGrad.addColorStop(0, '#e07048');
-  nameGrad.addColorStop(0.5, '#f48b60');
-  nameGrad.addColorStop(1, '#e07048');
-  ctx.fillStyle = nameGrad;
-  ctx.font = '700 56px "Georgia", "Playfair Display", serif';
-  ctx.fillText(formatName(userName), W / 2, 375);
+  // Subtitle
+  ctx.fillStyle = '#475569';
+  ctx.font = '600 22px "Inter", sans-serif';
+  ctx.letterSpacing = '1px';
+  ctx.fillText('THIS CERTIFICATE IS PROUDLY PRESENTED TO', startX, 350);
 
-  /* ── Decorative divider after name ── */
-  drawDivider(ctx, W / 2 - 120, 405, 240);
-
-  /* ── "for successfully completing" ── */
-  ctx.fillStyle = '#64748b';
-  ctx.font = '400 20px "Inter", "Segoe UI", sans-serif';
-  ctx.fillText('for successfully completing the course', W / 2, 450);
-
-  /* ── Course title ── */
+  // Recipient Name (Beautiful Script Font)
   ctx.fillStyle = '#0f172a';
-  ctx.font = '700 36px "Georgia", "Playfair Display", serif';
-  // Wrap long titles
-  const lines = wrapText(ctx, courseTitle, W - 300);
-  let titleY = 505;
-  lines.forEach((line) => {
-    ctx.fillText(line, W / 2, titleY);
-    titleY += 46;
+  // Fallback to Great Vibes or cursive
+  ctx.font = '100px "Great Vibes", "Playfair Display", cursive, serif';
+  ctx.fillText(formatName(userName), startX, 490);
+
+  // Course Description
+  ctx.fillStyle = '#475569';
+  ctx.font = '600 24px "Inter", sans-serif';
+  ctx.fillText('FOR SUCCESSFULLY COMPLETING:', startX, 610);
+
+  ctx.fillStyle = '#64748b';
+  ctx.font = '400 20px "Inter", sans-serif';
+  // Wrap long text
+  const descText = `The student has met all requirements, passed the final assessments, and demonstrated mastery of the concepts in the ${courseTitle} curriculum.`;
+  const lines = wrapText(ctx, descText, 700);
+  let textY = 660;
+  lines.forEach(line => {
+    ctx.fillText(line, startX, textY);
+    textY += 32;
   });
 
-  /* ── Instructor & Date section ── */
-  const infoY = Math.max(titleY + 60, 620);
-
-  // Left: Completion Date
-  ctx.fillStyle = '#94a3b8';
-  ctx.font = '600 13px "Inter", "Segoe UI", sans-serif';
-  ctx.fillText('COMPLETION DATE', W / 2 - 250, infoY);
-  ctx.fillStyle = '#334155';
-  ctx.font = '500 18px "Inter", "Segoe UI", sans-serif';
-  ctx.fillText(completionDate, W / 2 - 250, infoY + 28);
-
-  // Center divider
-  ctx.strokeStyle = '#e2e8f0';
-  ctx.lineWidth = 1;
+  /* ── 5. Footer (Date and Signature) ── */
+  const footerY = 930;
+  
+  // Line 1: Date
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(W / 2, infoY - 15);
-  ctx.lineTo(W / 2, infoY + 40);
+  ctx.moveTo(startX, footerY);
+  ctx.lineTo(startX + 250, footerY);
   ctx.stroke();
 
-  // Right: Instructor
-  ctx.fillStyle = '#94a3b8';
-  ctx.font = '600 13px "Inter", "Segoe UI", sans-serif';
-  ctx.fillText('INSTRUCTOR', W / 2 + 250, infoY);
-  ctx.fillStyle = '#334155';
-  ctx.font = '500 18px "Inter", "Segoe UI", sans-serif';
-  ctx.fillText(instructorName, W / 2 + 250, infoY + 28);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#0f172a';
+  ctx.font = '600 18px "Inter", sans-serif';
+  ctx.fillText(completionDate, startX + 125, footerY - 15);
+  ctx.fillStyle = '#64748b';
+  ctx.font = '500 14px "Inter", sans-serif';
+  ctx.letterSpacing = '2px';
+  ctx.fillText('DATE', startX + 125, footerY + 25);
 
-  /* ── Signature lines ── */
-  const sigY = infoY + 65;
-  ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)';
-  ctx.lineWidth = 1;
-  // left sig line
+  // Line 2: Signature
   ctx.beginPath();
-  ctx.moveTo(W / 2 - 350, sigY);
-  ctx.lineTo(W / 2 - 150, sigY);
-  ctx.stroke();
-  // right sig line
-  ctx.beginPath();
-  ctx.moveTo(W / 2 + 150, sigY);
-  ctx.lineTo(W / 2 + 350, sigY);
+  ctx.moveTo(startX + 350, footerY);
+  ctx.lineTo(startX + 600, footerY);
   ctx.stroke();
 
-  /* ── Bottom decorative line ── */
-  const btmLineY = H - 100;
-  ctx.strokeStyle = lineGrad;
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(200, btmLineY);
-  ctx.lineTo(W - 200, btmLineY);
-  ctx.stroke();
+  ctx.fillStyle = '#0f172a';
+  ctx.font = '600 18px "Inter", sans-serif';
+  ctx.fillText(instructorName, startX + 475, footerY - 15);
+  ctx.fillStyle = '#64748b';
+  ctx.font = '500 14px "Inter", sans-serif';
+  ctx.fillText('SIGNATURE', startX + 475, footerY + 25);
 
-  /* ── Verified badge ── */
-  const badgeY = H - 140;
-  ctx.fillStyle = 'rgba(22, 163, 74, 0.08)';
-  roundRect(ctx, W / 2 - 100, badgeY - 14, 200, 30, 999);
-  ctx.fill();
-  ctx.fillStyle = '#16a34a';
-  ctx.font = '600 13px "Inter", "Segoe UI", sans-serif';
-  ctx.fillText('✓ Verified & Authentic', W / 2, badgeY + 5);
-
-  /* ── Certificate ID ── */
-  ctx.fillStyle = '#94a3b8';
-  ctx.font = '400 14px "Inter", "Segoe UI", sans-serif';
-  ctx.fillText(`Certificate ID: ${certId}`, W / 2, H - 60);
-
-  /* ── Verify URL ── */
+  // Cert ID (Small at the bottom)
+  ctx.textAlign = 'left';
   ctx.fillStyle = '#cbd5e1';
-  ctx.font = '400 12px "Inter", "Segoe UI", sans-serif';
-  ctx.fillText('Verify at certnova.com/verify-certificate', W / 2, H - 40);
+  ctx.font = '400 12px "Inter", sans-serif';
+  ctx.letterSpacing = '0px';
+  ctx.fillText(`Credential ID: ${certId}`, startX, H - 40);
+
+  /* ── 6. The Massive Badge (Bottom Right) ── */
+  const badgeX = 1150;
+  const badgeY = 800;
+
+  // Outer shadow/white ring
+  ctx.beginPath();
+  ctx.arc(badgeX, badgeY, 180, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffffff';
+  ctx.shadowColor = 'rgba(0,0,0,0.15)';
+  ctx.shadowBlur = 40;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 10;
+  ctx.fill();
+  ctx.shadowColor = 'transparent'; // Reset shadow
+
+  // Brand Orange inner ring
+  ctx.beginPath();
+  ctx.arc(badgeX, badgeY, 150, 0, Math.PI * 2);
+  ctx.fillStyle = '#f48b60';
+  ctx.fill();
+
+  // Dark Slate core
+  ctx.beginPath();
+  ctx.arc(badgeX, badgeY, 130, 0, Math.PI * 2);
+  ctx.fillStyle = '#0f172a';
+  ctx.fill();
+
+  // Badge Text
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ffffff';
+  
+  ctx.font = '700 36px "Inter", sans-serif';
+  ctx.letterSpacing = '2px';
+  ctx.fillText('SECURITY', badgeX, badgeY - 10);
+  
+  ctx.font = '800 42px "Inter", sans-serif';
+  ctx.fillText('CERTIFIED', badgeX, badgeY + 40);
+
+  // Three Stars
+  drawStar(ctx, badgeX - 45, badgeY + 80, 12, '#ffffff');
+  drawStar(ctx, badgeX, badgeY + 85, 16, '#ffffff'); // Center star slightly larger
+  drawStar(ctx, badgeX + 45, badgeY + 80, 12, '#ffffff');
 
   return canvas.toDataURL('image/png', 1.0);
 }
 
 /* ── Helpers ── */
 
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-}
-
-function drawDivider(ctx, x, y, w) {
-  const grad = ctx.createLinearGradient(x, y, x + w, y);
-  grad.addColorStop(0, 'rgba(244,139,96,0)');
-  grad.addColorStop(0.3, 'rgba(244,139,96,0.6)');
-  grad.addColorStop(0.5, 'rgba(244,139,96,0.9)');
-  grad.addColorStop(0.7, 'rgba(244,139,96,0.6)');
-  grad.addColorStop(1, 'rgba(244,139,96,0)');
-  ctx.strokeStyle = grad;
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(x + w, y);
-  ctx.stroke();
-  // center diamond
-  const cx = x + w / 2;
-  ctx.fillStyle = '#f48b60';
-  ctx.beginPath();
-  ctx.moveTo(cx, y - 4);
-  ctx.lineTo(cx + 4, y);
-  ctx.lineTo(cx, y + 4);
-  ctx.lineTo(cx - 4, y);
-  ctx.closePath();
-  ctx.fill();
-}
-
-function drawAwardStar(ctx, cx, cy, size) {
-  ctx.fillStyle = '#f48b60';
+function drawStar(ctx, cx, cy, size, color) {
+  ctx.fillStyle = color;
   ctx.beginPath();
   for (let i = 0; i < 5; i++) {
     const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
@@ -251,58 +218,6 @@ function drawAwardStar(ctx, cx, cy, size) {
   }
   ctx.closePath();
   ctx.fill();
-  // Inner circle
-  ctx.fillStyle = '#fffaf6';
-  ctx.beginPath();
-  ctx.arc(cx, cy, size * 0.4, 0, Math.PI * 2);
-  ctx.fill();
-  // Tiny inner star
-  ctx.fillStyle = '#f48b60';
-  ctx.beginPath();
-  for (let i = 0; i < 5; i++) {
-    const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
-    const x = cx + size * 0.22 * Math.cos(angle);
-    const y = cy + size * 0.22 * Math.sin(angle);
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-  ctx.fill();
-}
-
-function drawCornerOrnaments(ctx, W, H) {
-  const size = 50;
-  const pad = 45;
-  ctx.strokeStyle = 'rgba(244, 139, 96, 0.4)';
-  ctx.lineWidth = 2;
-
-  // Top-left
-  ctx.beginPath();
-  ctx.moveTo(pad, pad + size);
-  ctx.lineTo(pad, pad);
-  ctx.lineTo(pad + size, pad);
-  ctx.stroke();
-
-  // Top-right
-  ctx.beginPath();
-  ctx.moveTo(W - pad - size, pad);
-  ctx.lineTo(W - pad, pad);
-  ctx.lineTo(W - pad, pad + size);
-  ctx.stroke();
-
-  // Bottom-left
-  ctx.beginPath();
-  ctx.moveTo(pad, H - pad - size);
-  ctx.lineTo(pad, H - pad);
-  ctx.lineTo(pad + size, H - pad);
-  ctx.stroke();
-
-  // Bottom-right
-  ctx.beginPath();
-  ctx.moveTo(W - pad - size, H - pad);
-  ctx.lineTo(W - pad, H - pad);
-  ctx.lineTo(W - pad, H - pad - size);
-  ctx.stroke();
 }
 
 function wrapText(ctx, text, maxWidth) {

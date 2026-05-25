@@ -193,7 +193,7 @@ const CourseContentBuilder = ({
           />
           <p className={`content-builder-toolbar-hint${toolbarHint ? ' is-alert' : ''}`}>
             {toolbarHint ||
-              'Structure lives in the left outline — write lesson content here. Use PlantUML for diagrams.'}
+              'Structure lives in the left outline - write lesson content here. Use PlantUML for diagrams.'}
           </p>
         </div>
 

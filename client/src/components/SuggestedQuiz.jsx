@@ -118,7 +118,7 @@ export default function SuggestedQuiz({ questions, lessonTitle }) {
               isCorrect ? ' is-correct' : ' is-wrong'
             }`}
           >
-            {isCorrect ? 'Correct!' : 'Not quite — review the lesson and try again.'}
+            {isCorrect ? 'Correct!' : 'Not quite - review the lesson and try again.'}
           </p>
         ) : null}
       </div>

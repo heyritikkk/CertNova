@@ -39,12 +39,12 @@ export default function QRModal({ onClose, amount, courseTitle }) {
         <div className="qrm-header">
           <span className="qrm-eyebrow">Scan &amp; Pay</span>
           <h2>Pay via UPI</h2>
-          <p>Scan the QR code using any UPI app — GPay, PhonePe, Paytm, etc.</p>
+          <p>Scan the QR code using any UPI app - GPay, PhonePe, Paytm, etc.</p>
         </div>
 
         <div className="qrm-qr-wrap">
           <img src="/upi-qr.png" alt="CertNova UPI QR Code" className="qrm-qr-img" />
-          <div className="qrm-amount-badge">₹{amount ?? '3,999'}</div>
+          <div className="qrm-amount-badge">{amount ?? '₹3,999'}</div>
         </div>
 
         <div className="qrm-upi-row">

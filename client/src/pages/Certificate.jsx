@@ -1,8 +1,85 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
-  CheckCircle2, Award, Download, Link2, Check, AlertTriangle,
+  Award, Download, Link2, Check, AlertTriangle
 } from 'lucide-react';
+
+// Custom SVG Social Icons to bypass lucide-react brand icon limitation
+function LinkedInIcon({ size = 20, ...props }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect width="4" height="12" x="2" y="9" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
+function XIcon({ size = 20, ...props }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      {...props}
+    >
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+function FacebookIcon({ size = 20, ...props }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
+function InstagramIcon({ size = 20, ...props }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
 import { generateCertificate } from '../lib/generateCertificate';
 import './Certificate.css';
 
@@ -98,6 +175,7 @@ export default function Certificate() {
   const [certId] = useState(generateCertId);
   const [saved, setSaved] = useState(false);
   const [certPreview, setCertPreview] = useState(null);
+  const [copied, setCopied] = useState(false);
   const certRef = useRef(null);
 
   useEffect(() => {
@@ -196,7 +274,6 @@ export default function Certificate() {
   const courseUrl = `${window.location.origin}/courses/${slug}`;
   const certUrl = `${window.location.origin}/verify-certificate?id=${certId}`;
   const shareText = `I just completed "${course.title}" on CertNova! 🎉`;
-  const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(certUrl).then(() => {
@@ -206,10 +283,10 @@ export default function Certificate() {
   };
 
   const shareLinks = [
-    { name: 'LinkedIn', icon: Link2, url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(courseUrl)}&summary=${encodeURIComponent(shareText)}` },
-    { name: 'Twitter', icon: Link2, url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(courseUrl)}` },
-    { name: 'Facebook', icon: Link2, url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(courseUrl)}` },
-    { name: 'WhatsApp', icon: Link2, url: `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + courseUrl)}` },
+    { name: 'LinkedIn', icon: LinkedInIcon, url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(courseUrl)}&summary=${encodeURIComponent(shareText)}` },
+    { name: 'X (Twitter)', icon: XIcon, url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(courseUrl)}` },
+    { name: 'Facebook', icon: FacebookIcon, url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(courseUrl)}` },
+    { name: 'Instagram', icon: InstagramIcon, url: `https://instagram.com/` }, // Note: IG doesn't have a direct share URL API, typically just a link to the profile
   ];
 
   return (
@@ -226,44 +303,56 @@ export default function Certificate() {
           <div className="cert-canvas-preview" ref={certRef}>
             <img
               src={certPreview}
-              alt={`Certificate of Completion — ${course.title}`}
+              alt={`Certificate of Completion - ${course.title}`}
               className="cert-canvas-img"
             />
           </div>
         ) : (
           <div className="cert-card" ref={certRef}>
-            <div className="cert-badge">
-              <Award size={48} />
-            </div>
-
-            <h1 className="cert-title">Certificate of Completion</h1>
-            <p className="cert-sub">This is proudly presented to</p>
-
-            <div className="cert-name">{userName}</div>
-
-            <p className="cert-sub">for successfully completing the course</p>
-            <div className="cert-course-name">{course.title}</div>
-
-            <div className="cert-footer">
-              <div className="cert-footer-item">
-                <span className="cert-footer-label">Completion Date</span>
-                <span className="cert-footer-value">{completionDate}</span>
+            <div className="cert-inner-border">
+              <div className="cert-header-logos">
+                <div className="cert-brand-logo">CertNova</div>
+                <div className="cert-official-tag">OFFICIAL CREDENTIAL</div>
               </div>
-              <div className="cert-footer-divider" />
-              <div className="cert-footer-item">
-                <span className="cert-footer-label">Certificate ID</span>
-                <span className="cert-footer-value">{certId}</span>
+
+              <div className="cert-badge">
+                <Award size={64} color="#D4AF37" strokeWidth={1.5} />
+              </div>
+
+              <h1 className="cert-title">CERTIFICATE OF COMPLETION</h1>
+              <p className="cert-sub">This is proudly presented to:</p>
+
+              <div className="cert-name">{userName}</div>
+
+              <p className="cert-sub">for successfully completing the course:</p>
+              <div className="cert-course-name">{course.title}</div>
+
+              <div className="cert-footer">
+                <div className="cert-footer-col">
+                  <div className="cert-footer-line">
+                    <span className="cert-footer-value">{completionDate}</span>
+                  </div>
+                  <span className="cert-footer-label">Date of Completion</span>
+                  
+                  <div className="cert-footer-line" style={{ marginTop: '1rem' }}>
+                    <span className="cert-footer-value">{certId}</span>
+                  </div>
+                  <span className="cert-footer-label">Certificate ID</span>
+                </div>
+
+                <div className="cert-footer-col cert-signature-col">
+                  <div className="cert-footer-line">
+                    <div className="cert-signature-text">CertNova Security Team</div>
+                  </div>
+                  <span className="cert-footer-label">Authorized Signature</span>
+                </div>
+              </div>
+
+              <div className="cert-verify-note">
+                Verify this certificate at{' '}
+                <span className="cert-verify-link">certnova.com/verify</span>
               </div>
             </div>
-
-            <div className="cert-check">
-              <CheckCircle2 size={20} /> Verified & Authentic
-            </div>
-
-            <p className="cert-verify-note">
-              Verify this certificate at{' '}
-              <Link to="/verify-certificate">CertNova /verify-certificate</Link>
-            </p>
           </div>
         )}
 

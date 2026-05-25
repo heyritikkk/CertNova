@@ -155,7 +155,7 @@ const About = () => {
             <span className="about-eyebrow">How we teach</span>
             <h2 id="about-approach-heading">From signup to exam-ready</h2>
             <p>
-              Living syllabi your team updates in admin—learners always see the latest modules and lessons
+              Living syllabi your team updates in admin - learners always see the latest modules and lessons
               on the site.
             </p>
             <ul className="about-approach__list">

@@ -239,7 +239,7 @@
     padding-bottom: 1rem;
   }
 
-  /* Sticky line under title/meta — content scrolls beneath it */
+  /* Sticky line under title/meta - content scrolls beneath it */
   .lesson-header-boundary {
     position: sticky;
     top: 0;
@@ -705,7 +705,7 @@ body.lesson-sidebar-resizing * {
 
 .lesson-header h1 {
   margin: 0 0 0.75rem;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-size: clamp(1.45rem, 2.2vw, 1.85rem);
   font-weight: 700;
   color: #0f172a;
@@ -762,9 +762,9 @@ body.lesson-sidebar-resizing * {
 }
 
 .lesson-complete-btn.is-done {
-  background: rgba(34, 197, 94, 0.1);
-  border-color: rgba(34, 197, 94, 0.35);
-  color: #15803d;
+  background: var(--brand-accent, #f48b60);
+  border-color: var(--brand-accent, #f48b60);
+  color: #fff;
 }
 
 .lesson-intro {
@@ -1148,7 +1148,7 @@ body.lesson-sidebar-resizing * {
 }
 
 /* ==========================================================================
-   Dark theme — learn page (sidebar + lesson panel)
+   Dark theme - learn page (sidebar + lesson panel)
    ========================================================================== */
 [data-theme='dark'] .lesson-layout {
   --lesson-page-bg: color-mix(in srgb, var(--brand-accent-soft) 12%, #0b1220 88%);

@@ -4,7 +4,7 @@ import { Flame, Trophy } from 'lucide-react';
 import './CourseProgressStrip.css';
 
 /**
- * CourseProgressStrip — thin bar between navbar and lesson content.
+ * CourseProgressStrip - thin bar between navbar and lesson content.
  * Shows breadcrumb, progress bar, circular ring, and streak.
  */
 export default function CourseProgressStrip({
@@ -44,7 +44,7 @@ export default function CourseProgressStrip({
 
   return (
     <div className="cpstrip" role="navigation" aria-label="Course progress">
-      {/* Left — Breadcrumb */}
+      {/* Left - Breadcrumb */}
       <div className="cpstrip__crumbs">
         <Link to="/courses" className="cpstrip__crumb">Courses</Link>
         <span className="cpstrip__sep">›</span>
@@ -53,17 +53,18 @@ export default function CourseProgressStrip({
         <span className="cpstrip__crumb cpstrip__crumb--active">{currentLessonTitle}</span>
       </div>
 
-      {/* Center — Progress bar */}
+      {/* Center - Progress bar */}
       <div className="cpstrip__progress">
         <span className="cpstrip__progress-label">
           {completedCount} of {totalLessons} lessons completed
         </span>
         <div className="cpstrip__bar">
+          <div className="cpstrip__runner" style={{ left: `${pct}%` }}>🏃🏻‍♂️</div>
           <div className="cpstrip__bar-fill" style={{ width: `${pct}%` }} />
         </div>
       </div>
 
-      {/* Right — Ring + Streak */}
+      {/* Right - Ring + Streak */}
       <div className="cpstrip__right">
         <div className="cpstrip__ring-wrap" title={`${pct}% complete`}>
           <svg className="cpstrip__ring" viewBox="0 0 36 36" width="36" height="36">

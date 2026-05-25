@@ -42,12 +42,14 @@ const Login = () => {
         return;
       }
       localStorage.setItem('userAuth', 'true');
+      localStorage.setItem('userName', email ? email.split('@')[0] : 'Learner');
       navigate(redirectTo, { replace: true });
       return;
     }
 
     if (normalized === DEMO_EMAIL.toLowerCase() && password === DEMO_PASSWORD) {
       localStorage.setItem('userAuth', 'true');
+      localStorage.setItem('userName', 'Learner');
       navigate(redirectTo, { replace: true });
       return;
     }
@@ -57,6 +59,7 @@ const Login = () => {
 
   const handleOAuthLogin = (provider) => {
     localStorage.setItem('userAuth', 'true');
+    localStorage.setItem('userName', 'User');
     navigate(redirectTo, { replace: true });
   };
 

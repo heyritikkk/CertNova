@@ -10,6 +10,7 @@
   top: 0;
   overflow: hidden;
   box-shadow: 1px 0 0 rgba(15, 23, 42, 0.04);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
 }
 
 .course-outline-sidebar-head {
@@ -37,7 +38,7 @@
 .course-outline-sidebar-head h3 {
   margin: 0 0 0.65rem;
   padding-bottom: 0.65rem;
-  font-family: inherit;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-size: 1.05rem;
   font-weight: 700;
   color: #0f172a;

@@ -40,6 +40,10 @@ const Highlights = () => {
     return <section className="highlights-section"><p className="highlights-loading">Loading highlights…</p></section>;
   }
 
+  if (!cards || cards.length === 0) {
+    return null;
+  }
+
   return (
     <section className="highlights-section">
       <div className="highlights-grid">

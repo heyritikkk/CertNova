@@ -12,6 +12,7 @@ import Home from './pages/Home';
 import Customers from './pages/Customers';
 import Partners from './pages/Partners';
 import BlogPost from './pages/BlogPost';
+import Contact from './pages/Contact';
 import AdminDashboard from './admin/AdminDashboard';
 import Login from './pages/Login';
 import AdminLogin from './pages/AdminLogin';
@@ -21,11 +22,28 @@ import Payment from './pages/Payment';
 import Certificate from './pages/Certificate';
 import VerifyCertificate from './pages/VerifyCertificate';
 import MyCertificates from './pages/MyCertificates';
+import Dashboard from './pages/Dashboard';
 import './App.css';
+
+function safeGetStorage(key, fallback = null) {
+  try {
+    return localStorage.getItem(key) ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function safeSetStorage(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Ignore storage write failures (private mode / blocked storage).
+  }
+}
 
 const Layout = ({ theme, onToggleTheme }) => {
   const location = useLocation();
-  const hideCta = /\/learn\/?$/.test(location.pathname);
+  const hideCta = /\/learn\/?$/.test(location.pathname) || location.pathname.includes('/certificate/');
 
   return (
     <>
@@ -40,24 +58,24 @@ const Layout = ({ theme, onToggleTheme }) => {
 };
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('adminAuth') === 'true';
+  const isAuthenticated = safeGetStorage('adminAuth') === 'true';
   return isAuthenticated ? children : <Navigate to="/admin-login" replace />;
 };
 
 const UserProtectedRoute = ({ children }) => {
   const location = useLocation();
-  const isAuthenticated = localStorage.getItem('userAuth') === 'true';
+  const isAuthenticated = safeGetStorage('userAuth') === 'true';
   if (isAuthenticated) return children;
   const redirect = encodeURIComponent(`${location.pathname}${location.search}`);
   return <Navigate to={`/login?redirect=${redirect}`} replace />;
 };
 
 function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem('themeMode') || 'light');
+  const [theme, setTheme] = useState(() => safeGetStorage('themeMode', 'light') || 'light');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('themeMode', theme);
+    safeSetStorage('themeMode', theme);
   }, [theme]);
 
   const handleToggleTheme = () => {
@@ -96,6 +114,16 @@ function App() {
                 <MyCertificates />
               </UserProtectedRoute>
             } />
+            <Route path="dashboard" element={
+              <UserProtectedRoute>
+                <Dashboard />
+              </UserProtectedRoute>
+            } />
+            <Route path="profile" element={
+              <UserProtectedRoute>
+                <Dashboard />
+              </UserProtectedRoute>
+            } />
             <Route
               path="courses/:slug/learn"
               element={
@@ -109,6 +137,7 @@ function App() {
             <Route path="blog/:slug" element={<BlogPost />} />
             <Route path="customers" element={<Customers />} />
             <Route path="partners" element={<Partners />} />
+            <Route path="contact" element={<Contact />} />
           </Route>
         </Routes>
       </div>

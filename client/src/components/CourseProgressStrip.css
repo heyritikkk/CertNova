@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════
-   CourseProgressStrip — navbar ↔ lesson bridge
+   CourseProgressStrip - navbar ↔ lesson bridge
    ══════════════════════════════════════════════ */
 
 .cpstrip {
@@ -91,11 +91,28 @@ a.cpstrip__crumb:hover {
 
 .cpstrip__bar {
   width: 100%;
-  height: 5px;
+  height: 6px;
   background: #f1f5f9;
   border-radius: 999px;
-  overflow: hidden;
   position: relative;
+  margin-top: 18px; /* Room for the running boy above the bar */
+}
+
+.cpstrip__runner {
+  position: absolute;
+  top: -24px;
+  font-size: 20px;
+  transform: translateX(-50%) scaleX(-1);
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: run-bounce 0.35s infinite alternate;
+  z-index: 10;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@keyframes run-bounce {
+  from { transform: translateX(-50%) scaleX(-1) translateY(0) rotate(0deg); }
+  to { transform: translateX(-50%) scaleX(-1) translateY(-4px) rotate(6deg); }
 }
 
 .cpstrip__bar-fill {

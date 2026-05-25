@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, ArrowRight, Search, Check } from 'lucide-react';
+import { BookOpen, ArrowRight, Check, ListFilter } from 'lucide-react';
 import CourseCard from '../components/CourseCard';
+import PageHeader from '../components/PageHeader';
 import { api } from '../lib/api';
 import './Courses.css';
 
@@ -17,6 +18,8 @@ const LEVELS = ['Beginner', 'Intermediate', 'Advanced'];
 
 const DURATIONS = ['< 5 hours', '5-10 hours', '> 10 hours'];
 
+const PRICES = ['Free', 'Paid'];
+
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,6 +28,7 @@ const Courses = () => {
   const [selectedCategories, setSelectedCategories] = useState(new Set());
   const [selectedLevels, setSelectedLevels] = useState(new Set());
   const [selectedDurations, setSelectedDurations] = useState(new Set());
+  const [selectedPrices, setSelectedPrices] = useState(new Set());
 
   useEffect(() => {
     const loadCourses = (isInitial = false) => {
@@ -64,10 +68,21 @@ const Courses = () => {
         if (selectedDurations.has('> 10 hours') && h > 10) dMatch = true;
         if (!dMatch) return false;
       }
-      // Note: Categories are UI-only right now as requested.
+      // 4. Price filter
+      if (selectedPrices.size > 0) {
+        const isFree = Number(c.price) === 0 || !c.price;
+        const isPaid = !isFree;
+        let pMatch = false;
+        if (selectedPrices.has('Free') && isFree) pMatch = true;
+        if (selectedPrices.has('Paid') && isPaid) pMatch = true;
+        if (!pMatch) return false;
+      }
+      // 5. Category filter
+      if (selectedCategories.size > 0 && (!c.category || !selectedCategories.has(c.category))) return false;
+      
       return true;
     });
-  }, [courses, searchTerm, selectedLevels, selectedDurations]);
+  }, [courses, searchTerm, selectedCategories, selectedLevels, selectedDurations, selectedPrices]);
 
   const Checkbox = ({ label, checked, onChange }) => (
     <label className="filter-checkbox">
@@ -81,87 +96,47 @@ const Courses = () => {
 
   return (
     <div className="courses-page-new">
-      <div className="courses-layout">
-        
-        {/* Left Sidebar */}
-        <aside className="courses-sidebar">
-          <div className="courses-search">
-            <Search size={18} className="courses-search__icon" />
-            <input 
-              type="text" 
-              placeholder="Search courses..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+      <div className="site-container-inner">
+        <PageHeader 
+          eyebrow="COURSES"
+          title="Cybersecurity courses built for CS students"
+          subtitle="Structured paths from beginner to job-ready with quizzes and TryHackMe labs."
+        />
+      </div>
 
-          <div className="filter-section">
-            <h3 className="filter-section__title">Category</h3>
-            <div className="filter-section__list">
-              {CATEGORIES.map(cat => (
-                <Checkbox 
-                  key={cat} 
-                  label={cat} 
-                  checked={selectedCategories.has(cat)} 
-                  onChange={() => setSelectedCategories(toggleSet(selectedCategories, cat))} 
-                />
-              ))}
-            </div>
+      <div className="site-container-inner">
+        <div className="courses-alert-banner">
+          <div className="alert-checkbox-icon">
+            <Check size={16} strokeWidth={3} />
           </div>
+          <span>Every path has a free beginner module. No account needed - start learning right now, no card required.</span>
+        </div>
 
-          <div className="filter-section">
-            <h3 className="filter-section__title">Level</h3>
-            <div className="filter-section__list">
-              {LEVELS.map(lvl => (
-                <Checkbox 
-                  key={lvl} 
-                  label={lvl} 
-                  checked={selectedLevels.has(lvl)} 
-                  onChange={() => setSelectedLevels(toggleSet(selectedLevels, lvl))} 
-                />
-              ))}
-            </div>
+        <div className="courses-horizontal-filters">
+          <div className="filter-label">
+            <ListFilter size={18} />
+            <span>Filter:</span>
           </div>
-
-          <div className="filter-section">
-            <h3 className="filter-section__title">Duration</h3>
-            <div className="filter-section__list">
-              {DURATIONS.map(dur => (
-                <Checkbox 
-                  key={dur} 
-                  label={dur} 
-                  checked={selectedDurations.has(dur)} 
-                  onChange={() => setSelectedDurations(toggleSet(selectedDurations, dur))} 
-                />
-              ))}
-            </div>
+          <div className="filter-options">
+            <button className={`filter-btn ${selectedCategories.size === 0 ? 'active' : ''}`} onClick={() => setSelectedCategories(new Set())}>
+              All paths
+            </button>
+            {CATEGORIES.slice(0, 3).map(cat => (
+              <button 
+                key={cat}
+                className={`filter-btn ${selectedCategories.has(cat) ? 'active' : ''}`}
+                onClick={() => setSelectedCategories(new Set([cat]))}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
-        </aside>
+          <button className={`filter-btn filter-btn--pill ${selectedPrices.has('Free') ? 'active' : ''}`} onClick={() => setSelectedPrices(toggleSet(selectedPrices, 'Free'))}>
+            Free only
+          </button>
+        </div>
 
-        {/* Main Content */}
-        <main className="courses-main">
-          
-          <div className="courses-hero-banner">
-            <div className="courses-hero-banner__content">
-              <h2>Courses</h2>
-              <h1>Level up your skills with our courses</h1>
-            </div>
-            <div className="courses-hero-banner__art">
-              <div className="banner-circle banner-circle-1" />
-              <div className="banner-circle banner-circle-2" />
-              <BookOpen size={64} className="banner-icon" />
-            </div>
-          </div>
-
-          <div className="courses-main-header">
-            <h3>Recommended for You</h3>
-            {!loading && (
-              <span className="courses-count-pill">
-                Showing {filteredCourses.length} results
-              </span>
-            )}
-          </div>
-
+        <main className="courses-main-full">
           {loading ? (
             <div className="courses-grid courses-grid--loading" aria-busy="true">
               {Array.from({ length: 6 }, (_, i) => (
@@ -190,10 +165,10 @@ const Courses = () => {
             </div>
           )}
         </main>
-
       </div>
     </div>
   );
 };
 
 export default Courses;
+
