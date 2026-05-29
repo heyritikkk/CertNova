@@ -117,15 +117,49 @@ const Courses = () => {
             <ListFilter size={18} />
             <span>Filter:</span>
           </div>
-          <div className="filter-options">
-            <button className={`filter-btn ${selectedCategories.size === 0 ? 'active' : ''}`} onClick={() => setSelectedCategories(new Set())}>
+          <div className="filter-options" style={{ flexWrap: 'wrap', gap: '0.5rem' }}>
+            <button 
+              className={`filter-btn ${searchTerm === 'Knowledge Check' ? 'active' : ''}`}
+              onClick={() => {
+                setSearchTerm('Knowledge Check');
+                setSelectedCategories(new Set());
+                setSelectedLevels(new Set());
+              }}
+            >
+              Check your knowledge
+            </button>
+
+            <button 
+              className={`filter-btn ${selectedLevels.has('Beginner') ? 'active' : ''}`}
+              onClick={() => {
+                setSelectedLevels(new Set(['Beginner']));
+                setSelectedCategories(new Set());
+                setSearchTerm('');
+              }}
+            >
+              Beginner level
+            </button>
+
+            <button 
+              className={`filter-btn ${selectedCategories.size === 0 && selectedLevels.size === 0 && !searchTerm ? 'active' : ''}`} 
+              onClick={() => {
+                setSelectedCategories(new Set());
+                setSelectedLevels(new Set());
+                setSearchTerm('');
+              }}
+            >
               All paths
             </button>
-            {CATEGORIES.slice(0, 3).map(cat => (
+            
+            {['Network Security', 'Web Security', 'Cryptography'].map(cat => (
               <button 
                 key={cat}
                 className={`filter-btn ${selectedCategories.has(cat) ? 'active' : ''}`}
-                onClick={() => setSelectedCategories(new Set([cat]))}
+                onClick={() => {
+                  setSelectedCategories(new Set([cat]));
+                  setSelectedLevels(new Set());
+                  setSearchTerm('');
+                }}
               >
                 {cat}
               </button>

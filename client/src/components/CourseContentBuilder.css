@@ -302,14 +302,37 @@
 
 .content-builder-markdown-split {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.92fr);
+  grid-template-columns: minmax(0, 1fr) var(--preview-width, 480px);
   flex: 1;
   min-height: 0;
   border-top: 1px solid #e5e7eb;
 }
 
 .content-builder-markdown-split .content-block-textarea--editor {
-  border-right: 1px solid #e5e7eb;
+  border-right: none;
+}
+
+/* Dynamic Editor Split Resize Handle */
+.editor-split-resize-handle {
+  width: 6px;
+  cursor: col-resize;
+  background: transparent;
+  position: relative;
+  z-index: 100;
+  margin-left: -3px;
+  margin-right: -3px;
+  border-left: 1px solid #e5e7eb;
+  user-select: none;
+  -webkit-user-select: none;
+  align-self: stretch;
+  transition: border-color 0.15s ease;
+}
+
+.editor-split-resize-handle:hover,
+.editor-split-resize-handle.is-resizing {
+  background: var(--cn-accent, #f48b60);
+  box-shadow: 0 0 6px var(--cn-accent-ring, rgba(244, 139, 96, 0.4));
+  border-left-color: transparent;
 }
 
 .admin-lesson-preview {
@@ -369,14 +392,38 @@
 }
 
 @media (max-width: 1100px) {
+  .content-builder-panel {
+    overflow-y: auto !important;
+  }
+
   .content-builder-markdown-split {
-    grid-template-columns: 1fr;
-    grid-template-rows: minmax(220px, 1fr) minmax(280px, 0.9fr);
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    height: auto !important;
+    flex: none !important;
+  }
+
+  .editor-split-resize-handle {
+    display: none !important;
   }
 
   .content-builder-markdown-split .content-block-textarea--editor {
     border-right: none;
     border-bottom: 1px solid #e5e7eb;
+    height: 350px !important;
+    resize: vertical !important;
+  }
+
+  .admin-lesson-preview {
+    height: auto !important;
+    min-height: 350px !important;
+    overflow: visible !important;
+  }
+
+  .admin-lesson-preview__body {
+    overflow-y: visible !important;
+    height: auto !important;
+    padding: 1.5rem !important;
   }
 }
 

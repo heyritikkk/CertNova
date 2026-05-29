@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, Bookmark, Award, User, Settings, LogOut, MessageSquare, FileText, Monitor, Flame, Trophy, Shield, Laptop, ExternalLink, ShieldCheck, ChevronRight, Search, TrendingUp } from 'lucide-react';
 import { api } from '../lib/api';
+import CtaBanner from '../components/CtaBanner';
+import Footer from '../components/Footer';
 import './Dashboard.css';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -285,7 +287,7 @@ const Dashboard = () => {
         </section>
 
         <section className="learning-streak">
-          <h2>Learning streak — {currentMonthYear}</h2>
+          <h2>Learning streak for {currentMonthYear}</h2>
           <div className="heatmap-grid">
             {streakData.heatmap.map((val, i) => (
               <div key={i} className={`heatmap-cell val-${val}`}></div>
@@ -662,7 +664,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="site-container" style={{ paddingBottom: '3rem' }}>
+    <div className="site-container dashboard-page-shell" style={{ paddingBottom: '3rem' }}>
       <div className="site-container-inner">
         <div className="dashboard-layout">
           {/* Sidebar */}
@@ -716,6 +718,10 @@ const Dashboard = () => {
             {activeTab === 'billing' && renderBilling()}
           </div>
         </div>
+      </div>
+      <div className="dashboard-extra-sections">
+        <CtaBanner />
+        <Footer />
       </div>
     </div>
   );

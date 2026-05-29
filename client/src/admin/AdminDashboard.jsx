@@ -56,6 +56,7 @@ const courseToForm = (course) => ({
 
 const AdminDashboard = () => {
   const [view, setView] = useState('list');
+  const [currentSection, setCurrentSection] = useState('courses'); // 'courses' | 'analytics'
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -64,6 +65,63 @@ const AdminDashboard = () => {
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [activeBlockId, setActiveBlockId] = useState(null);
+
+  // Dynamic Sidebar Resizing
+  const [sidebarWidth, setSidebarWidth] = useState(() => {
+    const saved = localStorage.getItem('certnova_admin_sidebar_width');
+    return saved ? parseInt(saved, 10) : 272;
+  });
+  const [isResizing, setIsResizing] = useState(false);
+
+  const handlePointerDown = (e) => {
+    e.preventDefault();
+    setIsResizing(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e) => {
+    if (!isResizing) return;
+    const newWidth = Math.max(200, Math.min(450, e.clientX));
+    setSidebarWidth(newWidth);
+  };
+
+  const handlePointerUp = (e) => {
+    if (!isResizing) return;
+    setIsResizing(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    const finalWidth = Math.max(200, Math.min(450, e.clientX));
+    setSidebarWidth(finalWidth);
+    localStorage.setItem('certnova_admin_sidebar_width', finalWidth);
+  };
+
+  // Lifted Analytics States
+  const [analyticsData, setAnalyticsData] = useState([]);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [analyticsError, setAnalyticsError] = useState(null);
+
+  const fetchAnalytics = () => {
+    setAnalyticsLoading(true);
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    fetch(`${API_URL}/api/analytics`)
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to load analytics data.');
+        return res.json();
+      })
+      .then(json => {
+        setAnalyticsData(json);
+        setAnalyticsError(null);
+      })
+      .catch(err => {
+        setAnalyticsError(err.message);
+      })
+      .finally(() => setAnalyticsLoading(false));
+  };
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
+
+  // Analytics handlers simplified
 
   const loadCourses = () =>
     api
@@ -190,20 +248,39 @@ const AdminDashboard = () => {
     <div
       className={`admin-container${view === 'list' ? ' admin-container--list' : ''}${
         view === 'editor' ? ' admin-container--course-editor' : ''
-      }`}
+      }${currentSection === 'analytics' ? ' admin-container--analytics' : ''}`}
+      style={{ '--sidebar-width': `${sidebarWidth}px` }}
     >
       {view === 'list' ? (
-        <AdminListSidebar onNew={openNew} onLogout={handleLogout} />
-      ) : (
-        <CourseOutlineSidebar
-          blocks={form.content_blocks}
-          activeBlockId={activeBlockId}
-          onSelectBlock={handleSelectOutlineBlock}
-          onBlocksChange={(content_blocks) => setForm((prev) => ({ ...prev, content_blocks }))}
-          onBack={() => setView('list')}
-          courseTitle={form.title || 'New course'}
-          onLogout={handleLogout}
+        <AdminListSidebar 
+          onNew={openNew} 
+          onLogout={handleLogout} 
+          currentSection={currentSection}
+          onSelectSection={(sec) => {
+            setCurrentSection(sec);
+            setView('list');
+          }}
+          onRefreshAnalytics={fetchAnalytics}
+          analyticsLoading={analyticsLoading}
         />
+      ) : (
+        <>
+          <CourseOutlineSidebar
+            blocks={form.content_blocks}
+            activeBlockId={activeBlockId}
+            onSelectBlock={handleSelectOutlineBlock}
+            onBlocksChange={(content_blocks) => setForm((prev) => ({ ...prev, content_blocks }))}
+            onBack={() => setView('list')}
+            courseTitle={form.title || 'New course'}
+            onLogout={handleLogout}
+          />
+          <div
+            className={`admin-sidebar-resize-handle ${isResizing ? 'is-resizing' : ''}`}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+          />
+        </>
       )}
 
       <div className="admin-main">
@@ -217,7 +294,16 @@ const AdminDashboard = () => {
           )}
 
           {view === 'list' ? (
-            <CourseListView courses={courses} onNew={openNew} onEdit={openEdit} onDelete={handleDelete} />
+            currentSection === 'courses' ? (
+              <CourseListView courses={courses} onNew={openNew} onEdit={openEdit} onDelete={handleDelete} />
+            ) : (
+              <AnalyticsDashboard 
+                data={analyticsData}
+                loading={analyticsLoading}
+                error={analyticsError}
+                courses={courses}
+              />
+            )
           ) : (
             <CourseEditorView
               form={form}
@@ -244,7 +330,14 @@ function AdminLoadingState() {
   return <div className="admin-loading">Loading…</div>;
 }
 
-function AdminListSidebar({ onNew, onLogout }) {
+function AdminListSidebar({ 
+  onNew, 
+  onLogout, 
+  currentSection, 
+  onSelectSection,
+  onRefreshAnalytics,
+  analyticsLoading
+}) {
   return (
     <aside className="admin-sidebar admin-sidebar--list">
       <div className="admin-sidebar-head">
@@ -252,9 +345,30 @@ function AdminListSidebar({ onNew, onLogout }) {
         <p>Manage courses and publish to the public site.</p>
       </div>
       <nav className="admin-nav">
-        <button type="button" className="admin-nav-item active">
+        <button 
+          type="button" 
+          className={`admin-nav-item ${currentSection === 'courses' ? 'active' : ''}`}
+          onClick={() => onSelectSection('courses')}
+        >
           All courses
         </button>
+        <button 
+          type="button" 
+          className={`admin-nav-item ${currentSection === 'analytics' ? 'active' : ''}`}
+          onClick={() => onSelectSection('analytics')}
+        >
+          Analytics
+        </button>
+
+        {currentSection === 'analytics' && (
+          <div className="admin-sidebar-submenu">
+            <span className="submenu-title">Analytics Tools</span>
+            <button type="button" className="admin-submenu-item" onClick={onRefreshAnalytics} disabled={analyticsLoading}>
+              🔄 {analyticsLoading ? 'Refreshing...' : 'Refresh Stats'}
+            </button>
+          </div>
+        )}
+
         <button type="button" className="admin-nav-item admin-nav-item--secondary" onClick={onNew}>
           + New course
         </button>
@@ -624,6 +738,358 @@ function SettingsTab({ form, onChange, onPublishToggle, saving, editingId }) {
         {!editingId && <p className="section-hint">Save the course once, then you can publish it to the main site.</p>}
       </div>
     </section>
+  );
+}
+
+// ── Analytics Dashboard Component ──
+function AnalyticsDashboard({ data, loading, error, courses = [] }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState('all'); // 'all' | 'purchased' | 'non-purchased'
+  const [timeFilter, setTimeFilter] = useState('all'); // 'all' | 'today' | 'yesterday' | 'week'
+  const [platformFilter, setPlatformFilter] = useState('all'); // 'all' | 'google' | 'linkedin' | 'github' | 'twitter' | 'direct'
+  const [paymentFilter, setPaymentFilter] = useState('all'); // 'all' | 'paid' | 'free'
+
+  const getReferrerGradient = (name) => {
+    switch (name.toLowerCase()) {
+      case 'google': return 'linear-gradient(90deg, #ea4335 0%, #fbbc05 50%, #34a853 100%)';
+      case 'linkedin': return 'linear-gradient(90deg, #0a66c2 0%, #0077b5 100%)';
+      case 'github': return 'linear-gradient(90deg, #0f172a 0%, #475569 100%)';
+      case 'twitter': return 'linear-gradient(90deg, #1d9bf0 0%, #7e22ce 100%)';
+      default: return 'linear-gradient(90deg, #ff9e7a 0%, #f48b60 100%)';
+    }
+  };
+
+  // Summarize stats
+  const totalVisitors = data.length;
+  const purchasers = data.filter(d => {
+    try {
+      const list = JSON.parse(d.purchased_courses || '[]');
+      return list.length > 0;
+    } catch {
+      return false;
+    }
+  });
+  const totalPurchases = purchasers.length;
+  
+  
+  // Conversion Rate
+  const conversionRate = totalVisitors > 0 
+    ? ((totalPurchases / totalVisitors) * 100).toFixed(1) 
+    : '0.0';
+
+  const activeLearners = data.filter(d => d.active_lesson && d.active_lesson.trim() !== '').length;
+
+  // Process referrers chart data
+  const referrerCounts = {};
+  data.forEach(d => {
+    const ref = d.referrer || 'Direct';
+    referrerCounts[ref] = (referrerCounts[ref] || 0) + 1;
+  });
+  const referrerTotal = Object.values(referrerCounts).reduce((a, b) => a + b, 0);
+  const referrerSummary = Object.entries(referrerCounts)
+    .map(([name, count]) => ({
+      name,
+      count,
+      percent: referrerTotal > 0 ? Math.round((count / referrerTotal) * 100) : 0
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  // Filter visitor rows
+  const filteredData = data.filter(d => {
+    const nameMatch = (d.name || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const emailMatch = (d.email || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchSearch = nameMatch || emailMatch;
+
+    let matchFilter = true;
+    let purchasedList = [];
+    try {
+      purchasedList = JSON.parse(d.purchased_courses || '[]');
+    } catch {
+      purchasedList = [];
+    }
+
+    if (filterType === 'purchased') {
+      matchFilter = purchasedList.length > 0;
+    } else if (filterType === 'non-purchased') {
+      matchFilter = purchasedList.length === 0;
+    }
+
+    // Platform wise filter
+    let matchPlatform = true;
+    if (platformFilter !== 'all') {
+      matchPlatform = (d.referrer || 'Direct').toLowerCase() === platformFilter.toLowerCase();
+    }
+
+    // Day wise filter
+    let matchTime = true;
+    if (timeFilter !== 'all' && d.updated_at) {
+      const visitorDate = new Date(d.updated_at);
+      const today = new Date();
+      
+      if (timeFilter === 'today') {
+        matchTime = visitorDate.toDateString() === today.toDateString();
+      } else if (timeFilter === 'yesterday') {
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+        matchTime = visitorDate.toDateString() === yesterday.toDateString();
+      } else if (timeFilter === 'week') {
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(today.getDate() - 7);
+        matchTime = visitorDate >= sevenDaysAgo;
+      }
+    }
+
+    // Payment filter
+    let matchPayment = true;
+    if (paymentFilter !== 'all') {
+      const paidSlugs = (courses || []).filter(c => Number(c.price) > 0).map(c => c.slug);
+      const freeSlugs = (courses || []).filter(c => Number(c.price) === 0).map(c => c.slug);
+      
+      const isPaid = purchasedList.some(slug => paidSlugs.includes(slug));
+      const isFree = purchasedList.some(slug => freeSlugs.includes(slug));
+      
+      if (paymentFilter === 'paid') {
+        matchPayment = isPaid;
+      } else if (paymentFilter === 'free') {
+        matchPayment = isFree;
+      }
+    }
+
+    return matchSearch && matchFilter && matchPlatform && matchTime && matchPayment;
+  });
+
+  return (
+    <div className="analytics-shell">
+      <header className="analytics-topbar">
+        <div className="analytics-topbar-text">
+          <h2>Analytics Dashboard</h2>
+          <p>Real-time insights into visitor acquisition, conversion rates, and active learning trends.</p>
+        </div>
+      </header>
+
+      {loading && data.length === 0 ? (
+        <div className="analytics-loading-spinner">Loading analytics statistics...</div>
+      ) : error ? (
+        <div className="analytics-error-box">Error: {error}</div>
+      ) : (
+        <div className="analytics-content">
+          {/* STATS TILES */}
+          <div className="analytics-stats-grid">
+            <div className="analytics-stat-card">
+              <div className="stat-icon-wrapper visitor-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div className="stat-content">
+                <span className="stat-label-text">Total Visitors</span>
+                <strong>{totalVisitors}</strong>
+                <span className="stat-subtext">Unique persistent sessions</span>
+              </div>
+            </div>
+
+            <div className="analytics-stat-card">
+              <div className="stat-icon-wrapper conversion-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><path d="m16 10-4 4-2-2"/></svg>
+              </div>
+              <div className="stat-content">
+                <span className="stat-label-text">Conversion Rate</span>
+                <strong>{conversionRate}%</strong>
+                <span className="stat-subtext">Purchasers of total visitors</span>
+              </div>
+            </div>
+
+            <div className="analytics-stat-card">
+              <div className="stat-icon-wrapper purchase-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+              </div>
+              <div className="stat-content">
+                <span className="stat-label-text">Paid Purchases</span>
+                <strong>{totalPurchases}</strong>
+                <span className="stat-subtext">Courses unlocked successfully</span>
+              </div>
+            </div>
+
+            <div className="analytics-stat-card">
+              <div className="stat-icon-wrapper learner-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              </div>
+              <div className="stat-content">
+                <span className="stat-label-text">Active Learners</span>
+                <strong>{activeLearners}</strong>
+                <span className="stat-subtext">Currently studying lessons</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="analytics-visuals-grid">
+            {/* REFERRER CARD */}
+            <div className="analytics-chart-panel">
+              <h3>Where Visitors Came From</h3>
+              <p className="panel-desc">Top traffic channels by acquisition referrer</p>
+              <div className="referrer-list">
+                {referrerSummary.length === 0 ? (
+                  <p className="no-data-text">No traffic channels recorded yet.</p>
+                ) : (
+                  referrerSummary.map((ref) => (
+                    <div className="referrer-bar-item" key={ref.name}>
+                      <div className="ref-label-row">
+                        <span className="ref-name">{ref.name}</span>
+                        <span className="ref-count-val">{ref.count} ({ref.percent}%)</span>
+                      </div>
+                      <div className="bar-outer">
+                        <div 
+                          className="bar-inner" 
+                          style={{ 
+                            width: `${ref.percent}%`,
+                            background: getReferrerGradient(ref.name)
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+
+          </div>
+
+          {/* RECENT VISITOR ACTIVITY TABLE */}
+          <div className="analytics-table-panel">
+            <div className="table-panel-header">
+              <h3>Recent Visitor Activity</h3>
+              <div className="table-controls">
+                <input 
+                  type="text" 
+                  className="table-search-input" 
+                  placeholder="Search by name or email..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <select 
+                  className="table-filter-select"
+                  value={filterType}
+                  onChange={(e) => setFilterType(e.target.value)}
+                >
+                  <option value="all">All Visitors</option>
+                  <option value="purchased">Purchased Course</option>
+                  <option value="non-purchased">Did Not Purchase</option>
+                </select>
+                <select 
+                  className="table-filter-select"
+                  value={timeFilter}
+                  onChange={(e) => setTimeFilter(e.target.value)}
+                >
+                  <option value="all">All Time</option>
+                  <option value="today">Today</option>
+                  <option value="yesterday">Yesterday</option>
+                  <option value="week">Last 7 Days</option>
+                </select>
+                <select 
+                  className="table-filter-select"
+                  value={platformFilter}
+                  onChange={(e) => setPlatformFilter(e.target.value)}
+                >
+                  <option value="all">All Sources</option>
+                  <option value="google">Google</option>
+                  <option value="linkedin">LinkedIn</option>
+                  <option value="github">GitHub</option>
+                  <option value="twitter">Twitter</option>
+                  <option value="direct">Direct</option>
+                </select>
+                <select 
+                  className="table-filter-select"
+                  value={paymentFilter}
+                  onChange={(e) => setPaymentFilter(e.target.value)}
+                >
+                  <option value="all">All Payments</option>
+                  <option value="paid">Paid Purchases</option>
+                  <option value="free">Free Course Access</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="analytics-table-container">
+              <table className="analytics-table">
+                <thead>
+                  <tr>
+                    <th>Visitor Info</th>
+                    <th>Referrer</th>
+                    <th>Visits</th>
+                    <th>Course Access</th>
+                    <th>Current Lesson</th>
+                    <th>Last Active</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredData.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="table-empty-row">
+                        No visitors match your search criteria.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map((visitor) => {
+                      let purchasedList = [];
+                      try {
+                        purchasedList = JSON.parse(visitor.purchased_courses || '[]');
+                      } catch {
+                        purchasedList = [];
+                      }
+                      
+                      const isMock = visitor.visitor_id.startsWith('v_mock_');
+                      const friendlyTime = new Date(visitor.updated_at).toLocaleString();
+
+                      return (
+                        <tr key={visitor.id} className={isMock ? 'mock-row' : ''}>
+                          <td>
+                            <div className="visitor-profile-cell">
+                              <span className="visitor-name-span">{visitor.name || 'Anonymous'}</span>
+                              <span className="visitor-email-span">{visitor.email || 'Anonymous'}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <span className={`referrer-badge referrer-${(visitor.referrer || 'Direct').toLowerCase()}`}>
+                              {visitor.referrer || 'Direct'}
+                            </span>
+                          </td>
+                          <td className="center-cell">{visitor.visit_count}</td>
+                          <td>
+                            {purchasedList.length === 0 ? (
+                              <span className="badge-no-purchase">No Purchases</span>
+                            ) : (
+                              purchasedList.map(slug => (
+                                <span className="badge-purchased-course" key={slug}>
+                                  {slug === 'network-security' ? 'Security+ Core' : slug}
+                                </span>
+                              ))
+                            )}
+                          </td>
+                          <td>
+                            <div className="lesson-learning-cell">
+                              {visitor.active_lesson ? (
+                                <>
+                                  <svg className="lesson-learning-bullet" width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" fill="#f48b60"/></svg>
+                                  <span className="lesson-learning-title" title={visitor.active_lesson}>
+                                    {visitor.active_lesson.replace('CompTIA Security+ - ', '')}
+                                  </span>
+                                </>
+                              ) : (
+                                <span className="no-lesson-span">Inactive</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="time-cell">{friendlyTime}</td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

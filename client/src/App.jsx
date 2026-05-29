@@ -23,6 +23,7 @@ import Certificate from './pages/Certificate';
 import VerifyCertificate from './pages/VerifyCertificate';
 import MyCertificates from './pages/MyCertificates';
 import Dashboard from './pages/Dashboard';
+import RoadmapPage from './pages/RoadmapPage';
 import './App.css';
 
 function safeGetStorage(key, fallback = null) {
@@ -43,7 +44,11 @@ function safeSetStorage(key, value) {
 
 const Layout = ({ theme, onToggleTheme }) => {
   const location = useLocation();
-  const hideCta = /\/learn\/?$/.test(location.pathname) || location.pathname.includes('/certificate/');
+  const hideCta =
+    /\/learn\/?$/.test(location.pathname) ||
+    location.pathname.includes('/certificate/') ||
+    location.pathname === '/dashboard' ||
+    location.pathname === '/profile';
 
   return (
     <>
@@ -70,6 +75,57 @@ const UserProtectedRoute = ({ children }) => {
   return <Navigate to={`/login?redirect=${redirect}`} replace />;
 };
 
+function getVisitorId() {
+  let id = localStorage.getItem('certnova_visitor_id');
+  if (!id) {
+    id = 'v_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('certnova_visitor_id', id);
+  }
+  return id;
+}
+
+const AnalyticsTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const visitorId = getVisitorId();
+    const email = localStorage.getItem('userEmail') || '';
+    const name = localStorage.getItem('userName') || '';
+
+    let rawReferrer = document.referrer;
+    let referrer = 'Direct';
+    if (rawReferrer && !rawReferrer.includes(window.location.hostname)) {
+      if (rawReferrer.includes('google.com')) referrer = 'Google';
+      else if (rawReferrer.includes('linkedin.com')) referrer = 'LinkedIn';
+      else if (rawReferrer.includes('github.com')) referrer = 'GitHub';
+      else if (rawReferrer.includes('twitter.com') || rawReferrer.includes('x.com')) referrer = 'Twitter';
+      else {
+        try {
+          referrer = new URL(rawReferrer).hostname;
+        } catch {
+          referrer = rawReferrer;
+        }
+      }
+    }
+
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    fetch(`${API_URL}/api/analytics/track`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        visitorId,
+        email,
+        name,
+        referrer,
+        path: location.pathname,
+        action: 'visit'
+      })
+    }).catch(err => console.error('Analytics tracking failed:', err));
+  }, [location.pathname]);
+
+  return null;
+};
+
 function App() {
   const [theme, setTheme] = useState(() => safeGetStorage('themeMode', 'light') || 'light');
 
@@ -84,6 +140,7 @@ function App() {
 
   return (
     <Router>
+      <AnalyticsTracker />
       <div className="app-container">
         <Routes>
           <Route path="/admin" element={
@@ -133,6 +190,7 @@ function App() {
               }
             />
             <Route path="pricing" element={<PricingPage />} />
+            <Route path="roadmap" element={<RoadmapPage />} />
             <Route path="blog" element={<Blog />} />
             <Route path="blog/:slug" element={<BlogPost />} />
             <Route path="customers" element={<Customers />} />

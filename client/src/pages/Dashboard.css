@@ -1,9 +1,23 @@
+.dashboard-page-shell {
+  padding-left: clamp(0.65rem, 1.5vw, 1.25rem);
+  padding-right: clamp(0.65rem, 1.5vw, 1.25rem);
+}
+
+.dashboard-page-shell .site-container-inner {
+  max-width: none;
+}
+
+.dashboard-extra-sections {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
 .dashboard-layout {
   display: flex;
-  height: calc(100vh - 120px); 
   background: var(--surface-brand-25, #fff);
   font-family: 'Inter', system-ui, -apple-system, sans-serif; 
-  margin-top: 2rem;
+  margin-top: var(--navbar-top-gap);
+  margin-bottom: 3rem;
   border-radius: 20px;
   box-shadow:
     0 4px 24px rgba(244, 139, 96, 0.08),
@@ -106,7 +120,6 @@ button.sidebar-link {
 .dashboard-main {
   flex: 1;
   padding: 2.5rem 3rem;
-  overflow-y: auto;
   background: var(--surface-brand-25, #fff);
 }
 

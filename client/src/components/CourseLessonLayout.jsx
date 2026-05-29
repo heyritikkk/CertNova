@@ -21,6 +21,8 @@ import { CourseOutlineNav } from './CourseOutlineNav';
 import SuggestedQuiz from './SuggestedQuiz';
 import CourseProgressStrip from './CourseProgressStrip';
 import { getSuggestedQuizForBlock } from '../lib/suggestedQuiz';
+import ModuleExamPortal from './ModuleExamPortal';
+import KnowledgeCheckPortal from './KnowledgeCheckPortal';
 import {
   LESSON_SIDEBAR_DEFAULT,
   LESSON_SIDEBAR_MAX,
@@ -68,6 +70,21 @@ function estimateReadMinutes(block) {
 }
 
 const CourseLessonLayout = ({ course }) => {
+  if (course?.slug === 'knowledge-check') {
+    return (
+      <KnowledgeCheckPortal 
+        courseId={course.id}
+        isCompleted={loadCompletedIds(course.id).has(`knowledge-check-${course.id}`)}
+        onComplete={(id) => {
+          const ids = loadCompletedIds(course.id);
+          ids.add(id);
+          saveCompletedIds(course.id, ids);
+          saveCompletionDate(course.id);
+        }}
+      />
+    );
+  }
+
   const allBlocks = useMemo(() => courseToContentBlocks(course), [course]);
   const visibleBlocks = useMemo(() => {
     const rawVisible = getVisibleBlocks(allBlocks);
@@ -80,7 +97,22 @@ const CourseLessonLayout = ({ course }) => {
   }, [allBlocks]);
   const modules = useMemo(() => groupBlocksIntoModules(visibleBlocks), [visibleBlocks]);
 
-  const [activeId, setActiveId] = useState(visibleBlocks[0]?.id || null);
+  // Unified sequence list (lessons + module quizzes as first-class steps)
+  const navigableItems = useMemo(() => {
+    const list = [];
+    modules.forEach((mod) => {
+      list.push(...mod.items);
+      list.push({
+        id: `module-quiz-${mod.id}`,
+        type: 'module-quiz',
+        moduleId: mod.id,
+        moduleTitle: mod.title,
+      });
+    });
+    return list;
+  }, [modules]);
+
+  const [activeId, setActiveId] = useState(navigableItems[0]?.id || null);
   const [expandedSections, setExpandedSections] = useState(() => new Set());
   const [answers, setAnswers] = useState({});
   const [submittedQuizzes, setSubmittedQuizzes] = useState({});
@@ -161,10 +193,10 @@ const CourseLessonLayout = ({ course }) => {
   }, [course?.id]);
 
   useEffect(() => {
-    if (visibleBlocks.length && !visibleBlocks.some((b) => b.id === activeId)) {
-      setActiveId(visibleBlocks[0].id);
+    if (navigableItems.length && !navigableItems.some((item) => item.id === activeId)) {
+      setActiveId(navigableItems[0].id);
     }
-  }, [visibleBlocks, activeId]);
+  }, [navigableItems, activeId]);
 
   useEffect(() => {
     const el = lessonScrollRef.current;
@@ -197,16 +229,25 @@ const CourseLessonLayout = ({ course }) => {
     });
   };
 
-  const activeBlock = visibleBlocks.find((b) => b.id === activeId) || visibleBlocks[0];
-  const activeIndex = visibleBlocks.findIndex((b) => b.id === activeBlock?.id);
-  const prevBlock = activeIndex > 0 ? visibleBlocks[activeIndex - 1] : null;
+  // Resolve module quiz specifics
+  const isModuleQuizActive = String(activeId).startsWith('module-quiz-');
+  const activeModuleId = isModuleQuizActive ? String(activeId).replace('module-quiz-', '') : null;
+  const activeModule = isModuleQuizActive ? modules.find((m) => m.id === activeModuleId) : null;
+  const activeModuleTitle = activeModule ? activeModule.title : 'Module Practice Exam';
+
+  const activeBlock = isModuleQuizActive ? null : (visibleBlocks.find((b) => b.id === activeId) || visibleBlocks[0]);
+  const activeIndex = navigableItems.findIndex((item) => item.id === activeId);
+  const prevBlock = activeIndex > 0 ? navigableItems[activeIndex - 1] : null;
   const nextBlock =
-    activeIndex >= 0 && activeIndex < visibleBlocks.length - 1
-      ? visibleBlocks[activeIndex + 1]
+    activeIndex >= 0 && activeIndex < navigableItems.length - 1
+      ? navigableItems[activeIndex + 1]
       : null;
 
-  const isCurrentComplete = activeBlock && completedIds.has(activeBlock.id);
-  const isCourseComplete = visibleBlocks.length > 0 && visibleBlocks.every((b) => completedIds.has(b.id));
+  const isCurrentComplete = isModuleQuizActive
+    ? completedIds.has(activeId)
+    : activeBlock && completedIds.has(activeBlock.id);
+
+  const isCourseComplete = navigableItems.length > 0 && navigableItems.every((item) => completedIds.has(item.id));
 
   useEffect(() => {
     if (isCourseComplete && course?.id) {
@@ -215,30 +256,51 @@ const CourseLessonLayout = ({ course }) => {
   }, [isCourseComplete, course?.id]);
 
   useEffect(() => {
-    if (course?.id && activeBlock) {
-      const progressPercent = visibleBlocks.length > 0
-        ? Math.round((completedIds.size / visibleBlocks.length) * 100)
+    if (course?.id && (activeBlock || isModuleQuizActive)) {
+      const progressPercent = navigableItems.length > 0
+        ? Math.round((completedIds.size / navigableItems.length) * 100)
         : 0;
 
       const lastActivity = {
         courseId: course.id,
         courseTitle: course.title,
         courseSlug: course.slug,
-        lessonId: activeBlock.id,
-        lessonTitle: activeBlock.navTitle?.trim() || activeBlock.title || 'Lesson',
-        lessonHash: `#${activeBlock.id}`,
+        lessonId: activeId,
+        lessonTitle: isModuleQuizActive ? `${activeModuleTitle} Exam` : (activeBlock.navTitle?.trim() || activeBlock.title || 'Lesson'),
+        lessonHash: `#${activeId}`,
         progressPercent: progressPercent > 100 ? 100 : progressPercent
       };
       
       localStorage.setItem('certnova-last-activity', JSON.stringify(lastActivity));
       window.dispatchEvent(new Event('lastActivityUpdated'));
+
+      // Send analytics update for active lesson learning
+      const visitorId = localStorage.getItem('certnova_visitor_id') || 'v_anonymous';
+      const email = localStorage.getItem('userEmail') || localStorage.getItem('userName') || 'learner@certnova.com';
+      const name = localStorage.getItem('userName') || 'Learner';
+      const activeLessonTitle = isModuleQuizActive ? `${activeModuleTitle} Exam` : (activeBlock.navTitle?.trim() || activeBlock.title || 'Lesson');
+
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      fetch(`${API_URL}/api/analytics/track`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          visitorId,
+          email,
+          name,
+          courseSlug: course.slug,
+          lessonTitle: `${course.title} - ${activeLessonTitle}`,
+          action: 'learn'
+        })
+      }).catch(err => console.error('Analytics tracking lesson failed:', err));
     }
-  }, [course, activeBlock, completedIds.size, visibleBlocks.length]);
+  }, [course, activeId, activeBlock, isModuleQuizActive, activeModuleTitle, completedIds.size, navigableItems.length]);
 
-  const readMinutes = estimateReadMinutes(activeBlock);
+  const readMinutes = activeBlock ? estimateReadMinutes(activeBlock) : null;
 
-  const lessonTitle =
-    activeBlock?.type === 'markdown'
+  const lessonTitle = isModuleQuizActive
+    ? `${activeModuleTitle} Practice Exam`
+    : activeBlock?.type === 'markdown'
       ? activeBlock.navTitle?.trim() || getBlockNavLabel(activeBlock, activeIndex)
       : getBlockNavLabel(activeBlock, activeIndex);
 
@@ -259,15 +321,25 @@ const CourseLessonLayout = ({ course }) => {
   }, [activeBlock]);
 
   const toggleComplete = useCallback(() => {
-    if (!activeBlock?.id || !course?.id) return;
+    const idToToggle = isModuleQuizActive ? activeId : activeBlock?.id;
+    if (!idToToggle || !course?.id) return;
     setCompletedIds((prev) => {
       const next = new Set(prev);
-      if (next.has(activeBlock.id)) next.delete(activeBlock.id);
-      else next.add(activeBlock.id);
+      if (next.has(idToToggle)) next.delete(idToToggle);
+      else next.add(idToToggle);
       saveCompletedIds(course.id, next);
       return next;
     });
-  }, [activeBlock?.id, course?.id]);
+  }, [isModuleQuizActive, activeId, activeBlock?.id, course?.id]);
+
+  const handleQuizComplete = useCallback((completedId) => {
+    if (!completedId || !course?.id) return;
+    setCompletedIds((prev) => {
+      const next = new Set([...prev, completedId]);
+      saveCompletedIds(course.id, next);
+      return next;
+    });
+  }, [course?.id]);
 
   const goToBlock = useCallback((blockId) => {
     if (blockId) setActiveId(blockId);
@@ -315,15 +387,15 @@ const CourseLessonLayout = ({ course }) => {
       courseTitle={course?.title || 'Course'}
       courseSlug={course?.slug}
       currentLessonTitle={lessonTitle}
-      totalLessons={visibleBlocks.length}
+      totalLessons={navigableItems.length}
       completedCount={completedIds.size}
     />
     <div
       ref={layoutRef}
       className={`lesson-layout lesson-layout--resizable${isResizing ? ' is-resizing' : ''}${
         sidebarCollapsed ? ' lesson-layout--sidebar-narrow' : ''
-      }`}
-      style={{ '--lesson-sidebar-col': `${sidebarWidth}px` }}
+      }${isModuleQuizActive ? ' lesson-layout--full-screen' : ''}`}
+      style={{ '--lesson-sidebar-col': isModuleQuizActive ? '0px' : `${sidebarWidth}px` }}
     >
       <div
         className={`lesson-sidebar-pin${sidebarCollapsed ? ' lesson-sidebar-pin--collapsed' : ''}`}
@@ -332,7 +404,7 @@ const CourseLessonLayout = ({ course }) => {
         <nav className="lesson-nav lesson-nav--accordion" aria-label="Lessons">
           <CourseOutlineNav
             modules={modules}
-            blocksForIndex={visibleBlocks}
+            blocksForIndex={navigableItems}
             activeBlockId={activeId}
             onSelectBlock={setActiveId}
             expandedModules={new Set(modules.map((m) => m.id))}
@@ -383,9 +455,11 @@ const CourseLessonLayout = ({ course }) => {
             className={`lesson-header${
               activeBlock?.type === 'markdown' ? ' lesson-header--content-title' : ''
             }`}
+            style={{ display: isModuleQuizActive ? 'none' : '' }}
           >
             {activeBlock?.type === 'markdown' ? <h1>{markdownLesson.title}</h1> : null}
             {activeBlock?.type === 'quiz' ? <h1>{lessonTitle}</h1> : null}
+            {isModuleQuizActive ? <h1>{lessonTitle}</h1> : null}
 
             <div className="lesson-meta">
               {readMinutes && activeBlock?.type === 'markdown' ? (
@@ -439,6 +513,16 @@ const CourseLessonLayout = ({ course }) => {
                 onSubmit={handleQuizSubmit(activeBlock.id)}
               />
             )}
+
+            {isModuleQuizActive && (
+              <ModuleExamPortal
+                moduleId={activeModuleId}
+                moduleTitle={activeModuleTitle}
+                courseId={course.id}
+                onComplete={handleQuizComplete}
+                isCompleted={isCurrentComplete}
+              />
+            )}
           </div>
 
           {isCourseComplete && (
@@ -465,7 +549,7 @@ const CourseLessonLayout = ({ course }) => {
             </button>
 
             <span className="lesson-pager-count">
-              {activeIndex + 1} / {visibleBlocks.length}
+              {activeIndex + 1} / {navigableItems.length}
             </span>
 
             <button

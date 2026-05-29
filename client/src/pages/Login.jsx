@@ -43,6 +43,7 @@ const Login = () => {
       }
       localStorage.setItem('userAuth', 'true');
       localStorage.setItem('userName', email ? email.split('@')[0] : 'Learner');
+      localStorage.setItem('userEmail', email ? email.trim().toLowerCase() : '');
       navigate(redirectTo, { replace: true });
       return;
     }
@@ -50,6 +51,7 @@ const Login = () => {
     if (normalized === DEMO_EMAIL.toLowerCase() && password === DEMO_PASSWORD) {
       localStorage.setItem('userAuth', 'true');
       localStorage.setItem('userName', 'Learner');
+      localStorage.setItem('userEmail', DEMO_EMAIL.toLowerCase());
       navigate(redirectTo, { replace: true });
       return;
     }
@@ -60,6 +62,7 @@ const Login = () => {
   const handleOAuthLogin = (provider) => {
     localStorage.setItem('userAuth', 'true');
     localStorage.setItem('userName', 'User');
+    localStorage.setItem('userEmail', `${provider}-user@certnova.com`);
     navigate(redirectTo, { replace: true });
   };
 

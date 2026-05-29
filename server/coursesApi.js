@@ -8,66 +8,122 @@ function registerCourseRoutes(app, db) {
   const courseColumns =
     'id, title, description, cover_title, cover_subtitle, level, duration, cta_text, image_url, slug, price, published, content_markdown, quiz_json, content_blocks_json, detail_description, learning_outcomes, instructor_name, rating, student_count, language, created_at, updated_at';
 
-  const listCourses = (onlyPublished) =>
-    new Promise((resolve, reject) => {
-      const sql = onlyPublished
-        ? `SELECT ${courseColumns} FROM courses WHERE published = 1 ORDER BY updated_at DESC, id DESC`
-        : `SELECT ${courseColumns} FROM courses ORDER BY updated_at DESC, id DESC`;
-      db.all(sql, (err, rows) => {
-        if (err) reject(err);
-        else resolve((rows || []).map(mapCourseRow));
-      });
-    });
+  const listCourses = async (onlyPublished) => {
+    const sql = onlyPublished
+      ? `SELECT ${courseColumns} FROM courses WHERE published = 1 ORDER BY updated_at DESC, id DESC`
+      : `SELECT ${courseColumns} FROM courses ORDER BY updated_at DESC, id DESC`;
+    const { rows } = await db.query(sql);
+    return (rows || []).map(mapCourseRow);
+  };
 
-  const getCourseByIdOrSlug = (idOrSlug, onlyPublished) =>
-    new Promise((resolve, reject) => {
-      const isNumeric = /^\d+$/.test(String(idOrSlug));
-      const sql = isNumeric
-        ? `SELECT ${courseColumns} FROM courses WHERE id = ?`
-        : `SELECT ${courseColumns} FROM courses WHERE slug = ?`;
-      db.get(sql, [idOrSlug], (err, row) => {
-        if (err) reject(err);
-        else if (!row) resolve(null);
-        else if (onlyPublished && row.published !== 1) resolve(null);
-        else resolve(mapCourseRow(row));
-      });
-    });
+  const getCourseByIdOrSlug = async (idOrSlug, onlyPublished) => {
+    const isNumeric = /^\\d+$/.test(String(idOrSlug));
+    const sql = isNumeric
+      ? `SELECT ${courseColumns} FROM courses WHERE id = $1`
+      : `SELECT ${courseColumns} FROM courses WHERE slug = $1`;
+    const { rows } = await db.query(sql, [idOrSlug]);
+    const row = rows[0];
+    if (!row) return null;
+    if (onlyPublished && row.published !== 1) return null;
+    return mapCourseRow(row);
+  };
 
-  app.get('/api/courses', (req, res) => {
-    const onlyPublished = req.query.all !== '1';
-    listCourses(onlyPublished)
-      .then((rows) => res.json(rows))
-      .catch((err) => res.status(500).json({ error: err.message }));
+  app.get('/api/courses', async (req, res) => {
+    try {
+      const onlyPublished = req.query.all !== '1';
+      const rows = await listCourses(onlyPublished);
+      res.json(rows);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   });
 
-  app.get('/api/courses/:idOrSlug', (req, res) => {
-    const onlyPublished = req.query.all !== '1';
-    getCourseByIdOrSlug(req.params.idOrSlug, onlyPublished)
-      .then((row) => {
-        if (!row) {
-          res.status(404).json({ error: 'Course not found' });
-          return;
-        }
-        res.json(row);
-      })
-      .catch((err) => res.status(500).json({ error: err.message }));
+  app.get('/api/courses/:idOrSlug', async (req, res) => {
+    try {
+      const onlyPublished = req.query.all !== '1';
+      const row = await getCourseByIdOrSlug(req.params.idOrSlug, onlyPublished);
+      if (!row) {
+        res.status(404).json({ error: 'Course not found' });
+        return;
+      }
+      res.json(row);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   });
 
-  app.post('/api/courses', (req, res) => {
+  app.post('/api/courses', async (req, res) => {
     const payload = normalizeCoursePayload(req.body);
     if (!payload.title || !payload.description) {
       res.status(400).json({ error: 'Title and description are required.' });
       return;
     }
 
-    const insert = () => {
-      db.run(
-        `INSERT INTO courses (
-          title, description, cover_title, cover_subtitle, level, duration,
-          cta_text, image_url, slug, price, published, content_markdown, quiz_json,
-          content_blocks_json, detail_description, learning_outcomes, instructor_name,
-          rating, student_count, language, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
+    const insert = async (attemptSlug) => {
+      try {
+        const { rows } = await db.query(
+          `INSERT INTO courses (
+            title, description, cover_title, cover_subtitle, level, duration,
+            cta_text, image_url, slug, price, published, content_markdown, quiz_json,
+            content_blocks_json, detail_description, learning_outcomes, instructor_name,
+            rating, student_count, language, created_at, updated_at
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+          RETURNING id`,
+          [
+            payload.title,
+            payload.description,
+            payload.cover_title,
+            payload.cover_subtitle,
+            payload.level,
+            payload.duration,
+            payload.cta_text,
+            payload.image_url,
+            attemptSlug,
+            payload.price,
+            payload.published,
+            payload.content_markdown,
+            payload.quiz_json,
+            payload.content_blocks_json,
+            payload.detail_description,
+            payload.learning_outcomes,
+            payload.instructor_name,
+            payload.rating,
+            payload.student_count,
+            payload.language,
+          ]
+        );
+        const row = await getCourseByIdOrSlug(rows[0].id, false);
+        res.status(201).json(row);
+      } catch (err) {
+        if (err.message.includes('unique constraint') || err.code === '23505') {
+          await insert(`${attemptSlug}-${Date.now()}`);
+        } else {
+          res.status(500).json({ error: err.message });
+        }
+      }
+    };
+
+    await insert(payload.slug || slugify(payload.title));
+  });
+
+  app.put('/api/courses/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const payload = normalizeCoursePayload(req.body);
+      if (!payload.title || !payload.description) {
+        res.status(400).json({ error: 'Title and description are required.' });
+        return;
+      }
+
+      const { rowCount } = await db.query(
+        `UPDATE courses SET
+          title = $1, description = $2, cover_title = $3, cover_subtitle = $4,
+          level = $5, duration = $6, cta_text = $7, image_url = $8, slug = $9,
+          price = $10, published = $11, content_markdown = $12, quiz_json = $13,
+          content_blocks_json = $14, detail_description = $15, learning_outcomes = $16,
+          instructor_name = $17, rating = $18, student_count = $19, language = $20,
+          updated_at = CURRENT_TIMESTAMP
+        WHERE id = $21`,
         [
           payload.title,
           payload.description,
@@ -77,7 +133,7 @@ function registerCourseRoutes(app, db) {
           payload.duration,
           payload.cta_text,
           payload.image_url,
-          payload.slug,
+          payload.slug || slugify(payload.title),
           payload.price,
           payload.published,
           payload.content_markdown,
@@ -89,109 +145,50 @@ function registerCourseRoutes(app, db) {
           payload.rating,
           payload.student_count,
           payload.language,
-        ],
-        function onInsert(err) {
-          if (err) {
-            if (err.message.includes('UNIQUE constraint failed: courses.slug')) {
-              payload.slug = `${payload.slug}-${Date.now()}`;
-              insert();
-              return;
-            }
-            res.status(500).json({ error: err.message });
-            return;
-          }
-          getCourseByIdOrSlug(String(this.lastID), false).then((row) => res.status(201).json(row));
-        }
+          id,
+        ]
       );
-    };
 
-    insert();
-  });
-
-  app.put('/api/courses/:id', (req, res) => {
-    const { id } = req.params;
-    const payload = normalizeCoursePayload(req.body);
-    if (!payload.title || !payload.description) {
-      res.status(400).json({ error: 'Title and description are required.' });
-      return;
-    }
-
-    db.run(
-      `UPDATE courses SET
-        title = ?, description = ?, cover_title = ?, cover_subtitle = ?,
-        level = ?, duration = ?, cta_text = ?, image_url = ?, slug = ?,
-        price = ?, published = ?, content_markdown = ?, quiz_json = ?,
-        content_blocks_json = ?, detail_description = ?, learning_outcomes = ?,
-        instructor_name = ?, rating = ?, student_count = ?, language = ?,
-        updated_at = datetime('now')
-      WHERE id = ?`,
-      [
-        payload.title,
-        payload.description,
-        payload.cover_title,
-        payload.cover_subtitle,
-        payload.level,
-        payload.duration,
-        payload.cta_text,
-        payload.image_url,
-        payload.slug || slugify(payload.title),
-        payload.price,
-        payload.published,
-        payload.content_markdown,
-        payload.quiz_json,
-        payload.content_blocks_json,
-        payload.detail_description,
-        payload.learning_outcomes,
-        payload.instructor_name,
-        payload.rating,
-        payload.student_count,
-        payload.language,
-        id,
-      ],
-      function onUpdate(err) {
-        if (err) {
-          res.status(500).json({ error: err.message });
-          return;
-        }
-        if (this.changes === 0) {
-          res.status(404).json({ error: 'Course not found' });
-          return;
-        }
-        getCourseByIdOrSlug(id, false).then((row) => res.json(row));
-      }
-    );
-  });
-
-  app.patch('/api/courses/:id/publish', (req, res) => {
-    const { id } = req.params;
-    const published = req.body.published === true || req.body.published === 1 ? 1 : 0;
-
-    db.run(
-      `UPDATE courses SET published = ?, updated_at = datetime('now') WHERE id = ?`,
-      [published, id],
-      function onPublish(err) {
-        if (err) {
-          res.status(500).json({ error: err.message });
-          return;
-        }
-        if (this.changes === 0) {
-          res.status(404).json({ error: 'Course not found' });
-          return;
-        }
-        getCourseByIdOrSlug(id, false).then((row) => res.json(row));
-      }
-    );
-  });
-
-  app.delete('/api/courses/:id', (req, res) => {
-    const { id } = req.params;
-    db.run('DELETE FROM courses WHERE id = ?', [id], function onDelete(err) {
-      if (err) {
-        res.status(500).json({ error: err.message });
+      if (rowCount === 0) {
+        res.status(404).json({ error: 'Course not found' });
         return;
       }
-      res.json({ message: 'Course deleted successfully', changes: this.changes });
-    });
+      const row = await getCourseByIdOrSlug(id, false);
+      res.json(row);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.patch('/api/courses/:id/publish', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const published = req.body.published === true || req.body.published === 1 ? 1 : 0;
+
+      const { rowCount } = await db.query(
+        `UPDATE courses SET published = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`,
+        [published, id]
+      );
+
+      if (rowCount === 0) {
+        res.status(404).json({ error: 'Course not found' });
+        return;
+      }
+      const row = await getCourseByIdOrSlug(id, false);
+      res.json(row);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.delete('/api/courses/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { rowCount } = await db.query('DELETE FROM courses WHERE id = $1', [id]);
+      res.json({ message: 'Course deleted successfully', changes: rowCount });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   });
 }
 

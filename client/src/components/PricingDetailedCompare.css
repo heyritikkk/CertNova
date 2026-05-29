@@ -1,0 +1,119 @@
+.pricing-compare-section {
+  max-width: 1000px;
+  margin: 4rem auto 6rem;
+  padding: 0 1rem;
+}
+
+.compare-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.compare-header h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.2rem;
+  font-weight: 400;
+  color: var(--text-main, #0f172a);
+  margin-bottom: 0;
+}
+
+.compare-header h2::after {
+  content: '';
+  display: block;
+  width: 4rem;
+  height: 3px;
+  background: var(--brand-accent);
+  margin: 1.2rem auto;
+  border-radius: 2px;
+}
+
+.compare-header p {
+  color: var(--text-muted, #64748b);
+  font-size: 0.95rem;
+}
+
+.compare-table-container {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.compare-table {
+  display: flex;
+  flex-direction: column;
+  min-width: 700px;
+}
+
+.compare-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--border-soft, #e2e8f0);
+}
+
+.compare-row:last-child {
+  border-bottom: none;
+}
+
+.compare-head {
+  border-bottom: 2px solid var(--border-soft, #e2e8f0);
+  margin-bottom: 0.5rem;
+}
+
+.compare-cell {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--text-main, #0f172a);
+}
+
+.compare-cell.feature-name {
+  justify-content: flex-start;
+  font-weight: 500;
+  color: var(--text-secondary, #475569);
+}
+
+.compare-cell.plan-name {
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.compare-cell.plan-name .plan-price {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text-muted, #64748b);
+  margin-top: 0.2rem;
+}
+
+.pro-pill {
+  background: var(--brand-accent-soft, #fff4ee);
+  border-radius: 999px;
+  width: 100%;
+  max-width: 180px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.pro-pill.header {
+  padding: 0.5rem 1rem;
+  flex-direction: column;
+  color: var(--brand-accent-deep, #c45a2f);
+}
+
+.check-icon {
+  color: var(--brand-success, #10b981);
+}
+
+.cross-icon {
+  color: var(--text-muted, #94a3b8);
+  font-weight: 600;
+}
+
+.text-val {
+  color: var(--text-muted, #64748b);
+}

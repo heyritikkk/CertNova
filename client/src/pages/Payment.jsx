@@ -32,6 +32,23 @@ export default function Payment() {
   const handlePaid = () => {
     setShowQR(false);
     setPaid(true);
+
+    const visitorId = localStorage.getItem('certnova_visitor_id') || 'v_anonymous';
+    const email = localStorage.getItem('userEmail') || localStorage.getItem('userName') || 'learner@certnova.com';
+    const name = localStorage.getItem('userName') || 'Learner';
+
+    fetch(`${API}/api/analytics/track`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        visitorId,
+        email,
+        name,
+        courseSlug: slug,
+        action: 'purchase'
+      })
+    }).catch(err => console.error('Analytics tracking purchase failed:', err));
+
     // After 3s redirect to course learn page
     setTimeout(() => navigate(`/courses/${slug}/learn`), 3000);
   };

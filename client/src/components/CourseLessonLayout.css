@@ -34,6 +34,23 @@
   grid-template-columns: 52px minmax(0, 1fr);
 }
 
+.lesson-layout--full-screen {
+  grid-template-columns: 1fr !important;
+}
+
+.lesson-layout--full-screen .lesson-sidebar-pin,
+.lesson-layout--full-screen .lesson-resize-handle {
+  display: none !important;
+}
+
+.lesson-layout--full-screen .lesson-main {
+  grid-column: 1 / -1 !important;
+}
+
+.lesson-layout--full-screen .lesson-body {
+  overflow: visible !important;
+}
+
 .lesson-sidebar-pin {
   grid-column: 1;
   align-self: start;

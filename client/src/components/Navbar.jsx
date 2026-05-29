@@ -5,10 +5,10 @@ import './Navbar.css';
 import './ProfileDropdown.css';
 
 const NAV_LINKS = [
+  { to: '/roadmap', label: 'Roadmap' },
   { to: '/courses', label: 'Courses' },
   { to: '/blog', label: 'Blog' },
   { to: '/pricing', label: 'Pricing' },
-  { to: '/contact', label: 'Contact' },
 ];
 
 const Navbar = ({ theme, onToggleTheme }) => {

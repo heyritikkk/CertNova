@@ -495,7 +495,14 @@
 [data-theme='dark'] .how-item strong { color: #f1f5f9; }
 [data-theme='dark'] .how-item span { color: #94a3b8; }
 [data-theme='dark'] .how-step-marker { border-color: rgba(15, 23, 42, 0.8); }
-
+[data-theme='dark'] .how-code-top {
+  background: transparent;
+  border-color: rgba(244, 139, 96, 0.28);
+  color: #94a3b8;
+}
+[data-theme='dark'] .how-code-card pre {
+  color: #e2e8f0;
+}
 @media (max-width: 968px) {
   .how-section {
     padding: 1.2rem 1.2rem 2rem;

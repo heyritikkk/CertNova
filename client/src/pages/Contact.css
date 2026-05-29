@@ -23,7 +23,7 @@
   background: var(--surface-main, #ffffff);
   padding: 2rem;
   border-radius: 12px;
-  border: 1px solid var(--border-soft, #e2e8f0);
+  border: 1.5px solid #f1c9b6;
 }
 
 .contact-card h3 {
@@ -55,7 +55,7 @@
   background: var(--surface-main, #ffffff);
   padding: 2.5rem;
   border-radius: 12px;
-  border: 1px solid var(--border-soft, #e2e8f0);
+  border: 1.5px solid #f1c9b6;
 }
 
 .form-group {

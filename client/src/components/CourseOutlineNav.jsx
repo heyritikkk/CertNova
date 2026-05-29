@@ -42,6 +42,7 @@ export function CourseOutlineNav({
   onAddSubLessonUnderFlat,
   onRenameBlock,
   onRenameSection,
+  onRenameModule,
   onDeleteBlock,
   onDeleteSection,
   onMoveBlock,
@@ -61,15 +62,14 @@ export function CourseOutlineNav({
             className={`${moduleClassName}${isModuleExpanded ? ' is-expanded' : ''}${hideModuleHeaders ? ' is-flat' : ''}`}
           >
             {!hideModuleHeaders && (
-              <button
-                type="button"
-                className={moduleBtnClassName}
-                onClick={() => onToggleModule(mod.id)}
-                aria-expanded={isModuleExpanded}
-              >
-                <span>{mod.title}</span>
-                {isModuleExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-              </button>
+              <OutlineModuleHeader
+                mod={mod}
+                isExpanded={isModuleExpanded}
+                moduleBtnClassName={moduleBtnClassName}
+                onToggle={() => onToggleModule(mod.id)}
+                editable={editable}
+                onRename={(newTitle) => onRenameModule?.(mod, mod.title, newTitle)}
+              />
             )}
             {isModuleExpanded && (
               <div className={moduleItemsClassName}>
@@ -166,6 +166,15 @@ export function CourseOutlineNav({
                     </Fragment>
                   );
                 })}
+                {lessonGroupNav && (
+                  <OutlineModuleQuizRow
+                    modId={mod.id}
+                    modTitle={mod.title}
+                    activeBlockId={activeBlockId}
+                    onSelectBlock={onSelectBlock}
+                    completedBlockIds={completedBlockIds}
+                  />
+                )}
                 {editable && (
                   <button
                     type="button"
@@ -181,6 +190,82 @@ export function CourseOutlineNav({
         );
       })}
     </>
+  );
+}
+
+function OutlineModuleHeader({
+  mod,
+  isExpanded,
+  moduleBtnClassName,
+  onToggle,
+  editable,
+  onRename,
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(mod.title);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (!editing) setDraft(mod.title);
+  }, [mod.title, editing]);
+
+  useEffect(() => {
+    if (editing) inputRef.current?.focus();
+  }, [editing]);
+
+  const commitRename = () => {
+    const next = normalizeNavTitle(draft);
+    if (next && next !== mod.title) onRename?.(next);
+    setEditing(false);
+  };
+
+  return (
+    <div className={`outline-module-head${editable ? ' is-editable' : ''}`}>
+      {editing ? (
+        <input
+          ref={inputRef}
+          className="outline-rename-input"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+          onBlur={commitRename}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+            if (e.key === 'Enter') commitRename();
+            if (e.key === 'Escape') {
+              setDraft(mod.title);
+              setEditing(false);
+            }
+          }}
+        />
+      ) : (
+        <button
+          type="button"
+          className={moduleBtnClassName}
+          onClick={onToggle}
+          onDoubleClick={() => editable && setEditing(true)}
+          aria-expanded={isExpanded}
+        >
+          <span>{mod.title}</span>
+          {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+        </button>
+      )}
+      {editable && !editing && (
+        <div className="outline-row-actions">
+          <button
+            type="button"
+            className="outline-icon-btn"
+            title="Rename module"
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditing(true);
+            }}
+          >
+            <Pencil size={13} />
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -273,12 +358,12 @@ function OutlineSectionHeader({
           <button
             type="button"
             className="outline-icon-btn"
-            title="Rename parent lesson"
+            title="Rename lesson"
             onClick={() => setEditing(true)}
           >
             <Pencil size={13} />
           </button>
-          <button type="button" className="outline-icon-btn danger" title="Delete group" onClick={onDelete}>
+          <button type="button" className="outline-icon-btn danger" title="Delete lesson" onClick={onDelete}>
             <Trash2 size={13} />
           </button>
         </div>
@@ -385,6 +470,54 @@ function OutlineNavRow({
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function OutlineModuleQuizRow({
+  modId,
+  modTitle,
+  activeBlockId,
+  onSelectBlock,
+  completedBlockIds,
+}) {
+  const examId = `module-quiz-${modId}`;
+  const isActive = activeBlockId === examId;
+  const isComplete = completedBlockIds?.has?.(examId);
+
+  return (
+    <div className={`outline-nav-row${isActive ? ' active' : ''} outline-module-quiz-row`}>
+      <button
+        type="button"
+        className={`lesson-nav-item lesson-nav-item--child is-module-quiz${isActive ? ' active' : ''}${isComplete ? ' is-complete' : ''}`}
+        onClick={() => onSelectBlock(examId)}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          width: '100%',
+          textAlign: 'left',
+          padding: '0.65rem 1rem 0.65rem 1.75rem',
+          fontWeight: '600',
+          color: isActive ? 'var(--cn-accent-deep, #c45a2f)' : '#475569',
+          borderLeft: isActive ? '3px solid var(--cn-accent, #f48b60)' : '3px solid transparent',
+          background: isActive ? 'var(--cn-accent-soft, #fff4ee)' : 'transparent',
+          fontFamily: 'inherit',
+          fontSize: '0.84rem',
+          cursor: 'pointer',
+          borderRadius: '0 8px 8px 0',
+          transition: 'all 0.15s ease',
+        }}
+      >
+        {isComplete ? (
+          <Check size={14} style={{ color: '#16a34a' }} />
+        ) : (
+          <span style={{ fontSize: '0.85rem', color: isActive ? 'var(--cn-accent, #f48b60)' : '#94a3b8' }}>📝</span>
+        )}
+        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          Practice Exam (20 Qs)
+        </span>
+      </button>
     </div>
   );
 }

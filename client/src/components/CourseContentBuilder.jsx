@@ -84,6 +84,41 @@ const CourseContentBuilder = ({
     window.setTimeout(() => setToolbarHint(''), 2800);
   };
 
+  // Live Preview Resizing
+  const [previewWidth, setPreviewWidth] = useState(() => {
+    const saved = localStorage.getItem('certnova_admin_editor_preview_width');
+    return saved ? parseInt(saved, 10) : 480;
+  });
+  const [isResizingPreview, setIsResizingPreview] = useState(false);
+
+  const handlePreviewResizeDown = (e) => {
+    e.preventDefault();
+    setIsResizingPreview(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handlePreviewResizeMove = (e) => {
+    if (!isResizingPreview) return;
+    const container = e.currentTarget.parentElement;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const newWidth = Math.max(280, Math.min(rect.width - 280, rect.right - e.clientX));
+    setPreviewWidth(newWidth);
+  };
+
+  const handlePreviewResizeUp = (e) => {
+    if (!isResizingPreview) return;
+    setIsResizingPreview(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    const container = e.currentTarget.parentElement;
+    if (container) {
+      const rect = container.getBoundingClientRect();
+      const finalWidth = Math.max(280, Math.min(rect.width - 280, rect.right - e.clientX));
+      setPreviewWidth(finalWidth);
+      localStorage.setItem('certnova_admin_editor_preview_width', finalWidth);
+    }
+  };
+
   const removeBlock = (id) => {
     if (blocks.length <= 1) return;
     const next = blocks.filter((b) => b.id !== id);
@@ -193,7 +228,7 @@ const CourseContentBuilder = ({
           />
           <p className={`content-builder-toolbar-hint${toolbarHint ? ' is-alert' : ''}`}>
             {toolbarHint ||
-              'Structure lives in the left outline - write lesson content here. Use PlantUML for diagrams.'}
+              'Structure lives in the left outline - write sub-lesson content here. Use PlantUML for diagrams.'}
           </p>
         </div>
 
@@ -206,13 +241,13 @@ const CourseContentBuilder = ({
 
         {!activeBlock ? (
           <div className="content-builder-empty-editor">
-            <p>Select a lesson or quiz from the outline on the left.</p>
+            <p>Select a sub-lesson or quiz from the outline on the left.</p>
           </div>
         ) : (
           <div className="content-builder-panel">
             <div className="content-builder-panel-head">
               <div className="content-builder-panel-head-main">
-                <h4>{activeBlock.type === 'quiz' ? 'Quiz content' : 'Lesson content'}</h4>
+                <h4>{activeBlock.type === 'quiz' ? 'Quiz content' : 'Sub-lesson content'}</h4>
                 {outlinePath && <BlockOutlineBreadcrumb parts={outlinePath.parts} />}
               </div>
               {blocks.length > 1 && (
@@ -229,7 +264,10 @@ const CourseContentBuilder = ({
             {activeBlock.type === 'markdown' ? (
               <>
                 <BlockPlacementDetails block={activeBlock} updateBlock={updateBlock} />
-                <div className="content-builder-markdown-split">
+                <div 
+                  className="content-builder-markdown-split"
+                  style={{ '--preview-width': `${previewWidth}px` }}
+                >
                   <textarea
                     ref={(el) => {
                       textareaRefs.current[activeBlock.id] = el;
@@ -241,6 +279,12 @@ const CourseContentBuilder = ({
                     placeholder="Write course content in Markdown..."
                     rows={16}
                     aria-label="Lesson markdown source"
+                  />
+                  <div
+                    className={`editor-split-resize-handle ${isResizingPreview ? 'is-resizing' : ''}`}
+                    onPointerDown={handlePreviewResizeDown}
+                    onPointerMove={handlePreviewResizeMove}
+                    onPointerUp={handlePreviewResizeUp}
                   />
                   <aside className="admin-lesson-preview" aria-label="Lesson preview">
                     <p className="admin-lesson-preview__label">Live preview</p>
@@ -376,7 +420,7 @@ function motionContentBuilderPlacementSection({ block, updateBlock }) {
   return (
     <>
       <div className="form-group content-section-title">
-        <label htmlFor={`sec-${block.id}`}>Parent lesson</label>
+        <label htmlFor={`sec-${block.id}`}>Lesson</label>
         <input
           id={`sec-${block.id}`}
           value={block.sectionTitle || ''}
@@ -387,7 +431,7 @@ function motionContentBuilderPlacementSection({ block, updateBlock }) {
         <small className="content-nav-hint">{navHint}</small>
       </div>
       <div className="form-group content-nav-title">
-        <label htmlFor={`nav-${block.id}`}>Sidebar title</label>
+        <label htmlFor={`nav-${block.id}`}>Sub-lesson title</label>
         <input
           id={`nav-${block.id}`}
           value={block.navTitle || ''}

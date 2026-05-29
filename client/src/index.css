@@ -81,10 +81,61 @@ body {
 [data-theme='dark'] .login-card,
 [data-theme='dark'] .page-content,
 [data-theme='dark'] .footer-container,
-[data-theme='dark'] .faq-answer {
+[data-theme='dark'] .faq-answer,
+[data-theme='dark'] .course-card,
+[data-theme='dark'] .payment-summary,
+[data-theme='dark'] .payment-methods,
+[data-theme='dark'] .payment-method-card,
+[data-theme='dark'] .cert-card,
+[data-theme='dark'] .cert-share,
+[data-theme='dark'] .verify-result,
+[data-theme='dark'] .mycerts-item,
+[data-theme='dark'] .mycerts-empty,
+[data-theme='dark'] .about-card--vision,
+[data-theme='dark'] .about-hero-image-wrapper,
+[data-theme='dark'] .suggested-quiz-wrapper,
+[data-theme='dark'] .suggested-quiz__question-card,
+[data-theme='dark'] .suggested-quiz__option,
+[data-theme='dark'] .puml-diagram-canvas,
+[data-theme='dark'] .qr-modal-content,
+[data-theme='dark'] .dashboard-stats-card,
+[data-theme='dark'] .dashboard-recent-card,
+[data-theme='dark'] .skill,
+[data-theme='dark'] .course-tag,
+[data-theme='dark'] .course-card-tag,
+[data-theme='dark'] .filter-btn,
+[data-theme='dark'] .filter-btn--pill,
+[data-theme='dark'] .module-btn,
+[data-theme='dark'] .module-card,
+[data-theme='dark'] .admin-tab-btn,
+[data-theme='dark'] .start-journey-btn,
+[data-theme='dark'] .pill,
+[data-theme='dark'] .mod-free-badge,
+[data-theme='dark'] .stat-box {
   background: rgba(15, 23, 42, 0.72) !important;
-  border-color: rgba(148, 163, 184, 0.25) !important;
-  box-shadow: none !important;
+  border-color: rgba(244, 139, 96, 0.28) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Light mode glow for cards to match navbar */
+html:not([data-theme='dark']) .pricing-card,
+html:not([data-theme='dark']) .highlight-card,
+html:not([data-theme='dark']) .testimonial-card,
+html:not([data-theme='dark']) .review-card,
+html:not([data-theme='dark']) .course-card,
+html:not([data-theme='dark']) .cert-card,
+html:not([data-theme='dark']) .dashboard-stats-card,
+html:not([data-theme='dark']) .dashboard-recent-card,
+html:not([data-theme='dark']) .roadmap-header-card,
+html:not([data-theme='dark']) .stat-box,
+html:not([data-theme='dark']) .how-code-card,
+html:not([data-theme='dark']) .how-card,
+html:not([data-theme='dark']) .role-card:not(.selected),
+html:not([data-theme='dark']) .selection-card:not(.selected),
+html:not([data-theme='dark']) .next-step-btn,
+html:not([data-theme='dark']) .generate-btn {
+  border-color: var(--brand-accent-border, #ffd4c2) !important;
+  box-shadow: 0 4px 18px rgba(244, 139, 96, 0.12) !important;
 }
 
 [data-theme='dark'] h1,

@@ -13,6 +13,7 @@ import {
   removeBlockFromList,
   removeSectionFromModule,
   renameSectionInModule,
+  renameModule,
   updateBlockInList,
 } from '../lib/contentBlocks';
 import { CourseOutlineNav } from './CourseOutlineNav';
@@ -104,7 +105,48 @@ const CourseOutlineSidebar = ({
   };
 
   const handleRenameSection = (mod, oldTitle, newTitle) => {
+    const oldT = oldTitle?.trim();
+    const newT = newTitle?.trim();
+    if (!oldT || !newT || oldT === newT) return;
+
+    const sectionNodes = groupModuleItemsIntoSections(mod.items);
+    const secIndex = sectionNodes.findIndex((n) => n.type === 'section' && n.title === oldTitle);
+    if (secIndex !== -1) {
+      const oldSecId = sectionNodes[secIndex].id;
+      const newSecId = `sec-${secIndex}-${newT.replace(/\s+/g, '-').toLowerCase()}`;
+      setExpandedSections((prev) => {
+        const next = new Set(prev);
+        if (next.has(oldSecId)) {
+          next.delete(oldSecId);
+          next.add(newSecId);
+        }
+        return next;
+      });
+    }
+
     applyBlocks(renameSectionInModule(blocks, mod, oldTitle, newTitle));
+  };
+
+  const handleRenameModule = (mod, oldTitle, newTitle) => {
+    const oldT = oldTitle?.trim() || 'Course content';
+    const newT = newTitle?.trim();
+    if (!oldT || !newT || oldT === newT) return;
+
+    const oldModId = mod.id;
+    const modIdx = modules.findIndex((m) => m.id === oldModId);
+    if (modIdx !== -1) {
+      const newModId = `mod-${modIdx}-${newT.replace(/\s+/g, '-').toLowerCase()}`;
+      setExpandedModules((prev) => {
+        const next = new Set(prev);
+        if (next.has(oldModId)) {
+          next.delete(oldModId);
+          next.add(newModId);
+        }
+        return next;
+      });
+    }
+
+    applyBlocks(renameModule(blocks, mod, oldTitle, newTitle));
   };
 
   const handleDeleteBlock = (blockId) => {
@@ -162,6 +204,7 @@ const CourseOutlineSidebar = ({
           onAddSubLessonUnderFlat={handleAddSubLessonUnderFlat}
           onRenameBlock={handleRenameBlock}
           onRenameSection={handleRenameSection}
+          onRenameModule={handleRenameModule}
           onDeleteBlock={handleDeleteBlock}
           onDeleteSection={handleDeleteSection}
           onMoveBlock={handleMoveBlock}
@@ -191,7 +234,14 @@ function OutlineSidebarHead({ courseTitle, onBack }) {
         </button>
       )}
       <h3>{courseTitle || 'Course outline'}</h3>
-      <p>Add, rename, and reorder lessons here. Double-click a name to edit.</p>
+      <div className="outline-hierarchy-badge" aria-label="Outline hierarchy structure: Modules to Lessons to Sub-lessons">
+        <span>Modules</span>
+        <span className="hierarchy-arrow">→</span>
+        <span>Lessons</span>
+        <span className="hierarchy-arrow">→</span>
+        <span>Sub-lessons</span>
+      </div>
+      <p>Double-click any item to rename. Reorder using arrow controls.</p>
     </div>
   );
 }

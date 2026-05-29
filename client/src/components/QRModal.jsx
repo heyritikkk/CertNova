@@ -44,7 +44,6 @@ export default function QRModal({ onClose, amount, courseTitle }) {
 
         <div className="qrm-qr-wrap">
           <img src="/upi-qr.png" alt="CertNova UPI QR Code" className="qrm-qr-img" />
-          <div className="qrm-amount-badge">{amount ?? '₹3,999'}</div>
         </div>
 
         <div className="qrm-upi-row">
@@ -61,7 +60,7 @@ export default function QRModal({ onClose, amount, courseTitle }) {
         </p>
 
         <button className="qrm-paid-btn" onClick={onClose}>
-          ✅ I've Completed the Payment
+          I've Completed the Payment
         </button>
 
         <p className="qrm-secure">🔒 Secured by UPI · 256-bit encrypted</p>

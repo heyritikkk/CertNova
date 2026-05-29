@@ -4,9 +4,10 @@ import './Blog.css';
 
 const FILTERS = [
   { id: 'all', label: 'All' },
-  { id: 'network', label: 'Network' },
-  { id: 'cryptography', label: 'Cryptography' },
-  { id: 'cyber-security', label: 'Cyber Security' },
+  { id: 'career-guides', label: 'Career Guides' },
+  { id: 'technical-tutorials', label: 'Technical Tutorials' },
+  { id: 'breach-breakdowns', label: 'Breach Breakdowns' },
+  { id: 'security-news', label: 'Security News' },
 ];
 
 /** Bump when replacing files under public/blog/ to bust browser cache. */

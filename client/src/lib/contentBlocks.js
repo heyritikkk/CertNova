@@ -223,6 +223,21 @@ export function renameSectionInModule(blocks, mod, oldTitle, newTitle) {
   });
 }
 
+export function renameModule(blocks, mod, oldTitle, newTitle) {
+  const oldT = oldTitle?.trim() || 'Course content';
+  const newT = normalizeNavTitle(newTitle);
+  if (!oldT || !newT || oldT === newT) return blocks;
+  const itemIds = new Set(mod.items.map((b) => b.id));
+  return blocks.map((b) => {
+    if (!itemIds.has(b.id)) return b;
+    const currentModTitle = b.moduleTitle?.trim() || 'Course content';
+    if (currentModTitle === oldT) {
+      return { ...b, moduleTitle: newT === 'Course content' ? '' : newT };
+    }
+    return b;
+  });
+}
+
 export function updateBlockInList(blocks, blockId, patch) {
   return blocks.map((b) => (b.id === blockId ? { ...b, ...patch } : b));
 }
