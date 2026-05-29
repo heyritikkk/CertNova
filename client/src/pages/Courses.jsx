@@ -78,7 +78,16 @@ const Courses = () => {
         if (!pMatch) return false;
       }
       // 5. Category filter
-      if (selectedCategories.size > 0 && (!c.category || !selectedCategories.has(c.category))) return false;
+      if (selectedCategories.size > 0) {
+        let match = false;
+        for (const cat of selectedCategories) {
+           if (c.title && c.title.toLowerCase().includes(cat.toLowerCase())) {
+             match = true;
+             break;
+           }
+        }
+        if (!match) return false;
+      }
       
       return true;
     });
@@ -119,6 +128,17 @@ const Courses = () => {
           </div>
           <div className="filter-options" style={{ flexWrap: 'wrap', gap: '0.5rem' }}>
             <button 
+              className={`filter-btn ${selectedCategories.size === 0 && selectedLevels.size === 0 && !searchTerm ? 'active' : ''}`} 
+              onClick={() => {
+                setSelectedCategories(new Set());
+                setSelectedLevels(new Set());
+                setSearchTerm('');
+              }}
+            >
+              All paths
+            </button>
+
+            <button 
               className={`filter-btn ${searchTerm === 'Knowledge Check' ? 'active' : ''}`}
               onClick={() => {
                 setSearchTerm('Knowledge Check');
@@ -130,6 +150,17 @@ const Courses = () => {
             </button>
 
             <button 
+              className={`filter-btn ${selectedCategories.has('Interview') ? 'active' : ''}`}
+              onClick={() => {
+                setSelectedCategories(new Set(['Interview']));
+                setSelectedLevels(new Set());
+                setSearchTerm('');
+              }}
+            >
+              Interview kit
+            </button>
+
+            <button 
               className={`filter-btn ${selectedLevels.has('Beginner') ? 'active' : ''}`}
               onClick={() => {
                 setSelectedLevels(new Set(['Beginner']));
@@ -138,17 +169,6 @@ const Courses = () => {
               }}
             >
               Beginner level
-            </button>
-
-            <button 
-              className={`filter-btn ${selectedCategories.size === 0 && selectedLevels.size === 0 && !searchTerm ? 'active' : ''}`} 
-              onClick={() => {
-                setSelectedCategories(new Set());
-                setSelectedLevels(new Set());
-                setSearchTerm('');
-              }}
-            >
-              All paths
             </button>
             
             {['Network Security', 'Web Security', 'Cryptography'].map(cat => (

@@ -20,10 +20,12 @@ const MODULES_DATA = [
   { path: 'Ethical Hacking', title: 'Active Directory Attacks', subs: 9, labs: 2, price: '₹49' },
   { path: 'Ethical Hacking', title: 'Pentest Report Writing', subs: 7, labs: 1, price: '₹49' },
   
+  { path: 'Cloud Security', title: 'Cloud Security Architecture', subs: 6, labs: 2, price: '₹49' },
   { path: 'Cloud Security', title: 'Cloud Security Fundamentals', subs: 7, labs: 1, price: '₹49' },
+  { path: 'Interview Prep Kit', title: 'Security+ Interview Prep', subs: 10, labs: 0, price: '₹49' },
 ];
 
-const PATHS = ['All paths', 'Web App Security', 'AppSec Engineering', 'Ethical Hacking', 'Cloud Security', 'SOC Analyst'];
+const PATHS = ['All paths', 'Web App Security', 'AppSec Engineering', 'Ethical Hacking', 'Cloud Security', 'SOC Analyst', 'Interview Prep Kit'];
 
 const PricingModulePicker = () => {
   const [activeTab, setActiveTab] = useState('All paths');

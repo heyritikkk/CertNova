@@ -79,7 +79,7 @@ const Pricing = ({ hideHeader = false }) => {
         <div className="pricing-card popular">
           <div className="popular-badge">✨ Most popular</div>
           <div className="pricing-card-top">
-            <span className="pricing-tier-name" style={{ color: 'var(--brand-accent-deep)' }}>⚡ Pro Path</span>
+            <span className="pricing-tier-name" style={{ color: 'var(--brand-accent-deep)' }}>⚡ Pro Path + Interview Kit</span>
             <div className="price">
               <span className="currency">₹</span>
               <span className="amount">199</span>
@@ -87,14 +87,14 @@ const Pricing = ({ hideHeader = false }) => {
             </div>
             <p className="pricing-strike">₹995</p>
             <p className="pricing-save">Save ₹96 vs buying modules individually</p>
-            <p className="pricing-desc" style={{ marginTop: '0.8rem' }}>One complete path — all 5 modules, all labs, path certificate. The most popular choice.</p>
+            <p className="pricing-desc" style={{ marginTop: '0.8rem' }}>One complete path — all 5 modules, all labs, path certificate, plus the Interview Prep Kit. The most popular choice.</p>
           </div>
           <div className="pricing-features">
             <div className="feature"><Check size={16} className="check-icon" /> All 5 modules in your chosen path</div>
             <div className="feature"><Check size={16} className="check-icon" /> All TryHackMe labs</div>
             <div className="feature"><Check size={16} className="check-icon" /> Quiz after every lesson</div>
             <div className="feature"><Check size={16} className="check-icon" /> Path certificate (LinkedIn shareable)</div>
-            <div className="feature"><Check size={16} className="check-icon" /> Code examples in 4 languages</div>
+            <div className="feature"><Check size={16} className="check-icon" /> Interview Prep Kit included</div>
             <div className="feature"><Check size={16} className="check-icon" /> Lifetime access</div>
             <div className="feature disabled"><Check size={16} className="check-icon" /> Discord community</div>
           </div>
