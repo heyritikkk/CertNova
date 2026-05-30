@@ -205,9 +205,11 @@ button.sidebar-link {
   margin-bottom: 3.5rem;
 }
 
-.stat-box {
+.dashboard-stats .stat-box {
   display: flex;
+  flex-direction: row;
   align-items: center;
+  text-align: left;
   gap: 1.2rem;
   padding: 1.2rem;
   background: var(--surface-main, #ffffff);
