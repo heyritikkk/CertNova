@@ -1,8 +1,12 @@
 .payment-page {
   min-height: calc(100vh - var(--navbar-offset, 64px));
-  background: linear-gradient(160deg, #fff8f5 0%, #fff4ee 50%, #f8fafc 100%);
+  background: transparent;
   padding: 2.5rem var(--site-gutter, 2rem) 4rem;
   box-sizing: border-box;
+}
+
+.app-container:has(.payment-page) {
+  background: linear-gradient(160deg, #fff8f5 0%, #fff4ee 50%, #f8fafc 100%);
 }
 
 .payment-loading {
@@ -429,7 +433,7 @@
 }
 
 /* ── Dark mode ── */
-[data-theme='dark'] .payment-page {
+[data-theme='dark'] .app-container:has(.payment-page) {
   background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
 }
 

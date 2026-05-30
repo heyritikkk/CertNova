@@ -6,7 +6,7 @@ const Testimonials = () => {
   return (
     <section className="testimonials-section">
       <div className="testimonials-header">
-        <span className="testimonials-chip">Testimonials</span>
+        <span className="testimonials-chip">TESTIMONIALS</span>
         <h2>See what our learners say about CertNova</h2>
         <p>
           Students and working professionals trust CertNova to build practical Security+ skills and exam confidence.

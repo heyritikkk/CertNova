@@ -176,8 +176,8 @@ button.sidebar-link {
   padding: 1.2rem;
   background: var(--surface-main, #ffffff);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  border: 1px solid var(--border-soft, #e2e8f0);
+  box-shadow: 0 4px 12px rgba(244, 139, 96, 0.05);
+  border: 1.5px solid rgba(244, 139, 96, 0.25);
 }
 
 .stat-icon-wrapper {
@@ -243,10 +243,10 @@ button.sidebar-link {
 
 .dash-course-card {
   background: var(--surface-main, #ffffff);
-  border: 1px solid var(--border-soft, #e2e8f0);
+  border: 1.5px solid rgba(244, 139, 96, 0.25);
   border-radius: 16px;
   padding: 1.8rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 16px rgba(244, 139, 96, 0.05);
 }
 
 .card-top {
@@ -506,7 +506,7 @@ button.sidebar-link {
 }
 
 .profile-container {
-  max-width: 700px;
+  max-width: 100%;
   padding: 0;
   background: transparent;
   border: none;
@@ -667,7 +667,7 @@ button.sidebar-link {
 .progress-stat .stat-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-main, #0f172a);
 }
 
 .progress-course-row {
@@ -680,8 +680,14 @@ button.sidebar-link {
 }
 
 [data-theme='dark'] .empty-state,
-[data-theme='dark'] .dashboard-form {
+[data-theme='dark'] .dashboard-form,
+[data-theme='dark'] .form-section {
   background: #1e293b;
+  border-color: rgba(255,255,255,0.1);
+}
+
+[data-theme='dark'] .form-section h4 {
+  color: var(--text-main);
   border-color: rgba(255,255,255,0.1);
 }
 

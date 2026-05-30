@@ -31,16 +31,38 @@ function registerCourseRoutes(app, db) {
   app.get('/api/courses', async (req, res) => {
     try {
       const onlyPublished = req.query.all !== '1';
+      if (!onlyPublished) {
+        if (!app.locals.isAdminRequest(req)) {
+          res.status(401).json({ error: 'Unauthorized' });
+          return;
+        }
+        const rows = await listCourses(false);
+        res.json(rows);
+        return;
+      }
       const rows = await listCourses(onlyPublished);
       res.json(rows);
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
 
   app.get('/api/courses/:idOrSlug', async (req, res) => {
     try {
       const onlyPublished = req.query.all !== '1';
+      if (!onlyPublished) {
+        if (!app.locals.isAdminRequest(req)) {
+          res.status(401).json({ error: 'Unauthorized' });
+          return;
+        }
+        const row = await getCourseByIdOrSlug(req.params.idOrSlug, false);
+        if (!row) {
+          res.status(404).json({ error: 'Course not found' });
+          return;
+        }
+        res.json(row);
+        return;
+      }
       const row = await getCourseByIdOrSlug(req.params.idOrSlug, onlyPublished);
       if (!row) {
         res.status(404).json({ error: 'Course not found' });
@@ -48,11 +70,11 @@ function registerCourseRoutes(app, db) {
       }
       res.json(row);
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
 
-  app.post('/api/courses', async (req, res) => {
+  app.post('/api/courses', app.locals.requireAdmin, async (req, res) => {
     const payload = normalizeCoursePayload(req.body);
     if (!payload.title || !payload.description) {
       res.status(400).json({ error: 'Title and description are required.' });
@@ -98,7 +120,7 @@ function registerCourseRoutes(app, db) {
         if (err.message.includes('unique constraint') || err.code === '23505') {
           await insert(`${attemptSlug}-${Date.now()}`);
         } else {
-          res.status(500).json({ error: err.message });
+          res.status(500).json({ error: 'Internal server error' });
         }
       }
     };
@@ -106,7 +128,7 @@ function registerCourseRoutes(app, db) {
     await insert(payload.slug || slugify(payload.title));
   });
 
-  app.put('/api/courses/:id', async (req, res) => {
+  app.put('/api/courses/:id', app.locals.requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const payload = normalizeCoursePayload(req.body);
@@ -156,11 +178,11 @@ function registerCourseRoutes(app, db) {
       const row = await getCourseByIdOrSlug(id, false);
       res.json(row);
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
 
-  app.patch('/api/courses/:id/publish', async (req, res) => {
+  app.patch('/api/courses/:id/publish', app.locals.requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const published = req.body.published === true || req.body.published === 1 ? 1 : 0;
@@ -177,17 +199,17 @@ function registerCourseRoutes(app, db) {
       const row = await getCourseByIdOrSlug(id, false);
       res.json(row);
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
 
-  app.delete('/api/courses/:id', async (req, res) => {
+  app.delete('/api/courses/:id', app.locals.requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const { rowCount } = await db.query('DELETE FROM courses WHERE id = $1', [id]);
       res.json({ message: 'Course deleted successfully', changes: rowCount });
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
 }

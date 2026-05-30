@@ -10,10 +10,10 @@ const ROLES = [
     title: 'AppSec Engineer',
     icon: Target,
     desc: 'Secure software from the inside. Work with dev teams to build security into code.',
-    salary: '₹12-22 LPA India | AED 15k Dubai',
+    salary: 'Beginner salary (US): from $79,850/year',
     stats: {
-      india: '₹12-22 LPA',
-      dubai: 'AED 14,000-20,000',
+      beginnerSalary: '$79,850/year',
+      salarySource: 'U.S. BLS (Software Developers)',
       timeToJob: '6-10 months',
       demand: 'Very High demand'
     }
@@ -23,10 +23,10 @@ const ROLES = [
     title: 'Penetration Tester',
     icon: Skull,
     desc: 'Get paid to hack. Find vulnerabilities before attackers do.',
-    salary: '₹8-18 LPA India | AED 12k Dubai',
+    salary: 'Beginner salary (US): from $69,660/year',
     stats: {
-      india: '₹8-18 LPA',
-      dubai: 'AED 12,000-18,000',
+      beginnerSalary: '$69,660/year',
+      salarySource: 'U.S. BLS (Information Security Analysts)',
       timeToJob: '8-12 months',
       demand: 'High demand'
     }
@@ -36,10 +36,10 @@ const ROLES = [
     title: 'Cloud Security Engineer',
     icon: Cloud,
     desc: 'Secure AWS, Azure and GCP. The highest demand role of 2025.',
-    salary: '₹14-25 LPA India | AED 18k Dubai',
+    salary: 'Beginner salary (US): from $69,660/year',
     stats: {
-      india: '₹14-25 LPA',
-      dubai: 'AED 18,000-25,000',
+      beginnerSalary: '$69,660/year',
+      salarySource: 'U.S. BLS (Information Security Analysts)',
       timeToJob: '6-9 months',
       demand: 'Extreme demand'
     }
@@ -49,10 +49,10 @@ const ROLES = [
     title: 'SOC Analyst',
     icon: Eye,
     desc: 'Monitor, detect and respond to threats in real time. The entry point for many.',
-    salary: '₹5-12 LPA India | AED 8k Dubai',
+    salary: 'Beginner salary (US): from $69,660/year',
     stats: {
-      india: '₹5-12 LPA',
-      dubai: 'AED 8,000-12,000',
+      beginnerSalary: '$69,660/year',
+      salarySource: 'U.S. BLS (Information Security Analysts)',
       timeToJob: '3-6 months',
       demand: 'High demand'
     }
@@ -62,10 +62,10 @@ const ROLES = [
     title: 'Red Team Operator',
     icon: Shield,
     desc: 'Advanced offensive security. Full attack simulations for enterprises.',
-    salary: '₹15-30 LPA India | AED 20k Dubai',
+    salary: 'Beginner salary (US): from $69,660/year',
     stats: {
-      india: '₹15-30 LPA',
-      dubai: 'AED 20,000-30,000',
+      beginnerSalary: '$69,660/year',
+      salarySource: 'U.S. BLS (Information Security Analysts)',
       timeToJob: '12-18 months',
       demand: 'Medium demand'
     }
@@ -75,10 +75,10 @@ const ROLES = [
     title: 'DFIR Analyst',
     icon: Search,
     desc: 'Investigate breaches, recover evidence, respond to incidents.',
-    salary: '₹8-16 LPA India | AED 12k Dubai',
+    salary: 'Beginner salary (US): from $69,660/year',
     stats: {
-      india: '₹8-16 LPA',
-      dubai: 'AED 12,000-16,000',
+      beginnerSalary: '$69,660/year',
+      salarySource: 'U.S. BLS (Information Security Analysts)',
       timeToJob: '8-12 months',
       demand: 'High demand'
     }
@@ -297,8 +297,8 @@ const RoadmapPage = () => {
               <div className="header-pills">
                 <span className="pill dark">~{activeTime?.id === 'fulltime' ? '8' : activeTime?.id === '2hours' ? '12' : '20'} weeks</span>
                 <span className="pill dark">{activeRole.stats.demand}</span>
-                <span className="pill dark">{activeRole.stats.india}</span>
-                <span className="pill dark">Dubai: {activeRole.stats.dubai}/mo</span>
+                <span className="pill dark">US beginner: {activeRole.stats.beginnerSalary}</span>
+                <span className="pill dark">{activeRole.stats.salarySource}</span>
               </div>
             </div>
 
@@ -321,12 +321,12 @@ const RoadmapPage = () => {
                 <span className="stat-value">{activeRole.title}</span>
               </div>
               <div className="stat-box">
-                <span className="stat-label">INDIA SALARY</span>
-                <span className="stat-value highlight-green">{activeRole.stats.india}</span>
+                <span className="stat-label">US BEGINNER SALARY</span>
+                <span className="stat-value highlight-green">{activeRole.stats.beginnerSalary}</span>
               </div>
               <div className="stat-box">
-                <span className="stat-label">DUBAI SALARY</span>
-                <span className="stat-value highlight-purple">{activeRole.stats.dubai}</span>
+                <span className="stat-label">DATA SOURCE</span>
+                <span className="stat-value highlight-purple">{activeRole.stats.salarySource}</span>
               </div>
               <div className="stat-box">
                 <span className="stat-label">FIRST JOB IN</span>

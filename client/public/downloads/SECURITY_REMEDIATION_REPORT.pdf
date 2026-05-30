@@ -1,0 +1,247 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R 9 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 2931 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 54 738 Tm (# CertNova Security Vulnerability Remediation Report) Tj
+1 0 0 1 54 724 Tm () Tj
+1 0 0 1 54 710 Tm (Date: 2026-05-30) Tj
+1 0 0 1 54 696 Tm (Prepared by: Security Engineering Review) Tj
+1 0 0 1 54 682 Tm () Tj
+1 0 0 1 54 668 Tm (## Executive Summary) Tj
+1 0 0 1 54 654 Tm (This report documents the vulnerabilities identified and remediated in CertNova, with explicit) Tj
+1 0 0 1 54 640 Tm (mapping to vulnerability names, risk, affected areas, and implemented fixes.) Tj
+1 0 0 1 54 626 Tm () Tj
+1 0 0 1 54 612 Tm (## Scope) Tj
+1 0 0 1 54 598 Tm (- Backend API: `server/index.js`, `server/coursesApi.js`, `server/db.js`) Tj
+1 0 0 1 54 584 Tm (- Frontend Auth/API Flow: `client/src/pages/AdminLogin.jsx`, `client/src/lib/api.js`,) Tj
+1 0 0 1 54 570 Tm (`client/src/admin/AdminDashboard.jsx`, `client/src/App.jsx`) Tj
+1 0 0 1 54 556 Tm () Tj
+1 0 0 1 54 542 Tm (## Detailed Vulnerability Fixes) Tj
+1 0 0 1 54 528 Tm () Tj
+1 0 0 1 54 514 Tm (### 1\) Hardcoded Administrative Credentials in Client) Tj
+1 0 0 1 54 500 Tm (- Vulnerability name: Hardcoded Credentials \(CWE-798\)) Tj
+1 0 0 1 54 486 Tm (- Severity: Critical) Tj
+1 0 0 1 54 472 Tm (- Risk:) Tj
+1 0 0 1 54 458 Tm (  - Admin credentials were embedded in frontend code \(`admin` / `password`\).) Tj
+1 0 0 1 54 444 Tm (  - Any user inspecting JS could obtain admin access.) Tj
+1 0 0 1 54 430 Tm (- Evidence before fix:) Tj
+1 0 0 1 54 416 Tm (  - `client/src/pages/AdminLogin.jsx` validated static username/password directly in browser) Tj
+1 0 0 1 54 402 Tm (logic.) Tj
+1 0 0 1 54 388 Tm (- Fix implemented:) Tj
+1 0 0 1 54 374 Tm (  - Removed hardcoded credential checks from client.) Tj
+1 0 0 1 54 360 Tm (  - Added server-side authentication endpoint `POST /api/admin/login`.) Tj
+1 0 0 1 54 346 Tm (  - Client now submits credentials to server; server returns signed admin token only on) Tj
+1 0 0 1 54 332 Tm (successful validation.) Tj
+1 0 0 1 54 318 Tm (- Files changed:) Tj
+1 0 0 1 54 304 Tm (  - `client/src/pages/AdminLogin.jsx`) Tj
+1 0 0 1 54 290 Tm (  - `server/index.js`) Tj
+1 0 0 1 54 276 Tm () Tj
+1 0 0 1 54 262 Tm (### 2\) Missing Server-Side Authorization on Admin Endpoints) Tj
+1 0 0 1 54 248 Tm (- Vulnerability name: Broken Access Control \(OWASP A01:2021\)) Tj
+1 0 0 1 54 234 Tm (- Severity: Critical) Tj
+1 0 0 1 54 220 Tm (- Risk:) Tj
+1 0 0 1 54 206 Tm (  - Sensitive write operations were callable without verified admin identity.) Tj
+1 0 0 1 54 192 Tm (  - Attackers could modify course/content/analytics data.) Tj
+1 0 0 1 54 178 Tm (- Affected endpoints fixed:) Tj
+1 0 0 1 54 164 Tm (  - `POST /api/courses`) Tj
+1 0 0 1 54 150 Tm (  - `PUT /api/courses/:id`) Tj
+1 0 0 1 54 136 Tm (  - `PATCH /api/courses/:id/publish`) Tj
+1 0 0 1 54 122 Tm (  - `DELETE /api/courses/:id`) Tj
+1 0 0 1 54 108 Tm (  - `PUT /api/content/:id`) Tj
+1 0 0 1 54 94 Tm (  - `PUT /api/highlights/:id`) Tj
+1 0 0 1 54 80 Tm (  - `GET /api/analytics`) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 2956 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 54 738 Tm (  - `POST /api/analytics/clear`) Tj
+1 0 0 1 54 724 Tm (  - `POST /api/analytics/seed`) Tj
+1 0 0 1 54 710 Tm (- Fix implemented:) Tj
+1 0 0 1 54 696 Tm (  - Added admin token verification middleware \(`requireAdmin`\) and request predicate) Tj
+1 0 0 1 54 682 Tm (\(`isAdminRequest`\).) Tj
+1 0 0 1 54 668 Tm (  - Applied checks to all sensitive admin routes.) Tj
+1 0 0 1 54 654 Tm (- Files changed:) Tj
+1 0 0 1 54 640 Tm (  - `server/index.js`) Tj
+1 0 0 1 54 626 Tm (  - `server/coursesApi.js`) Tj
+1 0 0 1 54 612 Tm () Tj
+1 0 0 1 54 598 Tm (### 3\) Unauthorized Access to Unpublished/All Course Data) Tj
+1 0 0 1 54 584 Tm (- Vulnerability name: Broken Access Control / Insecure Direct Object Access Pattern) Tj
+1 0 0 1 54 570 Tm (- Severity: Critical) Tj
+1 0 0 1 54 556 Tm (- Risk:) Tj
+1 0 0 1 54 542 Tm (  - `?all=1` parameter exposed all courses, including unpublished/admin data, with no server) Tj
+1 0 0 1 54 528 Tm (auth.) Tj
+1 0 0 1 54 514 Tm (- Fix implemented:) Tj
+1 0 0 1 54 500 Tm (  - For `GET /api/courses?all=1` and `GET /api/courses/:idOrSlug?all=1`, server now requires) Tj
+1 0 0 1 54 486 Tm (valid admin token.) Tj
+1 0 0 1 54 472 Tm (- Files changed:) Tj
+1 0 0 1 54 458 Tm (  - `server/coursesApi.js`) Tj
+1 0 0 1 54 444 Tm (  - `client/src/lib/api.js` \(adds auth headers for admin reads\)) Tj
+1 0 0 1 54 430 Tm () Tj
+1 0 0 1 54 416 Tm (### 4\) Insecure Admin Session Trust \(Client-Only Flag\)) Tj
+1 0 0 1 54 402 Tm (- Vulnerability name: Improper Authentication / Client-Side Trust of Security State) Tj
+1 0 0 1 54 388 Tm (- Severity: High) Tj
+1 0 0 1 54 374 Tm (- Risk:) Tj
+1 0 0 1 54 360 Tm (  - Route guard trusted `localStorage.adminAuth === 'true'` alone.) Tj
+1 0 0 1 54 346 Tm (  - Local flag tampering could unlock admin UI flow.) Tj
+1 0 0 1 54 332 Tm (- Fix implemented:) Tj
+1 0 0 1 54 318 Tm (  - Client admin guard now requires both:) Tj
+1 0 0 1 54 304 Tm (    - `adminAuth === 'true'`) Tj
+1 0 0 1 54 290 Tm (    - presence of `adminToken`) Tj
+1 0 0 1 54 276 Tm (  - Admin logout removes both flag and token.) Tj
+1 0 0 1 54 262 Tm (- Files changed:) Tj
+1 0 0 1 54 248 Tm (  - `client/src/App.jsx`) Tj
+1 0 0 1 54 234 Tm (  - `client/src/pages/AdminLogin.jsx`) Tj
+1 0 0 1 54 220 Tm (  - `client/src/admin/AdminDashboard.jsx`) Tj
+1 0 0 1 54 206 Tm () Tj
+1 0 0 1 54 192 Tm (### 5\) Missing Auth Header Propagation for Admin API Calls) Tj
+1 0 0 1 54 178 Tm (- Vulnerability name: Authorization Misconfiguration) Tj
+1 0 0 1 54 164 Tm (- Severity: High) Tj
+1 0 0 1 54 150 Tm (- Risk:) Tj
+1 0 0 1 54 136 Tm (  - After backend auth hardening, client needed authenticated headers for admin actions.) Tj
+1 0 0 1 54 122 Tm (  - Without this, flows would fail or encourage insecure bypasses.) Tj
+1 0 0 1 54 108 Tm (- Fix implemented:) Tj
+1 0 0 1 54 94 Tm (  - Added `getAdminAuthHeaders\(\)` helper.) Tj
+1 0 0 1 54 80 Tm (  - Applied Authorization Bearer token on admin API operations and analytics fetch.) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 2779 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 54 738 Tm (- Files changed:) Tj
+1 0 0 1 54 724 Tm (  - `client/src/lib/api.js`) Tj
+1 0 0 1 54 710 Tm (  - `client/src/admin/AdminDashboard.jsx`) Tj
+1 0 0 1 54 696 Tm () Tj
+1 0 0 1 54 682 Tm (### 6\) Overly Permissive CORS Policy) Tj
+1 0 0 1 54 668 Tm (- Vulnerability name: Security Misconfiguration \(OWASP A05:2021\)) Tj
+1 0 0 1 54 654 Tm (- Severity: High) Tj
+1 0 0 1 54 640 Tm (- Risk:) Tj
+1 0 0 1 54 626 Tm (  - Open CORS may allow untrusted origins to issue browser-based requests.) Tj
+1 0 0 1 54 612 Tm (- Fix implemented:) Tj
+1 0 0 1 54 598 Tm (  - Replaced permissive CORS with allowlist-driven policy:) Tj
+1 0 0 1 54 584 Tm (    - `ALLOWED_ORIGINS` env var) Tj
+1 0 0 1 54 570 Tm (    - default fallback: `http://localhost:5173`) Tj
+1 0 0 1 54 556 Tm (- Files changed:) Tj
+1 0 0 1 54 542 Tm (  - `server/index.js`) Tj
+1 0 0 1 54 528 Tm () Tj
+1 0 0 1 54 514 Tm (### 7\) Verbose Internal Error Disclosure) Tj
+1 0 0 1 54 500 Tm (- Vulnerability name: Information Exposure Through Error Messages \(CWE-209\)) Tj
+1 0 0 1 54 486 Tm (- Severity: Medium) Tj
+1 0 0 1 54 472 Tm (- Risk:) Tj
+1 0 0 1 54 458 Tm (  - Returning raw `err.message` can disclose DB/schema/system internals.) Tj
+1 0 0 1 54 444 Tm (- Fix implemented:) Tj
+1 0 0 1 54 430 Tm (  - Replaced outward-facing server errors with generic `Internal server error` on sensitive) Tj
+1 0 0 1 54 416 Tm (paths.) Tj
+1 0 0 1 54 402 Tm (- Files changed:) Tj
+1 0 0 1 54 388 Tm (  - `server/index.js`) Tj
+1 0 0 1 54 374 Tm (  - `server/coursesApi.js`) Tj
+1 0 0 1 54 360 Tm () Tj
+1 0 0 1 54 346 Tm (### 8\) Insecure Default Database Connection Credentials) Tj
+1 0 0 1 54 332 Tm (- Vulnerability name: Use of Hard-coded Credentials / Insecure Defaults) Tj
+1 0 0 1 54 318 Tm (- Severity: Medium) Tj
+1 0 0 1 54 304 Tm (- Risk:) Tj
+1 0 0 1 54 290 Tm (  - Default DB URL included username/password in source fallback.) Tj
+1 0 0 1 54 276 Tm (- Fix implemented:) Tj
+1 0 0 1 54 262 Tm (  - Removed hardcoded credential fallback from DB connection string.) Tj
+1 0 0 1 54 248 Tm (  - Server now expects `DATABASE_URL` or local trust configuration.) Tj
+1 0 0 1 54 234 Tm (- Files changed:) Tj
+1 0 0 1 54 220 Tm (  - `server/db.js`) Tj
+1 0 0 1 54 206 Tm () Tj
+1 0 0 1 54 192 Tm (### 9\) Realistic Personal Data in Mock Analytics Seed) Tj
+1 0 0 1 54 178 Tm (- Vulnerability name: Privacy Data Exposure / Data Minimization Failure) Tj
+1 0 0 1 54 164 Tm (- Severity: Medium) Tj
+1 0 0 1 54 150 Tm (- Risk:) Tj
+1 0 0 1 54 136 Tm (  - Seed data contained realistic personal-looking emails/names.) Tj
+1 0 0 1 54 122 Tm (- Fix implemented:) Tj
+1 0 0 1 54 108 Tm (  - Replaced with neutral placeholder identities \(`learnerX@example.com`\).) Tj
+1 0 0 1 54 94 Tm (- Files changed:) Tj
+1 0 0 1 54 80 Tm (  - `server/db.js`) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 2318 >>
+stream
+BT
+/F1 10 Tf
+1 0 0 1 54 738 Tm (  - `server/index.js`) Tj
+1 0 0 1 54 724 Tm () Tj
+1 0 0 1 54 710 Tm (## Security Controls Added) Tj
+1 0 0 1 54 696 Tm (- HMAC-signed admin token generation and verification.) Tj
+1 0 0 1 54 682 Tm (- Expiration support for admin tokens \(`ADMIN_TOKEN_TTL_SECONDS`\).) Tj
+1 0 0 1 54 668 Tm (- Constant-time credential comparison \(`timingSafeEqual`\) to reduce timing leakage.) Tj
+1 0 0 1 54 654 Tm (- Centralized admin auth helper propagation on frontend API layer.) Tj
+1 0 0 1 54 640 Tm () Tj
+1 0 0 1 54 626 Tm (## Environment Variables Required) Tj
+1 0 0 1 54 612 Tm (- `ADMIN_USER`) Tj
+1 0 0 1 54 598 Tm (- `ADMIN_PASSWORD`) Tj
+1 0 0 1 54 584 Tm (- `ADMIN_TOKEN_SECRET`) Tj
+1 0 0 1 54 570 Tm (- `ALLOWED_ORIGINS`) Tj
+1 0 0 1 54 556 Tm (- Optional: `ADMIN_TOKEN_TTL_SECONDS`) Tj
+1 0 0 1 54 542 Tm () Tj
+1 0 0 1 54 528 Tm (## Residual Risks \(Not Yet Remediated\)) Tj
+1 0 0 1 54 514 Tm (1. Learner authentication is still localStorage-driven and not server-validated.) Tj
+1 0 0 1 54 500 Tm (2. Certificate list endpoint by email \(`/api/certificates?email=...`\) can still allow) Tj
+1 0 0 1 54 486 Tm (enumeration/privacy risk without user-bound auth.) Tj
+1 0 0 1 54 472 Tm (3. No rate limiting/lockout on admin login endpoint.) Tj
+1 0 0 1 54 458 Tm (4. No CSRF design review for future cookie-based auth migration.) Tj
+1 0 0 1 54 444 Tm () Tj
+1 0 0 1 54 430 Tm (## Recommended Next Phase) Tj
+1 0 0 1 54 416 Tm (1. Implement proper learner JWT/session auth and server-side authorization checks.) Tj
+1 0 0 1 54 402 Tm (2. Lock certificate access to authenticated user identity \(token subject\), not email query) Tj
+1 0 0 1 54 388 Tm (alone.) Tj
+1 0 0 1 54 374 Tm (3. Add rate limiting and login attempt controls on `/api/admin/login` and sensitive endpoints.) Tj
+1 0 0 1 54 360 Tm (4. Add security headers \(`helmet`\) and centralized audit logging.) Tj
+1 0 0 1 54 346 Tm () Tj
+1 0 0 1 54 332 Tm (## Verification Summary) Tj
+1 0 0 1 54 318 Tm (- Static syntax checks passed for modified server files via Node check.) Tj
+1 0 0 1 54 304 Tm (- Admin flow updated end-to-end: login -> token storage -> protected route -> authenticated) Tj
+1 0 0 1 54 290 Tm (admin API calls.) Tj
+1 0 0 1 54 276 Tm (- Sensitive admin endpoints now reject unauthorized requests with `401 Unauthorized`.) Tj
+ET
+endstream
+endobj
+xref
+0 11
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000133 00000 n 
+0000000308 00000 n 
+0000003291 00000 n 
+0000003466 00000 n 
+0000006474 00000 n 
+0000006649 00000 n 
+0000009480 00000 n 
+0000009656 00000 n 
+trailer
+<< /Size 11 /Root 1 0 R >>
+startxref
+12027
+%%EOF

@@ -131,12 +131,36 @@ const CourseDetailOverview = ({ course }) => {
             </div>
 
             {/* Buy button */}
-            <Link
-              to={Number(course.price) > 0 ? `/payment/${slug}` : loginHref}
-              className="course-detail-btn course-detail-btn--buy"
-            >
-              {Number(course.price) > 0 ? 'Buy now' : 'Start for free'}
-            </Link>
+            {(() => {
+              const userAuth = localStorage.getItem('userAuth') === 'true';
+              const hasStarted = localStorage.getItem(`certnova-course-${course.id}-completed`) !== null;
+              const isPurchased = localStorage.getItem(`certnova-course-purchased-${course.id}`) === 'true';
+              
+              let hasActivity = false;
+              try {
+                const act = JSON.parse(localStorage.getItem('certnova-last-activity') || 'null');
+                if (act && act.courseId === course.id) hasActivity = true;
+              } catch (e) {}
+
+              const isEnrolled = userAuth && (hasStarted || isPurchased || hasActivity);
+
+              if (isEnrolled) {
+                return (
+                  <Link to={learnPath} className="course-detail-btn course-detail-btn--buy">
+                    Resume Learning
+                  </Link>
+                );
+              }
+
+              return (
+                <Link
+                  to={Number(course.price) > 0 ? `/payment/${slug}` : loginHref}
+                  className="course-detail-btn course-detail-btn--buy"
+                >
+                  {Number(course.price) > 0 ? 'Buy now' : 'Start for free'}
+                </Link>
+              );
+            })()}
 
             {/* Trust badge */}
             {Number(course.price) > 0 && (

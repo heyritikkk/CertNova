@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, Bookmark, Award, User, Settings, LogOut, MessageSquare, FileText, Monitor, Flame, Trophy, Shield, Laptop, ExternalLink, ShieldCheck, ChevronRight, Search, TrendingUp } from 'lucide-react';
 import { api } from '../lib/api';
 import CtaBanner from '../components/CtaBanner';
+import CourseProgressStrip from '../components/CourseProgressStrip';
 import Footer from '../components/Footer';
 import './Dashboard.css';
 
@@ -11,6 +12,27 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 
 const Dashboard = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const validTabs = new Set(['overview', 'lessons', 'progress', 'bookmarks', 'certificates', 'profile', 'billing']);
+
+  const handleSidebarTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === 'progress') {
+      navigate('/progress');
+      return;
+    }
+    if (tab === 'profile') {
+      navigate('/profile');
+      return;
+    }
+    if (tab === 'overview') {
+      navigate('/dashboard');
+      return;
+    }
+    navigate(`/dashboard?tab=${encodeURIComponent(tab)}`);
+  };
+
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = '/';
@@ -33,6 +55,25 @@ const Dashboard = () => {
   const [editEmail, setEditEmail] = useState('');
   const [showCerts, setShowCerts] = useState(true);
   const [showSpaces, setShowSpaces] = useState(true);
+
+  useEffect(() => {
+    if (location.pathname === '/progress') {
+      setActiveTab('progress');
+      return;
+    }
+    if (location.pathname === '/profile') {
+      setActiveTab('profile');
+      return;
+    }
+    if (location.pathname === '/dashboard') {
+      const tabFromQuery = new URLSearchParams(location.search).get('tab');
+      if (tabFromQuery && validTabs.has(tabFromQuery)) {
+        setActiveTab(tabFromQuery);
+      } else {
+        setActiveTab('overview');
+      }
+    }
+  }, [location.pathname, location.search]);
 
   useEffect(() => {
     const fName = localStorage.getItem('firstName') || 'Learner';
@@ -114,7 +155,17 @@ const Dashboard = () => {
   };
 
   // Active Courses
-  const activeCourses = courses.map(c => ({ ...c, progress: getCourseProgress(c) })).filter(c => c.progress.percent > 0);
+  const activeCourses = courses.map(c => ({ ...c, progress: getCourseProgress(c) })).filter(c => {
+    const isPurchased = localStorage.getItem(`certnova-course-purchased-${c.id}`) === 'true';
+    const hasStarted = localStorage.getItem(`certnova-course-${c.id}-completed`) !== null;
+    let hasActivity = false;
+    try {
+      const act = JSON.parse(localStorage.getItem('certnova-last-activity') || 'null');
+      if (act && act.courseId === c.id) hasActivity = true;
+    } catch (e) {}
+
+    return c.progress.percent > 0 || isPurchased || hasStarted || hasActivity;
+  });
   
   // Bookmarks (Mocked via localStorage)
   const getBookmarks = () => {
@@ -589,12 +640,12 @@ const Dashboard = () => {
     });
 
     return (
-      <div className="tab-view profile-container" style={{ maxWidth: '900px' }}>
+      <div className="tab-view profile-container" style={{ maxWidth: '100%' }}>
         <div className="form-section" style={{ padding: '2rem 2.5rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem', color: '#0f172a' }}>My Progress</h2>
-          <p style={{ color: '#64748b', marginBottom: '2.5rem', fontSize: '0.95rem' }}>Track your progress across different courses</p>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-main)' }}>My Progress</h2>
+          <p style={{ color: 'var(--text-muted, #64748b)', marginBottom: '2.5rem', fontSize: '0.95rem' }}>Track your progress across different courses</p>
           
-          <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
             <div className="progress-stat">
               <div className="stat-label">Total XP</div>
               <div className="stat-value">{totalXP}</div>
@@ -663,28 +714,72 @@ const Dashboard = () => {
     );
   };
 
+  let stripData = null;
+  if (courses.length > 0) {
+    let activeCourse = null;
+    let lessonTitle = '';
+    
+    if (lastActivity) {
+      activeCourse = courses.find(c => c.id === lastActivity.courseId);
+      lessonTitle = lastActivity.lessonTitle || 'Continue Learning';
+    }
+    
+    // Fallback if no last activity or course not found
+    if (!activeCourse) {
+      activeCourse = courses[0]; // e.g. Network Security
+      lessonTitle = 'Start your first lesson';
+    }
+
+    if (activeCourse) {
+      const progress = getCourseProgress(activeCourse);
+      stripData = {
+        courseTitle: activeCourse.title,
+        courseSlug: activeCourse.slug,
+        currentLessonTitle: lessonTitle,
+        totalLessons: progress.total > 0 ? progress.total : 1, // Avoid 0 denominator
+        completedCount: progress.done
+      };
+    } else {
+      stripData = {
+        courseTitle: 'Dashboard',
+        courseSlug: '', // Will handle this below
+        currentLessonTitle: activeTab.charAt(0).toUpperCase() + activeTab.slice(1),
+        totalLessons: 0, // Hides the progress bar
+        completedCount: 0
+      };
+    }
+  }
+
   return (
     <div className="site-container dashboard-page-shell" style={{ paddingBottom: '3rem' }}>
       <div className="site-container-inner">
+        {stripData && (
+          <div style={{ marginBottom: '1.5rem', zIndex: 140 }}>
+            <CourseProgressStrip 
+              {...stripData} 
+              style={{ top: 'calc(var(--navbar-offset, 80px) + 0.5rem)' }} 
+            />
+          </div>
+        )}
         <div className="dashboard-layout">
           {/* Sidebar */}
           <aside className="dashboard-sidebar">
             <div className="sidebar-section" style={{ marginTop: '1rem' }}>
               <nav>
-                <button className={`sidebar-link ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>
+                <button className={`sidebar-link ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => handleSidebarTabChange('overview')}>
                   <LayoutDashboard size={16} /> Dashboard
                 </button>
-                <button className={`sidebar-link ${activeTab === 'lessons' ? 'active' : ''}`} onClick={() => setActiveTab('lessons')}>
+                <button className={`sidebar-link ${activeTab === 'lessons' ? 'active' : ''}`} onClick={() => handleSidebarTabChange('lessons')}>
                   <BookOpen size={16} /> My Lessons
                   {activeCourses.length > 0 && <span className="sidebar-badge">{activeCourses.length}</span>}
                 </button>
-                <button className={`sidebar-link ${activeTab === 'progress' ? 'active' : ''}`} onClick={() => setActiveTab('progress')}>
+                <button className={`sidebar-link ${activeTab === 'progress' ? 'active' : ''}`} onClick={() => handleSidebarTabChange('progress')}>
                   <TrendingUp size={16} /> My Progress
                 </button>
-                <button className={`sidebar-link ${activeTab === 'bookmarks' ? 'active' : ''}`} onClick={() => setActiveTab('bookmarks')}>
+                <button className={`sidebar-link ${activeTab === 'bookmarks' ? 'active' : ''}`} onClick={() => handleSidebarTabChange('bookmarks')}>
                   <Bookmark size={16} /> Bookmarks
                 </button>
-                <button className={`sidebar-link ${activeTab === 'certificates' ? 'active' : ''}`} onClick={() => setActiveTab('certificates')}>
+                <button className={`sidebar-link ${activeTab === 'certificates' ? 'active' : ''}`} onClick={() => handleSidebarTabChange('certificates')}>
                   <Award size={16} /> Certificates
                 </button>
               </nav>
@@ -694,10 +789,10 @@ const Dashboard = () => {
 
             <div className="sidebar-section">
               <nav>
-                <button className={`sidebar-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>
+                <button className={`sidebar-link ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => handleSidebarTabChange('profile')}>
                   <User size={16} /> Profile
                 </button>
-                <button className={`sidebar-link ${activeTab === 'billing' ? 'active' : ''}`} onClick={() => setActiveTab('billing')}>
+                <button className={`sidebar-link ${activeTab === 'billing' ? 'active' : ''}`} onClick={() => handleSidebarTabChange('billing')}>
                   <Settings size={16} /> Billing
                 </button>
                 <button className="sidebar-link" onClick={handleLogout} style={{ color: 'var(--brand-accent, #f48b60)' }}>

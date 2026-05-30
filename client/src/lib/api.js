@@ -2,6 +2,11 @@ import { blocksToLegacyFields } from './contentBlocks';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
+export function getAdminAuthHeaders() {
+  const token = localStorage.getItem('adminToken');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 async function request(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json', ...options.headers },
@@ -16,19 +21,23 @@ async function request(path, options = {}) {
 
 export const api = {
   getPublishedCourses: () => request('/api/courses'),
-  getAllCourses: () => request('/api/courses?all=1'),
+  getAllCourses: () => request('/api/courses?all=1', { headers: getAdminAuthHeaders() }),
   getCourse: (idOrSlug, { admin = false } = {}) =>
-    request(`/api/courses/${idOrSlug}${admin ? '?all=1' : ''}`),
+    request(
+      `/api/courses/${idOrSlug}${admin ? '?all=1' : ''}`,
+      admin ? { headers: getAdminAuthHeaders() } : {}
+    ),
   createCourse: (body) =>
-    request('/api/courses', { method: 'POST', body: JSON.stringify(body) }),
+    request('/api/courses', { method: 'POST', headers: getAdminAuthHeaders(), body: JSON.stringify(body) }),
   updateCourse: (id, body) =>
-    request(`/api/courses/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+    request(`/api/courses/${id}`, { method: 'PUT', headers: getAdminAuthHeaders(), body: JSON.stringify(body) }),
   setPublished: (id, published) =>
     request(`/api/courses/${id}/publish`, {
       method: 'PATCH',
+      headers: getAdminAuthHeaders(),
       body: JSON.stringify({ published }),
     }),
-  deleteCourse: (id) => request(`/api/courses/${id}`, { method: 'DELETE' }),
+  deleteCourse: (id) => request(`/api/courses/${id}`, { method: 'DELETE', headers: getAdminAuthHeaders() }),
 };
 
 export function isCardReady(course) {

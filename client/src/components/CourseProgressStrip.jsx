@@ -13,6 +13,7 @@ export default function CourseProgressStrip({
   currentLessonTitle,
   totalLessons,
   completedCount,
+  style,
 }) {
   const pct = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
 
@@ -43,12 +44,23 @@ export default function CourseProgressStrip({
   }, []);
 
   return (
-    <div className="cpstrip" role="navigation" aria-label="Course progress">
+    <div 
+      className="cpstrip" 
+      role="navigation" 
+      aria-label="Course progress"
+      style={style}
+    >
       {/* Left - Breadcrumb */}
       <div className="cpstrip__crumbs">
-        <Link to="/courses" className="cpstrip__crumb">Courses</Link>
-        <span className="cpstrip__sep">›</span>
-        <Link to={`/courses/${courseSlug}`} className="cpstrip__crumb">{courseTitle}</Link>
+        {courseSlug ? (
+          <>
+            <Link to="/courses" className="cpstrip__crumb">Courses</Link>
+            <span className="cpstrip__sep">›</span>
+            <Link to={`/courses/${courseSlug}`} className="cpstrip__crumb">{courseTitle}</Link>
+          </>
+        ) : (
+          <Link to="/dashboard" className="cpstrip__crumb">{courseTitle}</Link>
+        )}
         <span className="cpstrip__sep">›</span>
         <span className="cpstrip__crumb cpstrip__crumb--active">{currentLessonTitle}</span>
       </div>

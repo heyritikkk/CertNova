@@ -27,6 +27,19 @@ const CourseCard = ({ course, linkToDetail = true, preview = false }) => {
   const lessonsCount = course.lessons_count || '3 lessons';
   const labsCount = course.labs_count || '1 labs';
 
+  // Check if enrolled
+  const userAuth = localStorage.getItem('userAuth') === 'true';
+  const hasStarted = localStorage.getItem(`certnova-course-${course.id}-completed`) !== null;
+  const isPurchased = localStorage.getItem(`certnova-course-purchased-${course.id}`) === 'true';
+  
+  let hasActivity = false;
+  try {
+    const act = JSON.parse(localStorage.getItem('certnova-last-activity') || 'null');
+    if (act && act.courseId === course.id) hasActivity = true;
+  } catch (e) {}
+
+  const isEnrolled = userAuth && (hasStarted || isPurchased || hasActivity);
+
   const content = (
     <>
       <div className="course-card-banner">
@@ -53,8 +66,17 @@ const CourseCard = ({ course, linkToDetail = true, preview = false }) => {
       </div>
 
       <div className="course-card-footer">
-        <span className="footer-price">{priceLabel}</span>
-        <span className="footer-cta">{isFree ? 'Start free' : 'Enroll now'}</span>
+        {isEnrolled ? (
+          <>
+            <span className="footer-price" style={{ color: 'var(--brand-accent)' }}>Enrolled</span>
+            <span className="footer-cta">Resume</span>
+          </>
+        ) : (
+          <>
+            <span className="footer-price">{priceLabel}</span>
+            <span className="footer-cta">{isFree ? 'Start free' : 'Enroll now'}</span>
+          </>
+        )}
       </div>
     </>
   );

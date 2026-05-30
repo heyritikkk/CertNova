@@ -33,6 +33,11 @@ export default function Payment() {
     setShowQR(false);
     setPaid(true);
 
+    // Track purchase so CourseDetailOverview knows the user is enrolled
+    if (course?.id) {
+      localStorage.setItem(`certnova-course-purchased-${course.id}`, 'true');
+    }
+
     const visitorId = localStorage.getItem('certnova_visitor_id') || 'v_anonymous';
     const email = localStorage.getItem('userEmail') || localStorage.getItem('userName') || 'learner@certnova.com';
     const name = localStorage.getItem('userName') || 'Learner';

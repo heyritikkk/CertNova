@@ -63,7 +63,9 @@ const Layout = ({ theme, onToggleTheme }) => {
 };
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = safeGetStorage('adminAuth') === 'true';
+  const isAuthenticated =
+    safeGetStorage('adminAuth') === 'true' &&
+    Boolean(safeGetStorage('adminToken'));
   return isAuthenticated ? children : <Navigate to="/admin-login" replace />;
 };
 
@@ -139,7 +141,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AnalyticsTracker />
       <div className="app-container">
         <Routes>
@@ -172,6 +174,11 @@ function App() {
               </UserProtectedRoute>
             } />
             <Route path="dashboard" element={
+              <UserProtectedRoute>
+                <Dashboard />
+              </UserProtectedRoute>
+            } />
+            <Route path="progress" element={
               <UserProtectedRoute>
                 <Dashboard />
               </UserProtectedRoute>

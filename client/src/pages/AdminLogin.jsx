@@ -10,23 +10,32 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (localStorage.getItem('adminAuth') === 'true') {
+    if (localStorage.getItem('adminAuth') === 'true' && localStorage.getItem('adminToken')) {
       navigate('/admin', { replace: true });
     }
   }, [navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const validId = 'admin';
-    const validPassword = 'password';
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-    if (userId === validId && password === validPassword) {
-      localStorage.setItem('adminAuth', 'true');
-      navigate('/admin');
-      return;
-    }
-
-    setError('Invalid admin ID or password. Please try again.');
+    fetch(`${API_URL}/api/admin/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, password }),
+    })
+      .then(async (res) => {
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.token) {
+          throw new Error(data.error || 'Invalid admin ID or password. Please try again.');
+        }
+        localStorage.setItem('adminAuth', 'true');
+        localStorage.setItem('adminToken', data.token);
+        navigate('/admin');
+      })
+      .catch((err) => {
+        setError(err.message || 'Login failed.');
+      });
   };
 
   return (

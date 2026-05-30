@@ -1,24 +1,116 @@
 const express = require('express');
 const cors = require('cors');
+const crypto = require('crypto');
 const pool = require('./db');
 const { registerCourseRoutes } = require('./coursesApi');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+const ADMIN_USER = process.env.ADMIN_USER || '';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+const ADMIN_TOKEN_SECRET = process.env.ADMIN_TOKEN_SECRET || '';
+const ADMIN_TOKEN_TTL_SECONDS = Number(process.env.ADMIN_TOKEN_TTL_SECONDS || 60 * 60 * 8);
+
+function parseAllowedOrigins() {
+  const raw = process.env.ALLOWED_ORIGINS || '';
+  const list = raw
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean);
+  if (list.length > 0) return list;
+  return ['http://localhost:5173'];
+}
+
+function safeEqual(a, b) {
+  const left = Buffer.from(String(a || ''));
+  const right = Buffer.from(String(b || ''));
+  if (left.length !== right.length) return false;
+  return crypto.timingSafeEqual(left, right);
+}
+
+function createAdminToken() {
+  const exp = Date.now() + ADMIN_TOKEN_TTL_SECONDS * 1000;
+  const payload = Buffer.from(JSON.stringify({ exp })).toString('base64url');
+  const signature = crypto
+    .createHmac('sha256', ADMIN_TOKEN_SECRET)
+    .update(payload)
+    .digest('base64url');
+  return `${payload}.${signature}`;
+}
+
+function verifyAdminToken(token) {
+  if (!token || !token.includes('.')) return false;
+  const [payload, signature] = token.split('.');
+  if (!payload || !signature) return false;
+  const expected = crypto
+    .createHmac('sha256', ADMIN_TOKEN_SECRET)
+    .update(payload)
+    .digest('base64url');
+  if (!safeEqual(signature, expected)) return false;
+  try {
+    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    if (!decoded.exp || Number(decoded.exp) < Date.now()) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function requireAdmin(req, res, next) {
+  if (!isAdminRequest(req)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+}
+
+function isAdminRequest(req) {
+  if (!ADMIN_TOKEN_SECRET) {
+    return false;
+  }
+
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7).trim() : '';
+  return verifyAdminToken(token);
+}
+
+app.locals.requireAdmin = requireAdmin;
+app.locals.isAdminRequest = isAdminRequest;
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const allowed = parseAllowedOrigins();
+    if (allowed.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+}));
 app.use(express.json({ limit: '2mb' }));
+
+app.post('/api/admin/login', (req, res) => {
+  if (!ADMIN_USER || !ADMIN_PASSWORD || !ADMIN_TOKEN_SECRET) {
+    return res.status(500).json({ error: 'Admin auth is not configured on server.' });
+  }
+
+  const { userId, password } = req.body || {};
+  if (!safeEqual(userId, ADMIN_USER) || !safeEqual(password, ADMIN_PASSWORD)) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  const token = createAdminToken();
+  res.json({ token, expiresIn: ADMIN_TOKEN_TTL_SECONDS });
+});
 
 app.get('/api/content', async (req, res) => {
   try {
     const { rows } = await pool.query('SELECT * FROM content LIMIT 1');
     res.json(rows[0] || null);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-app.put('/api/content/:id', async (req, res) => {
+app.put('/api/content/:id', requireAdmin, async (req, res) => {
   const { title, description, button_text } = req.body;
   const { id } = req.params;
 
@@ -29,7 +121,7 @@ app.put('/api/content/:id', async (req, res) => {
     );
     res.json({ message: 'Content updated successfully', changes: rowCount });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -40,11 +132,11 @@ app.get('/api/highlights', async (req, res) => {
     const { rows } = await pool.query('SELECT * FROM highlights ORDER BY id ASC');
     res.json(rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-app.put('/api/highlights/:id', async (req, res) => {
+app.put('/api/highlights/:id', requireAdmin, async (req, res) => {
   const { title, text, icon_name } = req.body;
   const { id } = req.params;
   try {
@@ -54,7 +146,7 @@ app.put('/api/highlights/:id', async (req, res) => {
     );
     res.json({ message: 'Highlight updated successfully', changes: rowCount });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -74,7 +166,7 @@ app.post('/api/certificates', async (req, res) => {
     );
     res.json({ success: true, id });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -88,7 +180,7 @@ app.get('/api/certificates', async (req, res) => {
     );
     res.json(rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -100,7 +192,7 @@ app.get('/api/certificates/verify/:id', async (req, res) => {
     if (!row) return res.status(404).json({ valid: false, error: 'Certificate not found' });
     res.json({ valid: true, certificate: row });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -188,34 +280,34 @@ app.post('/api/analytics/track', async (req, res) => {
       res.json({ success: true, changes: rowCount });
     }
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-app.get('/api/analytics', async (req, res) => {
+app.get('/api/analytics', requireAdmin, async (req, res) => {
   try {
     const { rows } = await pool.query('SELECT * FROM visitor_analytics ORDER BY updated_at DESC');
     res.json(rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-app.post('/api/analytics/clear', async (req, res) => {
+app.post('/api/analytics/clear', requireAdmin, async (req, res) => {
   try {
     await pool.query('DELETE FROM visitor_analytics');
     res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-app.post('/api/analytics/seed', async (req, res) => {
+app.post('/api/analytics/seed', requireAdmin, async (req, res) => {
   const mockData = [
     {
       visitor_id: 'v_mock_alice',
-      email: 'alice.vance@linkedin.com',
-      name: 'Alice Vance',
+      email: 'learner1@example.com',
+      name: 'Learner One',
       purchased_courses: JSON.stringify(['network-security']),
       visit_count: 14,
       active_lesson: 'CompTIA Security+ - 1.3 Symmetric vs Asymmetric Cryptography',
@@ -225,8 +317,8 @@ app.post('/api/analytics/seed', async (req, res) => {
     },
     {
       visitor_id: 'v_mock_bob',
-      email: 'bob.miller@gmail.com',
-      name: 'Bob Miller',
+      email: 'learner2@example.com',
+      name: 'Learner Two',
       purchased_courses: JSON.stringify(['network-security']),
       visit_count: 8,
       active_lesson: 'CompTIA Security+ - 2.1 Threat Actors & Vectors',
@@ -236,8 +328,8 @@ app.post('/api/analytics/seed', async (req, res) => {
     },
     {
       visitor_id: 'v_mock_charlie',
-      email: 'charlie.codes@github.com',
-      name: 'Charlie Smith',
+      email: 'learner3@example.com',
+      name: 'Learner Three',
       purchased_courses: JSON.stringify(['network-security']),
       visit_count: 22,
       active_lesson: 'CompTIA Security+ - 3.2 Port Scanning Practice',
@@ -258,8 +350,8 @@ app.post('/api/analytics/seed', async (req, res) => {
     },
     {
       visitor_id: 'v_mock_david',
-      email: 'david.k@yahoo.com',
-      name: 'David K.',
+      email: 'learner4@example.com',
+      name: 'Learner Four',
       purchased_courses: '[]',
       visit_count: 1,
       active_lesson: '',
@@ -269,8 +361,8 @@ app.post('/api/analytics/seed', async (req, res) => {
     },
     {
       visitor_id: 'v_mock_emma',
-      email: 'emma.watson@edu.org',
-      name: 'Emma Watson',
+      email: 'learner5@example.com',
+      name: 'Learner Five',
       purchased_courses: JSON.stringify(['network-security']),
       visit_count: 5,
       active_lesson: 'CompTIA Security+ - 1.1 Intro to Network Security',
@@ -299,7 +391,7 @@ app.post('/api/analytics/seed', async (req, res) => {
     }
     res.json({ success: true, message: 'Mock analytics data seeded successfully!' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

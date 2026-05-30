@@ -6,7 +6,7 @@ const HowItWorks = () => {
   return (
     <section className="how-section">
       <div className="how-header">
-        <span className="how-chip">How It Works</span>
+        <span className="how-chip">HOW IT WORKS</span>
         <h2>Get Started In Minutes</h2>
         <p>A simple path to begin your Security+ journey with CertNova.</p>
       </div>

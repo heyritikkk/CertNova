@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CourseContentBuilder from '../components/CourseContentBuilder';
 import CourseOutlineSidebar from '../components/CourseOutlineSidebar';
-import { api, isCardReady, buildCoursePayload } from '../lib/api';
+import { api, isCardReady, buildCoursePayload, getAdminAuthHeaders } from '../lib/api';
 import { courseToContentBlocks, createMarkdownBlock } from '../lib/contentBlocks';
 import './AdminDashboard.css';
 
@@ -102,7 +102,11 @@ const AdminDashboard = () => {
   const fetchAnalytics = () => {
     setAnalyticsLoading(true);
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-    fetch(`${API_URL}/api/analytics`)
+    fetch(`${API_URL}/api/analytics`, {
+      headers: {
+        ...getAdminAuthHeaders(),
+      },
+    })
       .then(res => {
         if (!res.ok) throw new Error('Failed to load analytics data.');
         return res.json();
@@ -232,6 +236,7 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('adminAuth');
+    localStorage.removeItem('adminToken');
     window.location.href = '/admin-login';
   };
 

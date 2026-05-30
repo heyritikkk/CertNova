@@ -25,7 +25,7 @@ const COURSE_COLUMNS = [
 ];
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/certnova',
+  connectionString: process.env.DATABASE_URL || 'postgres://localhost:5432/certnova',
 });
 
 async function initDB() {
@@ -93,12 +93,12 @@ async function initDB() {
     const { rows: visitorRows } = await client.query(`SELECT COUNT(*) as count FROM visitor_analytics`);
     if (parseInt(visitorRows[0].count) === 0) {
       const mockData = [
-        ['v_mock_alice', 'alice.vance@linkedin.com', 'Alice Vance', JSON.stringify(['network-security']), 14, 'CompTIA Security+ - 1.3 Symmetric vs Asymmetric Cryptography', 'LinkedIn'],
-        ['v_mock_bob', 'bob.miller@gmail.com', 'Bob Miller', JSON.stringify(['network-security']), 8, 'CompTIA Security+ - 2.1 Threat Actors & Vectors', 'Google'],
-        ['v_mock_charlie', 'charlie.codes@github.com', 'Charlie Smith', JSON.stringify(['network-security']), 22, 'CompTIA Security+ - 3.2 Port Scanning Practice', 'GitHub'],
+        ['v_mock_alice', 'learner1@example.com', 'Learner One', JSON.stringify(['network-security']), 14, 'CompTIA Security+ - 1.3 Symmetric vs Asymmetric Cryptography', 'LinkedIn'],
+        ['v_mock_bob', 'learner2@example.com', 'Learner Two', JSON.stringify(['network-security']), 8, 'CompTIA Security+ - 2.1 Threat Actors & Vectors', 'Google'],
+        ['v_mock_charlie', 'learner3@example.com', 'Learner Three', JSON.stringify(['network-security']), 22, 'CompTIA Security+ - 3.2 Port Scanning Practice', 'GitHub'],
         ['v_mock_anonymous1', 'Anonymous', 'Anonymous', '[]', 3, '', 'Twitter'],
-        ['v_mock_david', 'david.k@yahoo.com', 'David K.', '[]', 1, '', 'Direct'],
-        ['v_mock_emma', 'emma.watson@edu.org', 'Emma Watson', JSON.stringify(['network-security']), 5, 'CompTIA Security+ - 1.1 Intro to Network Security', 'Google']
+        ['v_mock_david', 'learner4@example.com', 'Learner Four', '[]', 1, '', 'Direct'],
+        ['v_mock_emma', 'learner5@example.com', 'Learner Five', JSON.stringify(['network-security']), 5, 'CompTIA Security+ - 1.1 Intro to Network Security', 'Google']
       ];
 
       for (const item of mockData) {
