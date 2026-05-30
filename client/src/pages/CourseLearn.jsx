@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { api } from '../lib/api';
 import CourseLessonLayout from '../components/CourseLessonLayout';
+import CtaBanner from '../components/CtaBanner';
+import Footer from '../components/Footer';
 import './CourseDetail.css';
 
 const CourseLearn = () => {
@@ -37,11 +39,15 @@ const CourseLearn = () => {
   }
 
   return (
-    <div className="course-detail-page course-detail-page--lesson">
-      <div className="course-detail-inner">
-        <CourseLessonLayout course={course} />
+    <>
+      <div className="course-detail-page course-detail-page--lesson">
+        <div className="course-detail-inner">
+          <CourseLessonLayout course={course} />
+        </div>
       </div>
-    </div>
+      <CtaBanner />
+      <Footer />
+    </>
   );
 };
 

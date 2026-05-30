@@ -145,3 +145,25 @@
   margin: 0;
   font-size: 0.95rem;
 }
+
+/* --- Dark Mode Overrides --- */
+[data-theme='dark'] .faq-item {
+  background: rgba(15, 23, 42, 0.72);
+  border-color: rgba(244, 139, 96, 0.28);
+}
+
+[data-theme='dark'] .faq-question {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .faq-icon {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .faq-item.open {
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme='dark'] .faq-item:hover {
+  border-color: rgba(244, 139, 96, 0.5);
+}
