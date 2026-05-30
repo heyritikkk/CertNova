@@ -67,15 +67,17 @@ const Navbar = ({ theme, onToggleTheme }) => {
     };
   }, [menuOpen]);
 
-  /* Hide navbar on scroll-down, show on scroll-up (learn pages only) */
+  /* Hide navbar on scroll-down, show on scroll-up (learn pages and dashboard only) */
+  const isDashboardPage = location.pathname === '/dashboard';
   useEffect(() => {
-    if (!isLearnPage) { setHidden(false); return; }
+    if (!isLearnPage && !isDashboardPage) { setHidden(false); return; }
 
     const onScroll = (e) => {
       // Use custom event detail if it's from the lesson container, otherwise window.scrollY
       const y = e.type === 'lessonScroll' ? e.detail : window.scrollY;
       
-      if (y > 80) {
+      const threshold = isDashboardPage ? 10 : 80;
+      if (y > threshold) {
         setHidden(true);
       } else {
         setHidden(false);

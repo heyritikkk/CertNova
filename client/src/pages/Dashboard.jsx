@@ -134,8 +134,10 @@ const Dashboard = () => {
       if (!raw) return { percent: 0, done: 0, total: 0 };
       const completedIds = new Set(JSON.parse(raw));
       
-      let blocks = [];
-      try { blocks = JSON.parse(course.content_blocks_json || '[]'); } catch { blocks = course.content_blocks || []; }
+      let blocks = course.content_blocks || [];
+      if (typeof blocks === 'string') {
+        try { blocks = JSON.parse(blocks); } catch {}
+      }
       
       const visible = blocks.filter((b) => {
         if (b.hidden) return false;
@@ -267,59 +269,37 @@ const Dashboard = () => {
         </div>
         
         <div className="course-cards-grid">
-          {lastActivity ? (
-            <div className="dash-course-card">
-              <div className="card-top">
-                <div className="course-icon"><Shield size={24} /></div>
+          {activeCourses.length === 0 ? (
+              <div className="dash-course-card empty-card" style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem' }}>
+                <div style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}><BookOpen size={32} style={{ margin: '0 auto' }}/></div>
+                <h3 style={{ fontSize: '1.1rem', margin: '0 0 0.5rem' }}>No courses in progress</h3>
+                <p style={{ color: 'var(--text-muted)', margin: '0 0 1.5rem', fontSize: '0.9rem' }}>When you start or purchase a course, it will appear here.</p>
                 <div>
-                  <span className="course-category">{lastActivity.courseTitle}</span>
-                  <h4 className="course-title">{lastActivity.lessonTitle}</h4>
-                </div>
-              </div>
-              <div className="card-progress">
-                <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${lastActivity.progressPercent}%` }}></div>
-                </div>
-              </div>
-              <div className="card-footer">
-                <span className="progress-text">{lastActivity.progressPercent}% complete</span>
-                <Link to={`/courses/${lastActivity.courseSlug}/learn${lastActivity.lessonHash || ''}`} className="btn-continue">Continue</Link>
-              </div>
-            </div>
-          ) : (
-              <div className="dash-course-card">
-                <div className="card-top">
-                  <div className="course-icon"><Shield size={24} /></div>
-                  <div>
-                    <span className="course-category">Network Security</span>
-                    <h4 className="course-title">Start your first lesson</h4>
-                  </div>
-                </div>
-                <div className="card-footer" style={{ marginTop: '2rem' }}>
-                  <span className="progress-text">0% complete</span>
                   <Link to="/courses" className="btn-continue">Start</Link>
                 </div>
               </div>
+          ) : (
+            activeCourses.slice(0, 2).map(course => (
+              <div key={course.id} className="dash-course-card">
+                <div className="card-top">
+                  <div className="course-icon"><Shield size={24} /></div>
+                  <div>
+                    <span className="course-category">{course.level}</span>
+                    <h4 className="course-title">{course.title}</h4>
+                  </div>
+                </div>
+                <div className="card-progress">
+                  <div className="progress-bar">
+                    <div className="progress-fill" style={{ width: `${course.progress.percent}%` }}></div>
+                  </div>
+                </div>
+                <div className="card-footer">
+                  <span className="progress-text">{course.progress.percent}% complete</span>
+                  <Link to={`/courses/${course.slug}/learn`} className="btn-continue">Continue</Link>
+                </div>
+              </div>
+            ))
           )}
-
-          <div className="dash-course-card">
-            <div className="card-top">
-              <div className="course-icon"><Laptop size={24} /></div>
-              <div>
-                <span className="course-category">AppSec Engineering</span>
-                <h4 className="course-title">DevSecOps Pipeline</h4>
-              </div>
-            </div>
-            <div className="card-progress">
-              <div className="progress-bar">
-                <div className="progress-fill" style={{ width: '30%' }}></div>
-              </div>
-            </div>
-            <div className="card-footer">
-              <span className="progress-text">30% complete</span>
-              <Link to="/courses" className="btn-continue">Continue</Link>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -368,7 +348,32 @@ const Dashboard = () => {
           <BookOpen size={48} />
           <h2>No active courses</h2>
           <p>Start a course to track your progress here.</p>
-          <Link to="/courses" className="btn-continue">Browse Courses</Link>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '1rem' }}>
+            <Link to="/courses" className="btn-continue">Browse Courses</Link>
+            <button 
+              className="btn-continue" 
+              style={{ background: 'var(--surface-brand-25)', color: 'var(--brand-accent)' }}
+              onClick={() => {
+                const purchasedSlugs = ['security-interview-kit', 'cloud-security-engineering', 'web-application-security'];
+                let restored = 0;
+                purchasedSlugs.forEach(slug => {
+                  const c = courses.find(course => course.slug === slug);
+                  if (c) {
+                    localStorage.setItem(`certnova-course-purchased-${c.id}`, 'true');
+                    restored++;
+                  }
+                });
+                
+                if (restored > 0) {
+                  window.location.reload();
+                } else {
+                  alert("Could not find the courses to restore.");
+                }
+              }}
+            >
+              Restore Purchases
+            </button>
+          </div>
         </div>
       ) : (
         <div className="course-cards-grid">
@@ -456,7 +461,7 @@ const Dashboard = () => {
     });
 
     return (
-      <div className="tab-view" style={{ maxWidth: '1000px' }}>
+      <div className="tab-view">
         <div className="cert-filter-bar">
           <div className="cert-filter-tags">
             {categories.map((category) => (
@@ -751,20 +756,20 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="site-container dashboard-page-shell" style={{ paddingBottom: '3rem' }}>
+    <div className="site-container dashboard-page-shell">
       <div className="site-container-inner">
         {stripData && (
           <div style={{ marginBottom: '1.5rem', zIndex: 140 }}>
             <CourseProgressStrip 
               {...stripData} 
-              style={{ top: 'calc(var(--navbar-offset, 80px) + 0.5rem)' }} 
+              style={{ position: 'static' }} 
             />
           </div>
         )}
         <div className="dashboard-layout">
           {/* Sidebar */}
           <aside className="dashboard-sidebar">
-            <div className="sidebar-section" style={{ marginTop: '1rem' }}>
+            <div className="sidebar-section">
               <nav>
                 <button className={`sidebar-link ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => handleSidebarTabChange('overview')}>
                   <LayoutDashboard size={16} /> Dashboard
@@ -802,21 +807,27 @@ const Dashboard = () => {
             </div>
           </aside>
 
-          {/* Main Content */}
-          <div className="dashboard-main">
-            {activeTab === 'overview' && renderOverview()}
-            {activeTab === 'lessons' && renderLessons()}
-            {activeTab === 'progress' && renderProgress()}
-            {activeTab === 'bookmarks' && renderBookmarks()}
-            {activeTab === 'certificates' && renderCertificates()}
-            {activeTab === 'profile' && renderProfile()}
-            {activeTab === 'billing' && renderBilling()}
+          {/* Main Content scroll area */}
+          <div className="dashboard-scroll-area" onScroll={(e) => {
+            const event = new CustomEvent('lessonScroll', { detail: e.target.scrollTop });
+            window.dispatchEvent(event);
+          }}>
+            <div className="dashboard-main">
+              {activeTab === 'overview' && renderOverview()}
+              {activeTab === 'lessons' && renderLessons()}
+              {activeTab === 'progress' && renderProgress()}
+              {activeTab === 'bookmarks' && renderBookmarks()}
+              {activeTab === 'certificates' && renderCertificates()}
+              {activeTab === 'profile' && renderProfile()}
+              {activeTab === 'billing' && renderBilling()}
+            </div>
+            
+            <div className="dashboard-extra-sections">
+              <CtaBanner />
+              <Footer />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="dashboard-extra-sections">
-        <CtaBanner />
-        <Footer />
       </div>
     </div>
   );
